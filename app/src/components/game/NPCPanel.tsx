@@ -15,9 +15,11 @@ import {
   RELATIONSHIP_I18N_KEY,
   resolveNpcAvatarImgSrc,
 } from '@/domain/assets/npcPortraitDisplay';
+import { isNpcHostileForQuickCombat } from '@/domain/combat/quickHostileCombat';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { t } from '@/i18n';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 interface NPCPanelProps {
   npcs: NPC[];
@@ -191,6 +193,20 @@ const NpcRow = memo(function NpcRow({
           </div>
 
           <p className="text-xs text-slate-600 mt-2 line-clamp-2">{npc.appearance}</p>
+          {isNpcHostileForQuickCombat(npc) && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="mt-3 w-full border-red-900/50 text-red-300 hover:bg-red-950/40 hover:text-red-200"
+              onClick={(e) => {
+                e.stopPropagation();
+                onInteract(npc.id, 'combat_attack');
+              }}
+            >
+              {t('game.combat_attack', language)}
+            </Button>
+          )}
         </div>
       </div>
     </div>

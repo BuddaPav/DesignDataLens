@@ -72,11 +72,18 @@ import { purchaseShopItemWithGold, type ShopPurchaseResult } from '@/domain/econ
 import { collectEligibleDefeatNpcIdsForQuestGeneration } from '@/domain/npc/defeatObjectiveRules';
 import { applyDefeatEnemyProgressForMarkedDead } from '@/domain/quest/defeatEnemyObjective';
 import {
+  CHRONOS_QUICK_COMBAT_LOSS_HP,
+  canLethallyKillNpcInCombat,
+  isNpcHostileForQuickCombat,
+  resolveQuickHostileCombat,
+} from '@/domain/combat/quickHostileCombat';
+import {
   collectFactionRepShiftLines,
   mergeFactionReputation,
   reputationDeltaFromRumorSpread,
 } from '@/domain/social/factionReputationRules';
 import { shouldSpreadRumorsInWorker } from '@/domain/social/gossipWorkerRules';
+import { soundManager } from '@/engine/SoundManager';
 import {
   CHRONOS_SAVE_SCHEMA_VERSION,
   migratePersistedSaveRevived,
@@ -651,6 +658,88 @@ export function useGameState() {
     });
   }, [player]);
 
+  /** Быстрая схватка с враждебным NPC из панели «Люди»: смерть только для тех же id, что и defeat_enemy (proc_*, allowlist). */
+  const resolveQuickCombatWithNpc = useCallback(
+    (npcId: string) => {
+      if (!player) return;
+      const npc = npcSystem.current.getNPC(npcId);
+      if (!npc) {
+        toast.error(t('game.combat_system_only', getLanguage()));
+        return;
+      }
+      if (!isNpcHostileForQuickCombat(npc)) {
+        toast.info(t('game.combat_not_hostile', getLanguage()));
+        return;
+      }
+
+      emotionDetector.current.recordAction('combat_started', { npcId });
+      soundManager.play('battle');
+
+      const roll = Math.random();
+      const outcome = resolveQuickHostileCombat({ player, npc, roll });
+
+      if (outcome === 'player_loses') {
+        soundManager.play('error');
+        emotionDetector.current.recordAction('combat_ended_loss', { npcId });
+        setPlayer((prev) => {
+          if (!prev) return null;
+          const lang = getLanguage();
+          const log = [...(prev.storyProgress.worldEventLog || [])];
+          pushWorldLog(
+            log,
+            t('game.combat_loss_log', lang).replace('{{name}}', npc.name),
+            'dramatic',
+            'combat',
+          );
+          return {
+            ...prev,
+            stats: {
+              ...prev.stats,
+              health: Math.max(1, prev.stats.health - CHRONOS_QUICK_COMBAT_LOSS_HP),
+              battlesLost: prev.stats.battlesLost + 1,
+            },
+            storyProgress: { ...prev.storyProgress, worldEventLog: log },
+          };
+        });
+        toast.error(t('game.combat_loss', getLanguage()));
+        return;
+      }
+
+      emotionDetector.current.recordAction('enemy_defeated', { npcId });
+      const lethal = canLethallyKillNpcInCombat(npc);
+      if (lethal) {
+        soundManager.play('questComplete');
+        applyConsequences([{ type: 'npc_mark_dead', key: npcId, value: true }]);
+        toast.success(t('game.combat_win_kill', getLanguage()));
+        return;
+      }
+
+      soundManager.play('success');
+      setPlayer((prev) => {
+        if (!prev) return null;
+        const lang = getLanguage();
+        const log = [...(prev.storyProgress.worldEventLog || [])];
+        pushWorldLog(
+          log,
+          t('game.combat_win_nonlethal_log', lang).replace('{{name}}', npc.name),
+          'dramatic',
+          'combat',
+        );
+        return {
+          ...prev,
+          stats: {
+            ...prev.stats,
+            battlesWon: prev.stats.battlesWon + 1,
+            enemiesDefeated: prev.stats.enemiesDefeated + 1,
+          },
+          storyProgress: { ...prev.storyProgress, worldEventLog: log },
+        };
+      });
+      toast.success(t('game.combat_win_nonlethal', getLanguage()));
+    },
+    [player, applyConsequences],
+  );
+
   const makeChoice = useCallback((choice: Choice) => {
     if (!player || !currentScene) return;
 
@@ -757,6 +846,15 @@ export function useGameState() {
       const fromCrowd = crowdNPCs.find((n) => n.id === npcId);
       const npc = fromSystem ?? fromCrowd;
       if (!npc || !player) return;
+
+      if (interactionType === 'combat_attack') {
+        if (!fromSystem) {
+          toast.error(t('game.combat_system_only', getLanguage()));
+          return;
+        }
+        resolveQuickCombatWithNpc(npcId);
+        return;
+      }
 
       const trimmed = customPlayerLine?.trim();
       const isFollowUp = !!(trimmed && trimmed.length > 0);
@@ -989,7 +1087,7 @@ export function useGameState() {
           });
       }
     },
-    [player, currentLocation, crowdNPCs]
+    [player, currentLocation, crowdNPCs, resolveQuickCombatWithNpc]
   );
 
   // ==================== QUEST MANAGEMENT ====================

@@ -20,7 +20,7 @@
 - [x] Домен инвентаря + каталог шаблонов + тесты
 - [x] NPC: память, отношения, психика, диалоги; WebLLM-гибрид (`NPCSystem`, `localAI`)
 - [x] Слухи, караваны, репутация фракций, панель «Мир» (базовый слой)
-- [ ] Вызов **`markNpcDead`** из полноценного боя (не только сцена/нарратив)
+- [x] Вызов **`markNpcDead`** из полноценного боя (не только сцена/нарратив)
 - [ ] Worker/изоляция тяжёлого расчёта слухов при больших `hours` (без рассинхрона сохранений)
 - [ ] UI коалиций врагов, связанный с повседневным геймплеем (не только `WorldStatusPanel`)
 
@@ -45,7 +45,7 @@
 
 | Дата | Решение | Альтернатива (отклонена) |
 |------|---------|---------------------------|
-| — | *(пока пусто)* | — |
+| 2026-05-10 | Lethal panel combat uses **same NPC id rules** as `defeat_enemy` (`isNpcEligibleForGeneratedDefeatObjective`) so story-critical ids never get `markNpcDead` from quick fight; non-lethal win = stats + journal only. | Separate combat kill-list |
 
 ---
 
