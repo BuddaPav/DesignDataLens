@@ -23,9 +23,9 @@
   - `engine/gossipSpread.worker.ts` — Worker-обёртка над `decayAndSpreadRumors`
   - `engine/gossipSpreadWorkerClient.ts` — клиент с fallback, singleton Worker
 - В `advanceTime` (`useGameState`) используется **гибридный режим**:
-  - лёгкие тики — синхронно (один `setState`)
-  - тяжёлые тики — интерим (TTL + караваны) + spread в Worker с применением результата вторым обновлением состояния
-- Ограничение: async-ветка отмечена как `CHRONOS-TD-001` в `docs/orchestrate/TECH_DEBT.md` (нужно довести до транзакционного apply).
+  - лёгкие тики — синхронно (`tickActiveRumorsSync` в основном потоке)
+  - тяжёлые тики — `tickTradeCaravans` на снимке слухов, затем `decayAndSpreadRumorsInWorker` по правилам `domain/social/gossipWorkerRules.ts` (`shouldSpreadRumorsInWorker`: пороги часов/числа слухов **или** произведение `hours × count`), слияние охвата с посещениями караванов, **один** финальный `setPlayer` + проверка `rumorWorkerToken` / `playerRef` против устаревшего async
+  - при недоступности Worker — fallback на `tickActiveRumorsSync`
 
 ## Графика
 

@@ -44,11 +44,16 @@ export async function decayAndSpreadRumorsInWorker(
 
   return await new Promise((resolve) => {
     const onMessage = (e: MessageEvent<RumorSpreadWorkResponse>) => {
+      const data = e.data;
       w.removeEventListener('message', onMessage);
       w.removeEventListener('error', onError);
+      if (!data || data.token !== token) {
+        resolve(null);
+        return;
+      }
       resolve({
-        rumors: e.data.rumors.map(dtoToActiveRumor),
-        token: e.data.token,
+        rumors: data.rumors.map(dtoToActiveRumor),
+        token: data.token,
       });
     };
     const onError = () => {

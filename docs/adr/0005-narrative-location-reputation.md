@@ -16,7 +16,7 @@
    - `quest_unlock`
 2. Применение в `applyChoiceConsequencesBatch` (`applyLocationReputationDelta`): нормализация ключа `location:<id>`, кламп −100…100 на ключ, строка в `worldEventLog`.
 3. **`AIStoryEngine.generateConsequences`**: часть событий мира добавляет совместно `locationReputationDelta` (текущая локация) и опционально `factionReputationDelta`.
-4. Порог вызова worker для слухов вынесен в `domain/social/gossipWorkerRules.ts` (`shouldSpreadRumorsInWorker`).
+4. Порог вызова worker для слухов вынесен в `domain/social/gossipWorkerRules.ts` (`shouldSpreadRumorsInWorker`: классические пороги часов и числа слухов **или** эвристика нагрузки `hours × activeRumorCount`).
 5. **`ChoiceBatchSideEffects`** в `applyChoiceConsequencesBatch`: дельты `npc_relationship` и список **`npc_mark_dead`** (и `markNpcDead` в narrative payload) обрабатываются в `useGameState` через `NPCSystem` (`syncPlayerRelationshipType`, `markNpcDead` + обида союзников).
 
 ## Последствия
