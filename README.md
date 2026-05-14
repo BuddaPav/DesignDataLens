@@ -17,6 +17,23 @@
 1. **Играть:** `START_DESKTOP.bat` или `.exe` после `BUILD_DESKTOP_EXE.bat` / `npm run desktop:pack` — см. ниже **«Как запустить игру одним кликом»**.
 2. **Разработка:** `cd app` → `npm install` → `npm run dev`; перед коммитом — `npm run orchestrate:gate`.
 
+## Git и GitHub
+
+Локально уже есть история Git (ветка **`main`**). В `.gitignore` исключены `app/node_modules/`, сборки, `.env`, отчёты Playwright.
+
+**Первый раз — выгрузить на GitHub:** создайте [новый репозиторий](https://github.com/new) (можно без README), затем в корне проекта:
+
+```bash
+git remote add origin https://github.com/<ваш-логин>/<имя-репо>.git
+git push -u origin main
+```
+
+Для HTTPS GitHub попросит **Personal Access Token** вместо пароля ([документация](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)). Альтернатива — **SSH** (`git@github.com:...`) после добавления ключа в аккаунт.
+
+**Обновлять удалённый репозиторий после правок:** запустите **`SYNC_GITHUB.bat`** (или `powershell -NoProfile -File scripts/github-push.ps1`). Скрипт сделает `git add -A`, коммит и `git push`. Свой текст коммита: `powershell -File scripts/github-push.ps1 -Message "feat: кратко"`.
+
+Автоматический пуш «сам по себе» без вашей машины с этой папкой невозможен: GitHub принимает только то, что вы (или CI) отправляете `git push`. Чтобы не забывать, можно повесить **`SYNC_GITHUB.bat`** на расписание в Планировщике заданий Windows — имейте в виду, что тогда коммиты появятся и без ручной проверки диффа.
+
 ## Стек
 
 React + TypeScript, Vite, Tailwind, shadcn/ui; Three.js / React Three Fiber; Electron (десктоп); Web Audio; i18n RU/EN.
@@ -138,7 +155,7 @@ React + TypeScript, Vite, Tailwind, shadcn/ui; Three.js / React Three Fiber; Ele
 | **Пресет качества 3D** | `app/src/types/chronosGraphics.ts`, чтение `app/src/lib/chronosGraphicsSettings.ts`, прокидка через `WorldViewport` → `WorldScene3D` |
 | **Десктоп-клиент (основной способ игры):** Windows **.exe** (Electron) | `app/electron/main.cjs`, `app/electron/preload.cjs`; `npm run desktop` (dev); **`BUILD_DESKTOP_INSTALLER.bat`** / `npm run desktop:installer` → NSIS **`desktop-installer/*-Setup-*.exe`** (установка в систему); **`BUILD_DESKTOP_EXE.bat`** / `npm run desktop:pack` → портативная папка `desktop-dist/.../*.exe`; корень: **`START_DESKTOP.bat`** |
 | Генерация фона интро через внешнее API изображений | `app/scripts/generate-ai-art.mjs` (`npm run generate:ai-art`), при `OPENAI_API_KEY` — DALL·E 3 → `public/.../generated/`; интро читает `manifest.json` |
-| Сборка / скрипты | `app/package.json` (**тесты:** `npm run test`, **deps:** `npm run deps:circular` / `deps:export`); smoke-тест сценария: `app/scripts/smoke-story.mjs` (Playwright) |
+| Сборка / скрипты | `app/package.json` (**тесты:** `npm run test`, **deps:** `npm run deps:circular` / `deps:export`); smoke-тест сценария: `app/scripts/smoke-story.mjs` (Playwright); **push на GitHub:** `SYNC_GITHUB.bat`, `scripts/github-push.ps1` |
 | PWA / статика | `app/public/` (`sw.js`, `manifest.json` при наличии) |
 | Дизайн-доки | `game-design.md`, `CHRONOS_DESIGN.md`, `app/README.md` |
 | Юридическая формулировка прав на код/активы (не MIT «автоматически») | `LICENSE` (корень репозитория) |

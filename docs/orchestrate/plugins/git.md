@@ -28,3 +28,7 @@
 ## PR
 
 Шаблон: `.github/pull_request_template.md`.
+
+## Синхронизация с GitHub (Windows)
+
+Корень репозитория: **`SYNC_GITHUB.bat`** или **`scripts/github-push.ps1`** — коммит всех изменений и `git push` в `origin` (ветка текущая, обычно `main`). Первичная настройка `git remote add origin …` — см. **`README.md`**, раздел «Git и GitHub».
