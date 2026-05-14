@@ -7,7 +7,7 @@ alwaysApply: true
 
 Перед генерацией или крупным рефакторингом **прочитай** `docs/orchestrate/README.md`, **`docs/orchestrate/PRINCIPLES.md`**, правило **`chronos-orchestrate-must-have.mdc`** и при затронутой подсистеме — соответствующий ADR в `docs/adr/` и глоссарий `docs/glossary.md`.
 
-Дополнительные логические плагины: **scaffold**, **prototype**, **telemetry**, **asset-pipeline**, **narrative**, **archaeology** — см. `docs/orchestrate/plugins/`. Шаблоны кода: `app/src/scaffolds/`.
+Дополнительные логические плагины: **scaffold**, **prototype**, **telemetry**, **asset-pipeline**, **narrative**, **archaeology**, **autonomous-session** — см. `docs/orchestrate/plugins/`. Шаблоны кода: `app/src/scaffolds/`.
 
 ## Порядок работы (целевой)
 

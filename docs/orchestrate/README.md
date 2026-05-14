@@ -36,6 +36,7 @@ flowchart LR
 | [asset-pipeline](./plugins/asset-pipeline.md) | Контент и зависимости | `npm run orchestrate:assets`, скрипты `generate-*.mjs` |
 | [GRAPHICS_INVENTORY](./GRAPHICS_INVENTORY.md) | Аудит графики, реестр путей | `app/src/domain/assets/chronosGraphicsRegistry.ts`, `public/assets/chronos-ai-chronicles/` |
 | [narrative](./plugins/narrative.md) | Сюжет ↔ механика | `narrative-checklist.md`, типы в `@/types/game` |
+| [autonomous-session](./plugins/autonomous-session.md) | Длинные сессии Cursor: вехи, DECISION, минимум вопросов | **`PROJECT_MILESTONES.md`** (корень) |
 | [archaeology](./plugins/archaeology.md) | Аудит раз в ~50 коммитов | `npm run orchestrate:archaeology` |
 
 ## Ворота (`orchestrate:gate`)

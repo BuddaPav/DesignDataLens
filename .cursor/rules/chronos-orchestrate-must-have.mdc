@@ -90,5 +90,6 @@ cd app && npm run orchestrate:archaeology
 | **telemetry** | `plugins/telemetry.md` — `app/src/debug/chronosTelemetry.ts` |
 | **asset-pipeline** | `plugins/asset-pipeline.md` |
 | **narrative** | `plugins/narrative.md` |
+| **autonomous-session** | `plugins/autonomous-session.md` — вехи `PROJECT_MILESTONES.md`, режим длинных сессий |
 
 Пайплайн расширенный: **memory → rules → (decomposition) → scaffold? → prototype? → test → code → telemetry(review) → perf → git → docs → memory.**
