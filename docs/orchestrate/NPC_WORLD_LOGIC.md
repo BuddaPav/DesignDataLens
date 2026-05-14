@@ -12,7 +12,7 @@
 
 1. Обновить `GameTime` в `storyProgress.worldState.time` (день/месяц/год при переполнении).
 2. **Поколения / базовый социальный дрейф** — `runGenerationsTick`, `runAdvancedSocietyTick`, `runCrowdSocietyTick`.
-3. **Слухи и караваны** — см. `docs/architecture/world-social-graphics.md` (TTL, `factionPowers`, worker для тяжёлого spread).
+3. **Слухи и караваны** — см. `docs/architecture/world-social-graphics.md` (TTL, `factionPowers`, worker для тяжёлого spread). **Коалиции врагов:** полоска `EnemyCoalitionBar` над футером + вкладка в панели «Мир», тактическая карта уже показывает пины.
 4. **Очередь последствий слухов**, репутация фракций, коалиции врагов — `tryEnemyCoalitionFormation`.
 5. Запись состояния игрока (лог, слухи, караваны, время).
 6. **Автономия NPC** — для каждого NPC вызывается `NPCSystem.simulateNPCTurn(npcId, hoursElapsed, hourOfDay)`:

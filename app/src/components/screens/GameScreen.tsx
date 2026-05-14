@@ -1,6 +1,6 @@
 // Main Game Screen - Enhanced Edition
 
-import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
+import { useState, useEffect, useMemo, lazy, Suspense, useCallback } from 'react';
 import { 
   Map, BookOpen, User, ShoppingBag, Save, Heart, Sparkles, 
   Brain, Sword, Zap, Eye, Users, X, Settings, Clock, ScrollText, Globe2
@@ -42,6 +42,7 @@ const WorldStatusPanel = lazy(() =>
   import('@/components/game/WorldStatusPanel').then((m) => ({ default: m.WorldStatusPanel }))
 );
 import { WorldTacticalMapOverlay } from '@/components/game/WorldTacticalMapOverlay';
+import { EnemyCoalitionBar } from '@/components/game/EnemyCoalitionBar';
 import { NavigationMinimap } from '@/components/game/NavigationMinimap';
 import { NavigationCompassBar } from '@/components/game/NavigationCompassBar';
 import { loadNavigation, saveNavigation, addWorldPing } from '@/lib/navigationStorage';
@@ -131,6 +132,8 @@ export function GameScreen({
     'none' | 'inventory' | 'quests' | 'npcs' | 'shop' | 'world'
   >('none');
   const [tacticalMapOpen, setTacticalMapOpen] = useState(false);
+  const [coalitionPanelCue, setCoalitionPanelCue] = useState(0);
+  const resetCoalitionPanelCue = useCallback(() => setCoalitionPanelCue(0), []);
   const [navHud, setNavHud] = useState(() => loadNavigation());
   const [showCharacterPanel, setShowCharacterPanel] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -159,6 +162,8 @@ export function GameScreen({
     if (!player) return null;
     return getLocationStanding(player.stats.reputation, currentLocation.id);
   }, [player, currentLocation.id]);
+
+  const hasEnemyCoalitions = (player?.storyProgress.enemyCoalitions?.length ?? 0) > 0;
 
   const colorBlindCanvasFilter = useMemo(() => {
     void settingsTick;
@@ -200,6 +205,10 @@ export function GameScreen({
       window.clearInterval(tick);
     };
   }, []);
+
+  useEffect(() => {
+    if (activePanel !== 'world') setCoalitionPanelCue(0);
+  }, [activePanel]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -715,6 +724,8 @@ export function GameScreen({
                     npcs={npcs}
                     playerLocationId={currentLocation.id}
                     lang={lang}
+                    coalitionFocusTrigger={coalitionPanelCue}
+                    onCoalitionFocusConsumed={resetCoalitionPanelCue}
                   />
                 </Suspense>
               )}
@@ -722,6 +733,23 @@ export function GameScreen({
           </div>
         )}
       </main>
+
+      {hasEnemyCoalitions && (
+        <EnemyCoalitionBar
+          coalitions={player.storyProgress.enemyCoalitions ?? []}
+          npcs={npcs}
+          lang={lang}
+          onOpenWorldCoalitions={() => {
+            setCoalitionPanelCue((n) => n + 1);
+            setActivePanel('world');
+            soundManager.play('notification');
+          }}
+          onOpenTacticalMap={() => {
+            setTacticalMapOpen(true);
+            soundManager.play('mapOpen');
+          }}
+        />
+      )}
 
       {/* Quick actions bar */}
       <footer className="relative z-10 border-t border-white/[0.06] bg-gradient-to-t from-[#08090c] to-[var(--chronos-surface)]/90 backdrop-blur-xl p-2 shadow-[0_-8px_32px_-8px_rgba(0,0,0,0.35)]">
@@ -801,7 +829,9 @@ export function GameScreen({
             className={
               activePanel === 'world'
                 ? 'bg-white/[0.08] text-[var(--chronos-primary-hex)] ring-1 ring-[var(--chronos-primary-hex)]/20'
-                : 'hover:bg-white/[0.04]'
+                : hasEnemyCoalitions
+                  ? 'hover:bg-white/[0.04] ring-1 ring-rose-800/45'
+                  : 'hover:bg-white/[0.04]'
             }
             title={t('game.panel_world', lang)}
           >

@@ -19,6 +19,10 @@ type WorldStatusPanelProps = {
   npcs: NPC[];
   playerLocationId?: string;
   lang: Language;
+  /** Увеличивается при открытии панели из HUD коалиций — вкладка «Коалиции». */
+  coalitionFocusTrigger?: number;
+  /** Сбросить счётчик после переключения вкладки. */
+  onCoalitionFocusConsumed?: () => void;
 };
 
 function npcNameById(npcs: NPC[], id: string): string {
@@ -53,6 +57,8 @@ export function WorldStatusPanel({
   npcs,
   playerLocationId,
   lang,
+  coalitionFocusTrigger = 0,
+  onCoalitionFocusConsumed,
 }: WorldStatusPanelProps) {
   const STORAGE_KEY = 'chronos_world_panel';
   const rep = factionReputation ?? {};
@@ -110,6 +116,12 @@ export function WorldStatusPanel({
       /* ignore */
     }
   }, [tab, onlyHere, tag, logSeverity, logQuery]);
+
+  useEffect(() => {
+    if (!coalitionFocusTrigger) return;
+    setTab('coalitions');
+    onCoalitionFocusConsumed?.();
+  }, [coalitionFocusTrigger, onCoalitionFocusConsumed]);
 
   const availableTags = useMemo(() => collectFactionTagsFromRumors(activeRumors ?? []), [activeRumors]);
   const tagLabel = (tkey: string): string => {

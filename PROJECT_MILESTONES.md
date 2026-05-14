@@ -22,7 +22,7 @@
 - [x] Слухи, караваны, репутация фракций, панель «Мир» (базовый слой)
 - [x] Вызов **`markNpcDead`** из полноценного боя (не только сцена/нарратив)
 - [x] Worker/изоляция тяжёлого расчёта слухов при больших `hours` (без рассинхрона сохранений)
-- [ ] UI коалиций врагов, связанный с повседневным геймплеем (не только `WorldStatusPanel`)
+- [x] UI коалиций врагов, связанный с повседневным геймплеем (не только `WorldStatusPanel`)
 
 ## Phase CONTENT — локации, квесты, процедурный нарратив
 
@@ -46,6 +46,8 @@
 | Дата | Решение | Альтернатива (отклонена) |
 |------|---------|---------------------------|
 | 2026-05-14 | Слухи в worker: расширен порог `hours×count` (`RUMOR_WORKER_MIN_WORKLOAD`); ответ worker с несовпадающим `token` → `null` + sync fallback; документация `world-social-graphics.md` / ADR 0005. | Профилирование wall-time на каждом тике |
+| 2026-05-14 | HUD **EnemyCoalitionBar** над футером + открытие панели «Мир» на вкладке коалиций по счётчику `coalitionFocusTrigger`; кнопка «Мир» в футере с лёгким ring при активных коалициях. | Отдельный модальный слой только для коалиций |
+| 2026-05-10 | Lethal panel combat uses **same NPC id rules** as `defeat_enemy` (`isNpcEligibleForGeneratedDefeatObjective`) so story-critical ids never get `markNpcDead` from quick fight; non-lethal win = stats + journal only. | Separate combat kill-list |
 
 ---
 
