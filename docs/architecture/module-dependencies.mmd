@@ -1,0 +1,47 @@
+%% Логические слои Chronos (обновлять при архитектурных сдвигах).
+%% Полный граф импортов: app/docs/architecture/module-graph.json (npm run deps:export)
+
+flowchart TB
+  subgraph ui [components / screens]
+    GS[GameScreen]
+    IP[InventoryPanel]
+    WSP[WorldStatusPanel]
+  end
+
+  subgraph domain [domain pure TS]
+    IR[inventoryRules]
+    IC[inventory constants]
+    NPI[npcIndividuality]
+    GFT[gossipFactionTags]
+    FRR[factionReputationRules]
+    GWR[gossipWorkerRules]
+    IGR[inheritGrudgeRules]
+  end
+
+  subgraph types [types]
+    TG[game.ts]
+  end
+
+  subgraph engine [engine]
+    GN[gossipNetwork]
+    NS[NPCSystem]
+    UG[useGameState]
+  end
+
+  IP --> TG
+  IR --> IC
+  WSP --> TG
+  NPI --> TG
+  GFT --> TG
+  FRR --> TG
+  NS --> NPI
+  NS --> TG
+  GN --> GFT
+  GN --> NPI
+  GN --> TG
+  UG --> GN
+  UG --> NS
+  UG --> TG
+  UG --> FRR
+  UG --> GWR
+  NS --> IGR

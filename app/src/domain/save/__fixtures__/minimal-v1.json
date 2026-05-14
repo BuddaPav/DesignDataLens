@@ -1,0 +1,104 @@
+{
+  "timestamp": 1700000000000,
+  "player": {
+    "id": "fixture_player",
+    "name": "Fixture",
+    "createdAt": 1700000000000,
+    "character": {
+      "name": "Fixture",
+      "title": "The Chosen",
+      "level": 1,
+      "experience": 0,
+      "attributes": {
+        "strength": 10,
+        "intelligence": 10,
+        "charisma": 10,
+        "agility": 10,
+        "wisdom": 10,
+        "luck": 10
+      },
+      "appearance": {
+        "avatar": "/avatars/default.png",
+        "skinTone": "medium",
+        "hairStyle": "short",
+        "hairColor": "brown",
+        "eyeColor": "blue",
+        "outfit": "traveler",
+        "accessories": []
+      },
+      "origin": "unknown",
+      "backstory": "",
+      "worldEra": "medieval",
+      "personality": {
+        "brave": 50,
+        "cunning": 50,
+        "kind": 50,
+        "ruthless": 50,
+        "honorable": 50,
+        "mysterious": 50
+      }
+    },
+    "stats": {
+      "health": 100,
+      "maxHealth": 100,
+      "mana": 50,
+      "maxMana": 50,
+      "stamina": 100,
+      "maxStamina": 100,
+      "reputation": { "__type": "Map", "entries": [] },
+      "achievements": [],
+      "battlesWon": 0,
+      "battlesLost": 0,
+      "enemiesDefeated": 0
+    },
+    "inventory": {
+      "gold": 100,
+      "items": [],
+      "maxSlots": 20
+    },
+    "storyProgress": {
+      "currentChapter": 1,
+      "currentScene": "intro",
+      "mainQuest": null,
+      "activeQuests": [],
+      "completedQuests": [],
+      "worldState": {
+        "time": { "year": 1247, "month": 3, "day": 15, "hour": 8, "minute": 0 },
+        "weather": "clear",
+        "globalEvents": [],
+        "factionPowers": { "__type": "Map", "entries": [] }
+      },
+      "discoveredLocations": ["starting_village"],
+      "metNPCs": [],
+      "unlockedLore": [],
+      "worldEventLog": [],
+      "worldPosition": { "tileX": 500000, "tileY": 500000 },
+      "enemyCoalitions": [],
+      "activeRumors": [],
+      "factionReputation": {
+        "guild_merchants": 0,
+        "church_order": 0,
+        "thieves_guild": 0,
+        "academy": 0
+      },
+      "tradeCaravans": []
+    },
+    "choices": [],
+    "archetype": "storyteller",
+    "preferredTone": "mysterious",
+    "emotionalHistory": [],
+    "lastSession": 1700000000000,
+    "totalPlayTime": 0,
+    "sessionCount": 1
+  },
+  "currentLocation": "starting_village",
+  "memorySystem": {
+    "choices": [],
+    "emotions": [],
+    "flags": {}
+  },
+  "npcData": {
+    "npcs": [],
+    "relationships": []
+  }
+}

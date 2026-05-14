@@ -1,0 +1,4 @@
+Kenney Game Icons — CC0 (public domain)
+Source: https://kenney.nl/assets/game-icons
+Raster mirror used for CI: https://github.com/nicodinh/kenney-icon-font (develop/pngs/32x32)
+You may use these graphics in personal and commercial projects; credit is appreciated but not required.

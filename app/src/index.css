@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Art Bible (Kimi) — HEX как reference, HSL для shadcn */
+    --chronos-bg: #0b0c10;
+    --chronos-surface: #1f2833;
+    --chronos-surface-elevated: #2c303a;
+    --chronos-primary-hex: #66fcf1;
+    --chronos-secondary-hex: #45a29e;
+    --chronos-accent-hex: #c5c6c7;
+    --chronos-danger: #ff6b6b;
+    --chronos-success: #4caf50;
+    --chronos-warning: #ff9800;
+    --chronos-text: #e0e0e0;
+    --chronos-text-secondary: #9ca3af;
+    --chronos-text-disabled: #6b7280;
+    --chronos-border: #374151;
+    --era-glow: rgba(102, 252, 241, 0.07);
+
+    --background: 220 19% 5%;
+    --foreground: 0 0% 88%;
+    --card: 215 24% 16%;
+    --card-foreground: 0 0% 88%;
+    --popover: 215 24% 16%;
+    --popover-foreground: 0 0% 88%;
+    --primary: 174 95% 69%;
+    --primary-foreground: 220 19% 5%;
+    --secondary: 174 40% 45%;
+    --secondary-foreground: 220 19% 5%;
+    --muted: 215 18% 22%;
+    --muted-foreground: 218 11% 65%;
+    --accent: 220 3% 77%;
+    --accent-foreground: 220 19% 5%;
+    --destructive: 0 100% 71%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 217 19% 27%;
+    --input: 217 19% 27%;
+    --ring: 174 95% 69%;
+    --radius: 0.5rem;
+    --sidebar-background: 215 24% 12%;
+    --sidebar-foreground: 0 0% 88%;
+    --sidebar-primary: 174 95% 69%;
+    --sidebar-primary-foreground: 220 19% 5%;
+    --sidebar-accent: 215 18% 22%;
+    --sidebar-accent-foreground: 0 0% 88%;
+    --sidebar-border: 217 19% 27%;
+    --sidebar-ring: 174 95% 69%;
+  }
+
+  /* Эпохи: префиксы ep1/ep2/ep3 — акценты UI поверх базы */
+  html[data-era='medieval'] {
+    --era-accent: #b87333;
+    --era-glow: rgba(184, 115, 51, 0.2);
+  }
+  html[data-era='modern'] {
+    --era-accent: #00d2ff;
+    --era-glow: rgba(0, 210, 255, 0.15);
+  }
+  html[data-era='future'] {
+    --era-accent: #bd00ff;
+    --era-glow: rgba(189, 0, 255, 0.18);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply text-foreground antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+    text-rendering: optimizeLegibility;
+    background-color: hsl(var(--background));
+    background-image:
+      radial-gradient(ellipse 130% 90% at 50% -35%, rgba(102, 252, 241, 0.09), transparent 52%),
+      radial-gradient(ellipse 70% 55% at 100% 20%, var(--era-glow, rgba(102, 252, 241, 0.06)), transparent 50%),
+      radial-gradient(ellipse 55% 45% at 0% 85%, rgba(139, 92, 246, 0.07), transparent 48%);
+    background-attachment: fixed;
+  }
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: 'Exo 2', 'Inter', sans-serif;
+  }
+
+  .chronos-panel {
+    border-radius: 1rem;
+    border: 1px solid color-mix(in srgb, var(--chronos-border) 85%, transparent);
+    background: linear-gradient(
+      165deg,
+      color-mix(in srgb, var(--chronos-surface) 88%, transparent) 0%,
+      color-mix(in srgb, #0f1419 92%, transparent) 100%
+    );
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow:
+      0 1px 0 color-mix(in srgb, var(--chronos-primary-hex) 12%, transparent) inset,
+      0 28px 56px -18px rgba(0, 0, 0, 0.55);
+  }
+
+  html[data-era='future'] body::after {
+    content: '';
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    opacity: 0.04;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(102, 252, 241, 0.12) 2px,
+      rgba(102, 252, 241, 0.12) 3px
+    );
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "chronos-assets-v1",
+  "description": "Структура ассетов по спецификации Kimi / Art Bible. Положите файлы в подпапки — игра подхватит atlas_world при совпадении имён кадров.",
+  "tileArtSizePx": 32,
+  "atlas": {
+    "world": {
+      "image": "atlas/atlas_world_v01.png",
+      "json": "atlas/atlas_world_v01.json"
+    },
+    "npc": {
+      "image": "atlas/atlas_npc_v01.png",
+      "json": "atlas/atlas_npc_v01.json"
+    },
+    "ui": {
+      "image": "atlas/atlas_ui_v01.png",
+      "json": "atlas/atlas_ui_v01.json"
+    }
+  },
+  "expectedFramesExamples": [
+    "biome_plains_var01",
+    "biome_forest_var03",
+    "edge_mask_n",
+    "overlay_water_wave_01"
+  ],
+  "eras": {
+    "medieval": { "prefix": "ep1_", "notes": "медь, пергамент, тёплые охры" },
+    "modern": { "prefix": "ep2_", "notes": "стекло, сталь, неон" },
+    "future": { "prefix": "ep3_", "notes": "голографический циан, scanline CSS на html[data-era=future]" }
+  }
+}

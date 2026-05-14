@@ -1,0 +1,1 @@
+Deprecated: flat OceanSurface (single planeGeometry + meshPhysicalMaterial) replaced by rendering/WaterSurface.tsx (subdivided plane, vertex waves, shore foam, Fresnel-style fake env).

@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    <meta name="theme-color" content="#0B0C10" />
+    <meta name="color-scheme" content="dark" />
+    
+    <!--
+      Полноценный клиент (Electron / локальная сборка). Цель — не публичная SEO-страница в поиске.
+      При случайном веб-хостинге: noindex; OG/Twitter убраны как маркетинг для соцсетей и индекса.
+    -->
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <title>Chronos: AI Chronicles</title>
+    <meta name="description" content="Клиент игры Chronos: AI Chronicles — локальное сохранение, офлайн-игра." />
+
+    <!-- PWA / установка из браузера — опционально; основной канал — десктоп .exe -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Chronos AI" />
+    <meta name="application-name" content="Chronos: AI Chronicles" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="./icons/icon-72x72.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="./icons/icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-192x192.png" />
+    <link rel="mask-icon" href="./icons/icon-192x192.png" color="#8b5cf6" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="./manifest.json" />
+    
+    <!-- Шрифты Inter / Exo 2 — локально через @fontsource в main.tsx (офлайн-first) -->
+    
+    <!-- Splash Screen for iOS -->
+    <link rel="apple-touch-startup-image" href="./icons/icon-512x512.png" />
+    
+    <!-- Performance Hints -->
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-TileColor" content="#0f172a" />
+    <meta name="msapplication-config" content="none" />
+    
+    <!-- Content Security Policy -->
+    <!-- WebLLM (@mlc-ai/web-llm) подключается из Vite-бандла (import). Внешний esm.run не нужен и дублирует веса. -->
+    <!-- worker-src blob: — воркеры WASM/WebGPU у MLC; connect-src https: — загрузка весов -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https: blob: data:; manifest-src 'self';" />
+    
+    <style>
+      /* Critical CSS for fast first paint */
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background: #0B0C10;
+        color: #E0E0E0;
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overscroll-behavior: none;
+      }
+      
+      #root {
+        width: 100%;
+        height: 100%;
+      }
+      
+      /* Loading spinner */
+      .initial-loader {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #0B0C10;
+        z-index: 9999;
+      }
+      
+      .initial-loader__spinner {
+        width: 48px;
+        height: 48px;
+        border: 3px solid rgba(102, 252, 241, 0.25);
+        border-top-color: #66FCF1;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      
+      /* Reduced motion support */
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Initial loader -->
+    <div id="initial-loader" class="initial-loader">
+      <div class="initial-loader__spinner"></div>
+    </div>
+    
+    <div id="root"></div>
+
+    <!-- При открытии index.html двойным щелчком с диска (file://) ES-модули не работают — показываем подсказку вместо чёрного экрана. -->
+    <script>
+      (function () {
+        if (location.protocol !== 'file:') return;
+        var loader = document.getElementById('initial-loader');
+        if (loader) loader.remove();
+        var banner = document.createElement('div');
+        banner.setAttribute(
+          'style',
+          'position:fixed;inset:0;z-index:2147483647;background:#0B0C10;color:#e2e8f0;padding:28px;font-family:system-ui,sans-serif;font-size:15px;line-height:1.55;overflow:auto;box-sizing:border-box'
+        );
+        banner.innerHTML =
+          '<div style="max-width:520px;margin:40px auto">' +
+          '<h1 style="margin:0 0 12px;font-size:1.35rem;color:#66fcf1">Chronos — запуск из папки не поддерживается</h1>' +
+          '<p>Браузер открыл игру как файл с диска (<code>file://</code>). Так модуль приложения не загружается — из‑за этого чёрный экран.</p>' +
+          '<p><strong>Сделайте так:</strong> в терминале перейдите в папку <code>app</code> и выполните:</p>' +
+          '<pre style="background:#111827;padding:14px;border-radius:10px;overflow:auto;font-size:13px">cd app\nnpm install\nnpm run dev</pre>' +
+          '<p>Откройте в браузере адрес Vite (обычно <code>http://localhost:5173</code>).</p>' +
+          '<p>После <code>npm run build</code> можно: <code>npm run preview</code> и открыть указанный localhost.</p>' +
+          '</div>';
+        document.body.appendChild(banner);
+      })();
+    </script>
+    
+    <script type="module" src="/src/main.tsx"></script>
+    
+    <script>
+      // Hide initial loader when app is ready
+      window.addEventListener('load', () => {
+        const loader = document.getElementById('initial-loader');
+        if (loader) {
+          loader.style.opacity = '0';
+          loader.style.transition = 'opacity 0.3s ease';
+          setTimeout(() => loader.remove(), 300);
+        }
+      });
+      
+      // Handle offline/online events
+      window.addEventListener('online', () => {
+        document.body.classList.remove('offline');
+      });
+      
+      window.addEventListener('offline', () => {
+        document.body.classList.add('offline');
+      });
+    </script>
+  </body>
+</html>

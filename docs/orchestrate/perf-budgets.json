@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Ориентиры производительности Chronos (ручная / будущая CI-проверка). Единицы условные.",
+  "bundle": {
+    "mainChunkWarnKb": 600,
+    "worldViewportChunkWarnKb": 1300,
+    "notes": "См. предупреждения Vite при npm run build."
+  },
+  "runtime": {
+    "targetFpsGameplay": 45,
+    "maxDprDesktop": 1.5,
+    "notes": "dpr и постобработка задаются в коде 3D-слоя."
+  },
+  "graphics": {
+    "threeCanvasFrameskipWhenOccluded": true,
+    "electronMinimizeIpc": "chronos-occlusion",
+    "notes": "R3F Canvas frameloop paused при visibility:hidden или IPC minimize (hook useChronosPowerSavePaused)."
+  },
+  "memory": {
+    "warnWasmHeapMb": 512,
+    "notes": "WebLLM при активации."
+  }
+}

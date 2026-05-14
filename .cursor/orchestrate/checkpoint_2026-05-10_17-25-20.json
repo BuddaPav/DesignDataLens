@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-05-10T14:25:20.000Z",
+  "module": "world-status-panel-v2",
+  "summary": {
+    "done": [
+      "Added collectFactionTagsFromRumors + tests",
+      "WorldStatusPanel: tag chips (from active rumors), persistent tab/filter in localStorage key chronos_world_panel",
+      "Added i18n key game.world_filter_tag_pick"
+    ],
+    "quality": {
+      "gate": "npm run orchestrate:gate PASS",
+      "tests": "42 passed"
+    },
+    "next": [
+      "Add 'Clear' button for tag filter and only-here filter",
+      "Improve chip labels to use faction display names (t(game.faction.*)) instead of raw tag keys",
+      "Optional: show counts per tag and per location"
+    ]
+  }
+}
+

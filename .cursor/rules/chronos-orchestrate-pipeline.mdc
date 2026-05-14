@@ -1,0 +1,36 @@
+---
+description: Orchestrate — единый pipeline задач Chronos (memory → rules → test → code → review → perf → git → docs).
+alwaysApply: true
+---
+
+# Chronos Orchestrate (единый pipeline)
+
+Перед генерацией или крупным рефакторингом **прочитай** `docs/orchestrate/README.md`, **`docs/orchestrate/PRINCIPLES.md`**, правило **`chronos-orchestrate-must-have.mdc`** и при затронутой подсистеме — соответствующий ADR в `docs/adr/` и глоссарий `docs/glossary.md`.
+
+Дополнительные логические плагины: **scaffold**, **prototype**, **telemetry**, **asset-pipeline**, **narrative**, **archaeology** — см. `docs/orchestrate/plugins/`. Шаблоны кода: `app/src/scaffolds/`.
+
+## Порядок работы (целевой)
+
+1. **memory** — проверить ADR и паттерны; при новом архитектурном решении предложить запись в `docs/adr/`.
+2. **rules** — соблюдать `chronos-code-conventions.mdc`, README «Контекст для ИИ», без магических чисел в `domain/**`.
+3. **test** — для доменной логики сначала контракт и тесты (`*.test.ts`), затем интеграция в UI/хуки.
+4. **Реализация** — минимальный дифф, типы из `@/types/game` и доменные модули в `@/domain/**`.
+5. **review** — прогон `npm run lint`, самопроверка гонок и утечек в эффектах Three/React.
+6. **perf** — не раздувать бандл без нужды; тяжёлый 3D — профилировать; см. `docs/orchestrate/perf-budgets.json`.
+7. **git** — conventional commits (`feat:`, `fix:`, `docs:`); ветка `feat/orchestrate-<кратко>` при большой задаче.
+8. **docs** — обновить ADR/глоссарий/README при смене контракта.
+9. **deps** — после изменения импортов: `npm run deps:circular`; при необходимости `npm run deps:export`.
+
+## Ворота качества (локально / CI)
+
+Из каталога `app/`:
+
+```bash
+npm run orchestrate:gate
+```
+
+(линт + unit-тесты + проверка циклов). Задачу по Orchestrate **не считать завершённой**, если gate красный — кроме явно помеченного исключения в ADR.
+
+## Демонстрация пайплайна
+
+См. `docs/orchestrate/demo-inventory-system.md` (домен инвентаря + тесты).

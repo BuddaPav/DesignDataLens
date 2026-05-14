@@ -1,0 +1,35 @@
+{
+  "frames": {
+    "atlas_npc_v01_stub.png": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    }
+  },
+  "meta": {
+    "app": "Chronos",
+    "image": "atlas_npc_v01.png",
+    "size": {
+      "w": 32,
+      "h": 32
+    },
+    "scale": 1,
+    "generated": "2026-05-10T21:13:36.279Z",
+    "note": "stub single-tile atlas — replace with TexturePacker export"
+  }
+}

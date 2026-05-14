@@ -1,0 +1,3 @@
+@echo off
+call "%~dp0START_GAME.bat" %*
+exit /b %ERRORLEVEL%

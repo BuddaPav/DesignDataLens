@@ -1,0 +1,37 @@
+# MVP 076: smoke через Playwright — не блокирует PR, пока сценарий нестабилен.
+name: Playwright smoke
+
+on:
+  pull_request:
+    branches: [main, master, develop]
+  push:
+    branches: [main, master, develop]
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20, 22]
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium
+      - name: Build
+        run: npm run build
+      - name: Preview and smoke story
+        continue-on-error: true
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 5174 &
+          npx wait-on http://127.0.0.1:5174
+          BASE_URL=http://127.0.0.1:5174/ node scripts/smoke-story.mjs

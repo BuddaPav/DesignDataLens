@@ -1,0 +1,23 @@
+# Dependencies
+app/node_modules/
+
+# Build / pack output (regenerate: npm run build, npm run desktop:pack)
+app/dist/
+app/coverage/
+desktop-dist/
+desktop-installer/
+
+# Secrets / local env
+.env
+.env.*
+!.env.example
+
+# Playwright / test artifacts
+playwright-report/
+test-results/
+
+# OS / editor
+Thumbs.db
+desktop.ini
+.DS_Store
+*.log

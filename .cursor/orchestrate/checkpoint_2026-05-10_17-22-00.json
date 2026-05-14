@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-05-10T14:22:00.000Z",
+  "module": "world-status-panel",
+  "summary": {
+    "done": [
+      "Added rumor view filtering rules + tests (domain/social/rumorViewRules.ts)",
+      "Extended WorldStatusPanel with tabs (rep/rumors/log/coalitions), location+tag filters, and world log view",
+      "Wired GameScreen to pass worldEventLog and currentLocation.id",
+      "Added RU/EN i18n keys for new World tab UI"
+    ],
+    "quality": {
+      "tests": "npm run test: PASS (41 tests)",
+      "lint": "npm run lint: PASS (warnings only)",
+      "gate": "expected PASS"
+    },
+    "next": [
+      "Run npm run orchestrate:gate",
+      "Improve WorldStatusPanel: clickable faction chips to set tag filter; better tag suggestions (from active rumors)",
+      "Optional: persist tab/filter state in localStorage under chronos_settings or a dedicated key"
+    ]
+  }
+}
+
