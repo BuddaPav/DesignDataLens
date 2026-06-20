@@ -540,3 +540,31 @@ src/components/game/OnboardingHint.tsx: // OnboardingHint — Contextual hints f
 [2026-06-20T22:58:28.893Z] [build] Build had issues but dist exists - using it
 [2026-06-20T22:58:28.894Z] [orchestrator] Build: PASS (9337ms)
 [2026-06-20T22:58:28.894Z] [orchestrator] Health: OK
+[2026-06-20T22:58:39.325Z] Build skipped (debug mode)
+[2026-06-20T22:58:44.202Z] Build skipped (debug mode)
+[2026-06-20T22:59:09.343Z] Build skipped (debug mode)
+[2026-06-20T22:59:14.228Z] Build skipped (debug mode)
+[2026-06-20T22:59:16.805Z] [git] Committed: Orchestrator cycle 1: 1 tasks
+[2026-06-20T22:59:16.806Z] [orchestrator] Cycle complete
+[2026-06-20T22:59:39.360Z] Build skipped (debug mode)
+[2026-06-20T22:59:44.248Z] Build skipped (debug mode)
+[2026-06-20T23:00:09.376Z] Build skipped (debug mode)
+[2026-06-20T23:00:14.269Z] Build skipped (debug mode)
+[2026-06-20T23:00:39.390Z] Build skipped (debug mode)
+[2026-06-20T23:00:44.296Z] Build skipped (debug mode)
+[2026-06-20T23:00:52.624Z] [orchestrator] Starting full autonomous orchestrator...
+[2026-06-20T23:00:52.624Z] [orchestrator] Cycle 1 started
+[2026-06-20T23:00:52.626Z] [orchestrator] Loaded 98 tasks
+[2026-06-20T23:00:52.627Z] [orchestrator] Agents: codeBuilder, npcArchitect, worldBuilder, economyDesigner, uiCraftsman, documentationGenerator, securityAuditor
+[2026-06-20T23:00:52.627Z] [orchestrator] LLM providers: hf, openai, anthropic
+[2026-06-20T23:00:52.627Z] [orchestrator] Processing: Сохранение и загрузка: отображение слота, времени, региона, метки «в бою / в безопасной зоне». (codeBuilder)
+[2026-06-20T23:00:52.628Z] [codeBuilder] Analyzing: Сохранение и загрузка: отображение слота, времени, региона, метки «в бою / в безопасной зоне».
+[2026-06-20T23:00:52.628Z] [codeBuilder] Found 0 relevant files
+[2026-06-20T23:00:52.755Z] [LLM] All providers failed, using local analysis
+[2026-06-20T23:00:52.755Z] [codeBuilder] Analysis: Local analysis fallback - no LLM available
+[2026-06-20T23:00:52.758Z] [orchestrator] Marked done: Сохранение и загрузка: отображение слота, времени, региона, метки «в бою / в безопасной зоне».
+[2026-06-20T23:00:52.759Z] [orchestrator] codeBuilder completed
+[2026-06-20T23:00:52.759Z] [build] Starting npm run build...
+[2026-06-20T23:00:52.760Z] [build] Using existing dist (age: 117s)
+[2026-06-20T23:00:52.761Z] [orchestrator] Build: PASS (2ms)
+[2026-06-20T23:00:52.762Z] [orchestrator] Health: OK
