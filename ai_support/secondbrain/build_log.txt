@@ -568,3 +568,37 @@ src/components/game/OnboardingHint.tsx: // OnboardingHint — Contextual hints f
 [2026-06-20T23:00:52.760Z] [build] Using existing dist (age: 117s)
 [2026-06-20T23:00:52.761Z] [orchestrator] Build: PASS (2ms)
 [2026-06-20T23:00:52.762Z] [orchestrator] Health: OK
+[2026-06-20T23:01:09.414Z] Build skipped (debug mode)
+[2026-06-20T23:01:10.656Z] [git] Committed: Orchestrator cycle 1: 1 tasks
+[2026-06-20T23:01:10.657Z] [orchestrator] Cycle complete
+[2026-06-20T23:01:14.320Z] Build skipped (debug mode)
+[2026-06-20T23:01:39.442Z] Build skipped (debug mode)
+[2026-06-20T23:01:44.346Z] Build skipped (debug mode)
+[2026-06-20T23:02:09.468Z] Build skipped (debug mode)
+[2026-06-20T23:02:14.367Z] Build skipped (debug mode)
+[2026-06-20T23:02:24.082Z] [orchestrator] Starting full autonomous orchestrator...
+[2026-06-20T23:02:24.082Z] [orchestrator] Cycle 1 started
+[2026-06-20T23:02:24.084Z] [orchestrator] Loaded 97 tasks
+[2026-06-20T23:02:24.085Z] [orchestrator] Agents: codeBuilder, npcArchitect, worldBuilder, economyDesigner, uiCraftsman, documentationGenerator, securityAuditor
+[2026-06-20T23:02:24.085Z] [orchestrator] LLM providers: hf, openai, anthropic
+[2026-06-20T23:02:24.086Z] [orchestrator] Processing: «Мягкие» дед-энды в сюжете: детектор + выход без перезапуска мира. (codeBuilder)
+[2026-06-20T23:02:24.086Z] [codeBuilder] Analyzing: «Мягкие» дед-энды в сюжете: детектор + выход без перезапуска мира.
+[2026-06-20T23:02:24.087Z] [codeBuilder] Found 0 relevant files
+[2026-06-20T23:02:24.143Z] [build] Starting npm run build...
+[2026-06-20T23:02:24.144Z] [build] Using existing dist (age: 74s)
+[2026-06-20T23:02:24.144Z] Build: pass
+
+[2026-06-20T23:02:24.145Z] [orchestrator] Cycle 2 started
+[2026-06-20T23:02:24.146Z] [orchestrator] Agents: codeBuilder, npcArchitect, worldBuilder, economyDesigner, uiCraftsman, documentationGenerator, securityAuditor
+[2026-06-20T23:02:24.146Z] [orchestrator] LLM providers: hf, openai, anthropic
+[2026-06-20T23:02:24.146Z] [orchestrator] Processing: «Мягкие» дед-энды в сюжете: детектор + выход без перезапуска мира. (codeBuilder)
+[2026-06-20T23:02:24.147Z] [codeBuilder] Analyzing: «Мягкие» дед-энды в сюжете: детектор + выход без перезапуска мира.
+[2026-06-20T23:02:24.147Z] [codeBuilder] Found 0 relevant files
+[2026-06-20T23:02:24.216Z] [LLM] All providers failed, using local analysis
+[2026-06-20T23:02:24.217Z] [codeBuilder] Analysis: Local analysis fallback - no LLM available
+[2026-06-20T23:02:24.220Z] [orchestrator] Marked done: «Мягкие» дед-энды в сюжете: детектор + выход без перезапуска мира.
+[2026-06-20T23:02:24.220Z] [orchestrator] codeBuilder completed
+[2026-06-20T23:02:24.221Z] [build] Starting npm run build...
+[2026-06-20T23:02:24.221Z] [build] Using existing dist (age: 74s)
+[2026-06-20T23:02:24.221Z] [orchestrator] Build: PASS (0ms)
+[2026-06-20T23:02:24.222Z] [orchestrator] Health: OK
