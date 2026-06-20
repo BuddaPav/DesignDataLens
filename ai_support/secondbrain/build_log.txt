@@ -724,3 +724,69 @@ src/components/game/OnboardingHint.tsx: // OnboardingHint — Contextual hints f
 [2026-06-20T23:24:33.569Z] [build] Build had issues but dist exists - using it
 [2026-06-20T23:24:33.570Z] [orchestrator] Build: PASS (79714ms)
 [2026-06-20T23:24:33.571Z] [orchestrator] Health: OK
+[2026-06-20T23:24:40.592Z] Build skipped (debug mode)
+[2026-06-20T23:24:45.733Z] Build skipped (debug mode)
+[2026-06-20T23:25:07.988Z] [git] Committed: Orchestrator cycle 1: 1 tasks
+[2026-06-20T23:25:07.988Z] [orchestrator] Cycle complete
+[2026-06-20T23:25:10.619Z] Build skipped (debug mode)
+[2026-06-20T23:25:15.762Z] Build skipped (debug mode)
+[2026-06-20T23:25:40.651Z] Build skipped (debug mode)
+[2026-06-20T23:25:45.789Z] Build skipped (debug mode)
+[2026-06-20T23:26:10.683Z] Build skipped (debug mode)
+[2026-06-20T23:26:15.810Z] Build skipped (debug mode)
+[2026-06-20T23:26:40.712Z] Build skipped (debug mode)
+[2026-06-20T23:26:45.830Z] Build skipped (debug mode)
+[2026-06-20T23:27:10.742Z] Build skipped (debug mode)
+[2026-06-20T23:27:15.865Z] Build skipped (debug mode)
+[2026-06-20T23:27:40.771Z] Build skipped (debug mode)
+[2026-06-20T23:27:45.889Z] Build skipped (debug mode)
+[2026-06-20T23:28:10.789Z] Build skipped (debug mode)
+[2026-06-20T23:28:15.906Z] Build skipped (debug mode)
+[2026-06-20T23:28:40.806Z] Build skipped (debug mode)
+[2026-06-20T23:28:45.995Z] Build skipped (debug mode)
+[2026-06-20T23:29:10.827Z] Build skipped (debug mode)
+[2026-06-20T23:29:16.025Z] Build skipped (debug mode)
+[2026-06-20T23:29:40.845Z] Build skipped (debug mode)
+[2026-06-20T23:29:46.053Z] Build skipped (debug mode)
+[2026-06-20T23:30:10.874Z] Build skipped (debug mode)
+[2026-06-20T23:30:16.078Z] Build skipped (debug mode)
+[2026-06-20T23:30:40.899Z] Build skipped (debug mode)
+[2026-06-20T23:30:46.102Z] Build skipped (debug mode)
+[2026-06-20T23:31:10.932Z] Build skipped (debug mode)
+[2026-06-20T23:31:16.123Z] Build skipped (debug mode)
+[2026-06-20T23:31:40.954Z] Build skipped (debug mode)
+[2026-06-20T23:31:46.155Z] Build skipped (debug mode)
+[2026-06-20T23:32:10.992Z] Build skipped (debug mode)
+[2026-06-20T23:32:16.177Z] Build skipped (debug mode)
+[2026-06-20T23:32:41.026Z] Build skipped (debug mode)
+[2026-06-20T23:32:46.448Z] Build skipped (debug mode)
+[2026-06-20T23:33:11.053Z] Build skipped (debug mode)
+[2026-06-20T23:33:16.469Z] Build skipped (debug mode)
+[2026-06-20T23:33:41.076Z] Build skipped (debug mode)
+[2026-06-20T23:33:46.492Z] Build skipped (debug mode)
+[2026-06-20T23:34:11.105Z] Build skipped (debug mode)
+[2026-06-20T23:34:16.518Z] Build skipped (debug mode)
+[2026-06-20T23:34:41.124Z] Build skipped (debug mode)
+[2026-06-20T23:34:46.539Z] Build skipped (debug mode)
+[2026-06-20T23:35:11.149Z] Build skipped (debug mode)
+[2026-06-20T23:35:16.568Z] Build skipped (debug mode)
+[2026-06-20T23:35:41.167Z] Build skipped (debug mode)
+[2026-06-20T23:35:46.588Z] Build skipped (debug mode)
+[2026-06-20T23:35:52.932Z] [orchestrator] Starting full autonomous orchestrator...
+[2026-06-20T23:35:52.932Z] [orchestrator] Cycle 1 started
+[2026-06-20T23:35:52.935Z] [orchestrator] Loaded 94 tasks
+[2026-06-20T23:35:52.936Z] [orchestrator] Agents: codeBuilder, npcArchitect, worldBuilder, economyDesigner, uiCraftsman, documentationGenerator, securityAuditor
+[2026-06-20T23:35:52.936Z] [orchestrator] LLM providers: nvidia, hf, openai, anthropic, ollama, lmstudio
+[2026-06-20T23:35:52.936Z] [orchestrator] Processing: Процедурные случайные события в дороге с редкостью по биому. (codeBuilder)
+[2026-06-20T23:35:52.937Z] [codeBuilder] Analyzing: Процедурные случайные события в дороге с редкостью по биому.
+[2026-06-20T23:35:52.937Z] [codeBuilder] Found 0 relevant files
+[2026-06-20T23:36:11.204Z] Build skipped (debug mode)
+[2026-06-20T23:36:16.614Z] Build skipped (debug mode)
+[2026-06-20T23:36:22.379Z] [LLM] Ollama succeeded
+[2026-06-20T23:36:22.380Z] [codeBuilder] Analysis: Для реализации процедурных случайных событий в дороге с учетом биома, можно использовать следующий п
+[2026-06-20T23:36:22.384Z] [orchestrator] Marked done: Процедурные случайные события в дороге с редкостью по биому.
+[2026-06-20T23:36:22.385Z] [orchestrator] codeBuilder completed
+[2026-06-20T23:36:22.385Z] [build] Starting npm run build...
+[2026-06-20T23:36:34.439Z] [build] Build had issues but dist exists - using it
+[2026-06-20T23:36:34.439Z] [orchestrator] Build: PASS (12054ms)
+[2026-06-20T23:36:34.440Z] [orchestrator] Health: OK

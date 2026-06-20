@@ -25,7 +25,7 @@ const config: OrchestratorConfig = {
   maxRetries: 3,
   intervalMs: 30000,
   agents: ['codeBuilder', 'npcArchitect', 'worldBuilder', 'economyDesigner', 'uiCraftsman', 'documentationGenerator', 'securityAuditor'],
-  providers: ['hf', 'openai', 'anthropic', 'ollama', 'lmstudio'],
+  providers: ['nvidia', 'hf', 'openai', 'anthropic', 'ollama', 'lmstudio'],
   notifyOnComplete: true,
 };
 
@@ -214,9 +214,87 @@ async function chatLmStudio(messages: LLMMessage[]): Promise<string | null> {
   }
 }
 
-// Chain with fallback (provider priority - LOCAL FIRST since Ollama has hermes-model + afk-agent)
+// NVIDIA NIM Provider (Nemotron 3)
+// NVIDIA NIM Provider - Nemotron 3 (reasoning)
+async function chatNvidia(messages: LLMMessage[]): Promise<string | null> {
+  const apiKey = process.env.NVIDIA_API_KEY;
+  if (!apiKey) return null;
+
+  const systemMsg = messages.find(m => m.role === 'system');
+  const otherMsgs = messages.filter(m => m.role !== 'system');
+
+  try {
+    const response = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning',
+        messages: [
+          ...(systemMsg ? [{ role: 'system', content: systemMsg.content }] : []),
+          ...otherMsgs.map(m => ({ role: m.role, content: m.content }))
+        ],
+        temperature: 0.6,
+        top_p: 0.95,
+        max_tokens: 4096,
+        extra_body: {
+          chat_template_kwargs: { enable_thinking: true },
+          reasoning_budget: 8192
+        }
+      }),
+    });
+
+    if (!response.ok) return null;
+    const data = await response.json() as any;
+    return data.choices?.[0]?.message?.content || null;
+  } catch {
+    return null;
+  }
+}
+
+// NVIDIA NIM Provider - DeepSeek V4 Pro
+async function chatNvidiaDeepseek(messages: LLMMessage[]): Promise<string | null> {
+  const apiKey = process.env.NVIDIA_API_KEY;
+  if (!apiKey) return null;
+
+  const systemMsg = messages.find(m => m.role === 'system');
+  const otherMsgs = messages.filter(m => m.role !== 'system');
+
+  try {
+    const response = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'deepseek-ai/deepseek-v4-pro',
+        messages: [
+          ...(systemMsg ? [{ role: 'system', content: systemMsg.content }] : []),
+          ...otherMsgs.map(m => ({ role: m.role, content: m.content }))
+        ],
+        temperature: 1,
+        top_p: 0.95,
+        max_tokens: 4096,
+        extra_body: { chat_template_kwargs: { thinking: false } }
+      }),
+    });
+
+    if (!response.ok) return null;
+    const data = await response.json() as any;
+    return data.choices?.[0]?.message?.content || null;
+  } catch {
+    return null;
+  }
+}
+
+// Chain with fallback (NVIDIA NIM first, then local Ollama)
 async function chatWithFallback(messages: LLMMessage[]): Promise<string> {
   const providers = [
+    { name: 'NvidiaNemotron', fn: chatNvidia },
+    { name: 'NvidiaDeepseek', fn: chatNvidiaDeepseek },
     { name: 'Ollama', fn: chatOllama },
     { name: 'LMStudio', fn: chatLmStudio },
     { name: 'HF', fn: chatHF },
