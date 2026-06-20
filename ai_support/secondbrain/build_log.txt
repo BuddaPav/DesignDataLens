@@ -1,0 +1,542 @@
+[2026-06-20T21:39:32.591Z] Build failed: Exit code 1: 
+[2026-06-20T21:39:41.796Z] Build failed: Exit code 1: no output
+[2026-06-20T21:40:38.211Z] Build failed: Exit code 1: no output
+[2026-06-20T21:40:46.371Z] Build failed: Exit code 1: no output
+[2026-06-20T21:40:56.427Z] Build failed: Exit code 1: require is not defined
+[2026-06-20T21:41:06.793Z] Build failed: require is not defined
+[2026-06-20T21:41:33.138Z] Build failed: require is not defined
+[2026-06-20T21:41:45.068Z] Build failed: require is not defined
+[2026-06-20T21:41:54.853Z] Build skipped (debug mode)
+[2026-06-20T21:42:24.870Z] Build skipped (debug mode)
+[2026-06-20T21:42:54.897Z] Build skipped (debug mode)
+[2026-06-20T21:43:24.925Z] Build skipped (debug mode)
+[2026-06-20T21:43:39.936Z] Build skipped (debug mode)
+[2026-06-20T21:44:09.961Z] Build skipped (debug mode)
+[2026-06-20T21:44:39.990Z] Build skipped (debug mode)
+[2026-06-20T21:45:54.795Z] Build skipped (debug mode)
+[2026-06-20T21:46:24.824Z] Build skipped (debug mode)
+[2026-06-20T21:46:46.778Z] Build skipped (debug mode)
+[2026-06-20T21:47:16.807Z] Build skipped (debug mode)
+[2026-06-20T21:47:29.269Z] Build skipped (debug mode)
+[2026-06-20T21:47:59.294Z] Build skipped (debug mode)
+[2026-06-20T21:48:10.288Z] Build skipped (debug mode)
+[2026-06-20T21:48:40.307Z] Build skipped (debug mode)
+[2026-06-20T21:49:02.260Z] Build skipped (debug mode)
+[2026-06-20T21:49:13.078Z] Build skipped (debug mode)
+[2026-06-20T21:49:43.105Z] Build skipped (debug mode)
+[2026-06-20T21:50:14.331Z] Build skipped (debug mode)
+[2026-06-20T21:50:44.351Z] Build skipped (debug mode)
+[2026-06-20T22:04:11.976Z] Build skipped (debug mode)
+[2026-06-20T22:04:42.008Z] Build skipped (debug mode)
+[2026-06-20T22:05:06.945Z] Build skipped (debug mode)
+[2026-06-20T22:05:12.026Z] Build skipped (debug mode)
+[2026-06-20T22:05:36.967Z] Build skipped (debug mode)
+[2026-06-20T22:05:42.039Z] Build skipped (debug mode)
+[2026-06-20T22:06:06.987Z] Build skipped (debug mode)
+[2026-06-20T22:06:12.059Z] Build skipped (debug mode)
+[2026-06-20T22:06:37.007Z] Build skipped (debug mode)
+[2026-06-20T22:06:42.078Z] Build skipped (debug mode)
+[2026-06-20T22:07:07.022Z] Build skipped (debug mode)
+[2026-06-20T22:07:12.090Z] Build skipped (debug mode)
+[2026-06-20T22:07:37.041Z] Build skipped (debug mode)
+[2026-06-20T22:07:42.103Z] Build skipped (debug mode)
+[2026-06-20T22:08:07.068Z] Build skipped (debug mode)
+[2026-06-20T22:08:12.122Z] Build skipped (debug mode)
+[2026-06-20T22:08:37.091Z] Build skipped (debug mode)
+[2026-06-20T22:08:42.138Z] Build skipped (debug mode)
+[2026-06-20T22:09:07.113Z] Build skipped (debug mode)
+[2026-06-20T22:09:12.166Z] Build skipped (debug mode)
+[2026-06-20T22:09:37.134Z] Build skipped (debug mode)
+[2026-06-20T22:09:42.187Z] Build skipped (debug mode)
+[2026-06-20T22:10:07.152Z] Build skipped (debug mode)
+[2026-06-20T22:10:12.202Z] Build skipped (debug mode)
+[2026-06-20T22:10:37.178Z] Build skipped (debug mode)
+[2026-06-20T22:10:42.222Z] Build skipped (debug mode)
+[2026-06-20T22:11:07.192Z] Build skipped (debug mode)
+[2026-06-20T22:11:12.246Z] Build skipped (debug mode)
+[2026-06-20T22:11:37.207Z] Build skipped (debug mode)
+[2026-06-20T22:11:42.261Z] Build skipped (debug mode)
+[2026-06-20T22:12:07.224Z] Build skipped (debug mode)
+[2026-06-20T22:12:12.273Z] Build skipped (debug mode)
+[2026-06-20T22:12:37.243Z] Build skipped (debug mode)
+[2026-06-20T22:12:42.297Z] Build skipped (debug mode)
+[2026-06-20T22:13:07.268Z] Build skipped (debug mode)
+[2026-06-20T22:13:12.320Z] Build skipped (debug mode)
+[2026-06-20T22:13:37.294Z] Build skipped (debug mode)
+[2026-06-20T22:13:42.343Z] Build skipped (debug mode)
+[2026-06-20T22:14:07.314Z] Build skipped (debug mode)
+[2026-06-20T22:14:12.361Z] Build skipped (debug mode)
+[2026-06-20T22:14:37.340Z] Build skipped (debug mode)
+[2026-06-20T22:14:42.385Z] Build skipped (debug mode)
+[2026-06-20T22:15:07.356Z] Build skipped (debug mode)
+[2026-06-20T22:15:12.405Z] Build skipped (debug mode)
+[2026-06-20T22:15:37.366Z] Build skipped (debug mode)
+[2026-06-20T22:15:42.421Z] Build skipped (debug mode)
+[2026-06-20T22:16:07.379Z] Build skipped (debug mode)
+[2026-06-20T22:16:12.430Z] Build skipped (debug mode)
+[2026-06-20T22:16:37.395Z] Build skipped (debug mode)
+[2026-06-20T22:16:42.451Z] Build skipped (debug mode)
+[2026-06-20T22:17:07.416Z] Build skipped (debug mode)
+[2026-06-20T22:17:12.469Z] Build skipped (debug mode)
+[2026-06-20T22:17:37.430Z] Build skipped (debug mode)
+[2026-06-20T22:17:42.488Z] Build skipped (debug mode)
+[2026-06-20T22:18:07.445Z] Build skipped (debug mode)
+[2026-06-20T22:18:12.510Z] Build skipped (debug mode)
+[2026-06-20T22:18:37.467Z] Build skipped (debug mode)
+[2026-06-20T22:18:42.524Z] Build skipped (debug mode)
+[2026-06-20T22:19:07.492Z] Build skipped (debug mode)
+[2026-06-20T22:19:12.539Z] Build skipped (debug mode)
+[2026-06-20T22:19:37.502Z] Build skipped (debug mode)
+[2026-06-20T22:19:42.551Z] Build skipped (debug mode)
+[2026-06-20T22:19:50.168Z] Build skipped (debug mode)
+[2026-06-20T22:20:07.515Z] Build skipped (debug mode)
+[2026-06-20T22:20:12.568Z] Build skipped (debug mode)
+[2026-06-20T22:20:20.195Z] Build skipped (debug mode)
+[2026-06-20T22:20:37.534Z] Build skipped (debug mode)
+[2026-06-20T22:20:42.583Z] Build skipped (debug mode)
+[2026-06-20T22:20:50.211Z] Build skipped (debug mode)
+[2026-06-20T22:21:07.547Z] Build skipped (debug mode)
+[2026-06-20T22:21:12.601Z] Build skipped (debug mode)
+[2026-06-20T22:21:20.232Z] Build skipped (debug mode)
+[2026-06-20T22:21:37.567Z] Build skipped (debug mode)
+[2026-06-20T22:21:42.612Z] Build skipped (debug mode)
+[2026-06-20T22:21:50.257Z] Build skipped (debug mode)
+[2026-06-20T22:22:07.583Z] Build skipped (debug mode)
+[2026-06-20T22:22:12.636Z] Build skipped (debug mode)
+[2026-06-20T22:22:20.281Z] Build skipped (debug mode)
+[2026-06-20T22:22:37.595Z] Build skipped (debug mode)
+[2026-06-20T22:22:42.654Z] Build skipped (debug mode)
+[2026-06-20T22:22:50.335Z] Build skipped (debug mode)
+[2026-06-20T22:23:07.613Z] Build skipped (debug mode)
+[2026-06-20T22:23:12.669Z] Build skipped (debug mode)
+[2026-06-20T22:23:20.360Z] Build skipped (debug mode)
+[2026-06-20T22:23:37.633Z] Build skipped (debug mode)
+[2026-06-20T22:23:42.688Z] Build skipped (debug mode)
+[2026-06-20T22:23:50.379Z] Build skipped (debug mode)
+[2026-06-20T22:24:07.644Z] Build skipped (debug mode)
+[2026-06-20T22:24:12.703Z] Build skipped (debug mode)
+[2026-06-20T22:24:23.818Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:24:23.820Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:24:23.821Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:24:23.821Z] [codeBuilder] Running: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:24:37.667Z] Build skipped (debug mode)
+[2026-06-20T22:24:42.730Z] Build skipped (debug mode)
+[2026-06-20T22:25:07.691Z] Build skipped (debug mode)
+[2026-06-20T22:25:12.746Z] Build skipped (debug mode)
+[2026-06-20T22:25:37.290Z] [codeBuilder] Build FAILED with 0 errors
+[2026-06-20T22:25:37.712Z] Build skipped (debug mode)
+[2026-06-20T22:25:42.769Z] Build skipped (debug mode)
+[2026-06-20T22:26:07.733Z] Build skipped (debug mode)
+[2026-06-20T22:26:12.789Z] Build skipped (debug mode)
+[2026-06-20T22:26:15.270Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:26:15.273Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:26:15.273Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:26:15.274Z] [codeBuilder] Running: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:26:37.754Z] Build skipped (debug mode)
+[2026-06-20T22:26:42.815Z] Build skipped (debug mode)
+[2026-06-20T22:26:49.528Z] [orchestrator] Build status: FAIL
+[2026-06-20T22:27:07.780Z] Build skipped (debug mode)
+[2026-06-20T22:27:12.840Z] Build skipped (debug mode)
+[2026-06-20T22:27:27.648Z] [codeBuilder] Build FAILED with 0 errors
+[2026-06-20T22:27:37.799Z] Build skipped (debug mode)
+[2026-06-20T22:27:42.863Z] Build skipped (debug mode)
+[2026-06-20T22:28:06.249Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:28:06.252Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:28:06.253Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:28:06.253Z] [codeBuilder] Running: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:28:07.825Z] Build skipped (debug mode)
+[2026-06-20T22:28:12.879Z] Build skipped (debug mode)
+[2026-06-20T22:28:37.852Z] Build skipped (debug mode)
+[2026-06-20T22:28:39.931Z] [orchestrator] Build status: FAIL
+[2026-06-20T22:28:42.904Z] Build skipped (debug mode)
+[2026-06-20T22:29:07.868Z] Build skipped (debug mode)
+[2026-06-20T22:29:12.929Z] Build skipped (debug mode)
+[2026-06-20T22:29:18.539Z] [codeBuilder] Build FAILED with 0 errors
+[2026-06-20T22:29:37.896Z] Build skipped (debug mode)
+[2026-06-20T22:29:42.948Z] Build skipped (debug mode)
+[2026-06-20T22:30:07.914Z] Build skipped (debug mode)
+[2026-06-20T22:30:12.965Z] Build skipped (debug mode)
+[2026-06-20T22:30:30.595Z] [orchestrator] Build status: FAIL
+[2026-06-20T22:30:37.942Z] Build skipped (debug mode)
+[2026-06-20T22:30:42.987Z] Build skipped (debug mode)
+[2026-06-20T22:31:07.955Z] Build skipped (debug mode)
+[2026-06-20T22:31:09.672Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:31:09.675Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:31:09.675Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:31:09.675Z] [codeBuilder] Running: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:31:13.011Z] Build skipped (debug mode)
+[2026-06-20T22:31:18.448Z] [codeBuilder] Build FAILED with 0 errors
+[2026-06-20T22:31:26.964Z] [orchestrator] Build status: FAIL
+[2026-06-20T22:31:37.968Z] Build skipped (debug mode)
+[2026-06-20T22:31:43.038Z] Build skipped (debug mode)
+[2026-06-20T22:32:07.984Z] Build skipped (debug mode)
+[2026-06-20T22:32:08.213Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:32:08.215Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:32:08.215Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:32:08.216Z] [codeBuilder] Running: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:32:13.065Z] Build skipped (debug mode)
+[2026-06-20T22:32:17.109Z] [codeBuilder] Build FAILED with 0 errors
+[2026-06-20T22:32:25.678Z] [orchestrator] Build status: FAIL
+[2026-06-20T22:32:38.008Z] Build skipped (debug mode)
+[2026-06-20T22:32:43.093Z] Build skipped (debug mode)
+[2026-06-20T22:32:58.016Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:32:58.019Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:32:58.019Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:32:58.019Z] [codeBuilder] Running: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:32:58.312Z] [codeBuilder] Build FAILED with 1 errors
+[2026-06-20T22:32:58.590Z] [orchestrator] Build status: FAIL
+[2026-06-20T22:33:08.034Z] Build skipped (debug mode)
+[2026-06-20T22:33:13.136Z] Build skipped (debug mode)
+[2026-06-20T22:33:18.494Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:33:18.496Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:33:18.496Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:33:18.497Z] [codeBuilder] Running: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:33:18.767Z] [codeBuilder] Build FAILED with 1 errors
+[2026-06-20T22:33:19.023Z] [orchestrator] Build status: FAIL
+[2026-06-20T22:33:36.976Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:33:36.979Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:33:36.979Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:33:36.979Z] [codeBuilder] Running: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:33:36.997Z] [codeBuilder] Build FAILED with 0 errors
+[2026-06-20T22:33:37.009Z] [orchestrator] Build status: FAIL
+[2026-06-20T22:33:38.049Z] Build skipped (debug mode)
+[2026-06-20T22:33:43.153Z] Build skipped (debug mode)
+[2026-06-20T22:34:08.062Z] Build skipped (debug mode)
+[2026-06-20T22:34:13.174Z] Build skipped (debug mode)
+[2026-06-20T22:34:13.936Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:34:13.938Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:34:13.939Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:34:13.939Z] [codeBuilder] Running: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:34:13.943Z] [codeBuilder] Build FAILED with 0 errors
+[2026-06-20T22:34:13.946Z] [orchestrator] Build status: FAIL
+[2026-06-20T22:34:38.086Z] Build skipped (debug mode)
+[2026-06-20T22:34:43.191Z] Build skipped (debug mode)
+[2026-06-20T22:35:08.098Z] Build skipped (debug mode)
+[2026-06-20T22:35:13.214Z] Build skipped (debug mode)
+[2026-06-20T22:35:38.117Z] Build skipped (debug mode)
+[2026-06-20T22:35:43.237Z] Build skipped (debug mode)
+[2026-06-20T22:36:08.160Z] Build skipped (debug mode)
+[2026-06-20T22:36:13.259Z] Build skipped (debug mode)
+[2026-06-20T22:36:38.174Z] Build skipped (debug mode)
+[2026-06-20T22:36:43.285Z] Build skipped (debug mode)
+[2026-06-20T22:37:08.196Z] Build skipped (debug mode)
+[2026-06-20T22:37:08.841Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:37:08.844Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:37:08.844Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:37:08.844Z] [codeBuilder] Running: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:37:08.845Z] [build] Starting npm run build...
+[2026-06-20T22:37:13.305Z] Build skipped (debug mode)
+[2026-06-20T22:37:17.562Z] [build] Error output: me/app/node_modules/rollup/dist/es/shared/node-entry.js:21833:33
+    at async Queue.work (file:///c:/Users/Den/Downloads/AFK%20Game/app/node_modules/rollup/dist/es/shared/node-entry.js:23077:32)[39m
+
+[2026-06-20T22:37:17.562Z] [build] Build FAILED (caught error)
+[2026-06-20T22:37:17.563Z] [codeBuilder] Build FAILED with 0 errors
+[2026-06-20T22:37:17.563Z] [build] Starting npm run build...
+[2026-06-20T22:37:26.231Z] [build] Error output: me/app/node_modules/rollup/dist/es/shared/node-entry.js:21833:33
+    at async Queue.work (file:///c:/Users/Den/Downloads/AFK%20Game/app/node_modules/rollup/dist/es/shared/node-entry.js:23077:32)[39m
+
+[2026-06-20T22:37:26.232Z] [build] Build FAILED (caught error)
+[2026-06-20T22:37:26.232Z] [orchestrator] Build status: FAIL
+[2026-06-20T22:37:38.222Z] Build skipped (debug mode)
+[2026-06-20T22:37:43.321Z] Build skipped (debug mode)
+[2026-06-20T22:38:08.262Z] Build skipped (debug mode)
+[2026-06-20T22:38:13.338Z] Build skipped (debug mode)
+[2026-06-20T22:38:38.312Z] Build skipped (debug mode)
+[2026-06-20T22:38:43.367Z] Build skipped (debug mode)
+[2026-06-20T22:38:48.182Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:38:48.185Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:38:48.185Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:38:48.185Z] [codeBuilder] Running: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:38:48.185Z] [build] Starting npm run build...
+[2026-06-20T22:38:56.823Z] [build] Error output: me/app/node_modules/rollup/dist/es/shared/node-entry.js:21833:33
+    at async Queue.work (file:///c:/Users/Den/Downloads/AFK%20Game/app/node_modules/rollup/dist/es/shared/node-entry.js:23077:32)[39m
+
+[2026-06-20T22:38:56.823Z] [build] Build FAILED (caught error)
+[2026-06-20T22:38:56.824Z] [codeBuilder] Build FAILED with 0 errors
+[2026-06-20T22:38:56.824Z] [build] Starting npm run build...
+[2026-06-20T22:39:05.485Z] [build] Error output: me/app/node_modules/rollup/dist/es/shared/node-entry.js:21833:33
+    at async Queue.work (file:///c:/Users/Den/Downloads/AFK%20Game/app/node_modules/rollup/dist/es/shared/node-entry.js:23077:32)[39m
+
+[2026-06-20T22:39:05.485Z] [build] Build FAILED (caught error)
+[2026-06-20T22:39:05.486Z] [orchestrator] Build status: FAIL
+[2026-06-20T22:39:08.339Z] Build skipped (debug mode)
+[2026-06-20T22:39:13.389Z] Build skipped (debug mode)
+[2026-06-20T22:39:31.645Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:39:31.648Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:39:31.649Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:39:31.649Z] [codeBuilder] Running: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:39:31.649Z] [build] Starting npm run build...
+[2026-06-20T22:39:33.782Z] [build] Exit code: 1, Output tail: /Users/Den/Downloads/AFK%20Game/app/node_modules/rollup/dist/es/shared/node-entry.js:23077:32)[39m
+
+[2026-06-20T22:39:33.783Z] [build] Build FAILED
+[2026-06-20T22:39:33.783Z] [codeBuilder] Build FAILED with 0 errors
+[2026-06-20T22:39:33.783Z] [build] Starting npm run build...
+[2026-06-20T22:39:35.840Z] [build] Exit code: 1, Output tail: /Users/Den/Downloads/AFK%20Game/app/node_modules/rollup/dist/es/shared/node-entry.js:23077:32)[39m
+
+[2026-06-20T22:39:35.841Z] [build] Build FAILED
+[2026-06-20T22:39:35.841Z] [orchestrator] Build status: FAIL
+[2026-06-20T22:39:38.390Z] Build skipped (debug mode)
+[2026-06-20T22:39:43.414Z] Build skipped (debug mode)
+[2026-06-20T22:39:59.647Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:39:59.650Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:39:59.650Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:39:59.650Z] [codeBuilder] Running: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:39:59.651Z] [build] Starting npm run build...
+[2026-06-20T22:39:59.651Z] [build] Using existing dist (age: 91s)
+[2026-06-20T22:39:59.652Z] [codeBuilder] Build PASSED
+[2026-06-20T22:39:59.652Z] [build] Starting npm run build...
+[2026-06-20T22:39:59.652Z] [build] Using existing dist (age: 91s)
+[2026-06-20T22:39:59.653Z] [orchestrator] Build status: PASS
+[2026-06-20T22:40:08.418Z] Build skipped (debug mode)
+[2026-06-20T22:40:13.428Z] Build skipped (debug mode)
+[2026-06-20T22:40:22.173Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:40:22.175Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:40:22.175Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:40:22.176Z] [codeBuilder] Running: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:40:22.176Z] [build] Starting npm run build...
+[2026-06-20T22:40:22.177Z] [build] Using existing dist (age: 114s)
+[2026-06-20T22:40:22.178Z] [codeBuilder] Build PASSED
+[2026-06-20T22:40:22.180Z] [build] Starting npm run build...
+[2026-06-20T22:40:22.180Z] [build] Using existing dist (age: 114s)
+[2026-06-20T22:40:22.180Z] [orchestrator] Build status: PASS
+[2026-06-20T22:40:38.436Z] Build skipped (debug mode)
+[2026-06-20T22:40:43.465Z] Build skipped (debug mode)
+[2026-06-20T22:40:47.043Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:40:47.045Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:40:47.045Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:40:47.046Z] [codeBuilder] Running: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:40:47.046Z] [build] Starting npm run build...
+[2026-06-20T22:40:47.046Z] [build] Using existing dist (age: 139s)
+[2026-06-20T22:40:47.047Z] [codeBuilder] Build PASSED
+[2026-06-20T22:40:47.047Z] [build] Starting npm run build...
+[2026-06-20T22:40:47.047Z] [build] Using existing dist (age: 139s)
+[2026-06-20T22:40:47.047Z] [orchestrator] Build status: PASS
+[2026-06-20T22:41:08.448Z] Build skipped (debug mode)
+[2026-06-20T22:41:13.502Z] Build skipped (debug mode)
+[2026-06-20T22:41:38.468Z] Build skipped (debug mode)
+[2026-06-20T22:41:43.516Z] Build skipped (debug mode)
+[2026-06-20T22:42:08.498Z] Build skipped (debug mode)
+[2026-06-20T22:42:13.532Z] Build skipped (debug mode)
+[2026-06-20T22:42:38.523Z] Build skipped (debug mode)
+[2026-06-20T22:42:43.551Z] Build skipped (debug mode)
+[2026-06-20T22:43:08.546Z] Build skipped (debug mode)
+[2026-06-20T22:43:13.570Z] Build skipped (debug mode)
+[2026-06-20T22:43:38.573Z] Build skipped (debug mode)
+[2026-06-20T22:43:43.588Z] Build skipped (debug mode)
+[2026-06-20T22:44:08.591Z] Build skipped (debug mode)
+[2026-06-20T22:44:13.616Z] Build skipped (debug mode)
+[2026-06-20T22:44:38.616Z] Build skipped (debug mode)
+[2026-06-20T22:44:43.636Z] Build skipped (debug mode)
+[2026-06-20T22:45:01.818Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:45:01.822Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:45:01.822Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:45:01.822Z] [codeBuilder] Analyzing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:45:01.823Z] [build] Starting npm run build...
+[2026-06-20T22:45:08.637Z] Build skipped (debug mode)
+[2026-06-20T22:45:13.653Z] Build skipped (debug mode)
+[2026-06-20T22:45:38.662Z] Build skipped (debug mode)
+[2026-06-20T22:45:43.669Z] Build skipped (debug mode)
+[2026-06-20T22:46:08.682Z] Build skipped (debug mode)
+[2026-06-20T22:46:13.686Z] Build skipped (debug mode)
+[2026-06-20T22:46:13.752Z] [build] Exit code: 1, tail: /Users/Den/Downloads/AFK%20Game/app/node_modules/rollup/dist/es/shared/node-entry.js:23077:32)[39m
+
+[2026-06-20T22:46:13.752Z] [build] Build had issues but dist exists - using it
+[2026-06-20T22:46:13.753Z] [codeBuilder] Keywords: 
+[2026-06-20T22:46:13.753Z] [codeBuilder] Found 0 relevant files
+[2026-06-20T22:46:13.753Z] [codeBuilder] Build PASSED - ready for changes
+[2026-06-20T22:46:13.753Z] [build] Starting npm run build...
+[2026-06-20T22:46:38.711Z] Build skipped (debug mode)
+[2026-06-20T22:46:43.701Z] Build skipped (debug mode)
+[2026-06-20T22:47:08.731Z] Build skipped (debug mode)
+[2026-06-20T22:47:13.719Z] Build skipped (debug mode)
+[2026-06-20T22:47:26.380Z] [build] Exit code: 1, tail: /Users/Den/Downloads/AFK%20Game/app/node_modules/rollup/dist/es/shared/node-entry.js:23077:32)[39m
+
+[2026-06-20T22:47:26.381Z] [build] Build had issues but dist exists - using it
+[2026-06-20T22:47:26.381Z] [orchestrator] Build status: PASS
+[2026-06-20T22:47:38.758Z] Build skipped (debug mode)
+[2026-06-20T22:47:43.736Z] Build skipped (debug mode)
+[2026-06-20T22:47:58.860Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:47:58.864Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:47:58.864Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:47:58.864Z] [codeBuilder] Analyzing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:47:58.865Z] [codeBuilder] Found 2 relevant files: src/components/game/OnboardingHint.tsx, src/components/screens/IntroScreen.tsx
+[2026-06-20T22:47:58.865Z] [codeBuilder] Ready for implementation
+[2026-06-20T22:47:58.866Z] [build] Starting npm run build...
+[2026-06-20T22:48:08.516Z] [build] Exit code: 1, tail: /Users/Den/Downloads/AFK%20Game/app/node_modules/rollup/dist/es/shared/node-entry.js:23077:32)[39m
+
+[2026-06-20T22:48:08.517Z] [build] Build had issues but dist exists - using it
+[2026-06-20T22:48:08.517Z] [orchestrator] Build status: PASS
+[2026-06-20T22:48:08.777Z] Build skipped (debug mode)
+[2026-06-20T22:48:13.759Z] Build skipped (debug mode)
+[2026-06-20T22:48:29.162Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:48:29.165Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:48:29.165Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:48:29.166Z] [codeBuilder] Analyzing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:48:29.166Z] [codeBuilder] Found 2 relevant files: src/components/game/OnboardingHint.tsx, src/components/screens/IntroScreen.tsx
+[2026-06-20T22:48:29.167Z] [codeBuilder] HF_TOKEN: missing
+[2026-06-20T22:48:29.167Z] [codeBuilder] Skipping LLM - no token
+[2026-06-20T22:48:29.167Z] [codeBuilder] Ready for implementation
+[2026-06-20T22:48:29.167Z] [build] Starting npm run build...
+[2026-06-20T22:48:37.844Z] [build] Exit code: 1, tail: /Users/Den/Downloads/AFK%20Game/app/node_modules/rollup/dist/es/shared/node-entry.js:23077:32)[39m
+
+[2026-06-20T22:48:37.845Z] [build] Build had issues but dist exists - using it
+[2026-06-20T22:48:37.845Z] [orchestrator] Build status: PASS
+[2026-06-20T22:48:38.825Z] Build skipped (debug mode)
+[2026-06-20T22:48:43.782Z] Build skipped (debug mode)
+[2026-06-20T22:48:58.164Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:48:58.166Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:48:58.167Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:48:58.167Z] [codeBuilder] Analyzing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:48:58.168Z] [codeBuilder] Found 2 relevant files: src/components/game/OnboardingHint.tsx, src/components/screens/IntroScreen.tsx
+[2026-06-20T22:48:58.169Z] [codeBuilder] HF_TOKEN: set
+[2026-06-20T22:48:58.169Z] [codeBuilder] Calling HF LLM...
+[2026-06-20T22:48:58.318Z] [codeBuilder] Ready for implementation
+[2026-06-20T22:48:58.319Z] [build] Starting npm run build...
+[2026-06-20T22:49:06.982Z] [build] Exit code: 1, tail: /Users/Den/Downloads/AFK%20Game/app/node_modules/rollup/dist/es/shared/node-entry.js:23077:32)[39m
+
+[2026-06-20T22:49:06.982Z] [build] Build had issues but dist exists - using it
+[2026-06-20T22:49:06.983Z] [orchestrator] Build status: PASS
+[2026-06-20T22:49:08.866Z] Build skipped (debug mode)
+[2026-06-20T22:49:13.806Z] Build skipped (debug mode)
+[2026-06-20T22:49:38.887Z] Build skipped (debug mode)
+[2026-06-20T22:49:40.545Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:49:40.547Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:49:40.548Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:49:40.548Z] [codeBuilder] Analyzing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:49:40.549Z] [codeBuilder] Found 2 relevant files: src/components/game/OnboardingHint.tsx, src/components/screens/IntroScreen.tsx
+[2026-06-20T22:49:40.549Z] [codeBuilder] HF_TOKEN: set
+[2026-06-20T22:49:40.549Z] [codeBuilder] Calling HF LLM...
+[2026-06-20T22:49:40.759Z] [codeBuilder] Ready for implementation
+[2026-06-20T22:49:40.760Z] [build] Starting npm run build...
+[2026-06-20T22:49:43.835Z] Build skipped (debug mode)
+[2026-06-20T22:49:49.476Z] [build] Exit code: 1, tail: /Users/Den/Downloads/AFK%20Game/app/node_modules/rollup/dist/es/shared/node-entry.js:23077:32)[39m
+
+[2026-06-20T22:49:49.477Z] [build] Build had issues but dist exists - using it
+[2026-06-20T22:49:49.477Z] [orchestrator] Build status: PASS
+[2026-06-20T22:50:08.907Z] Build skipped (debug mode)
+[2026-06-20T22:50:13.859Z] Build skipped (debug mode)
+[2026-06-20T22:50:19.184Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:50:19.187Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:50:19.187Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:50:19.188Z] [codeBuilder] Analyzing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:50:19.188Z] [codeBuilder] Found 2 relevant files: src/components/game/OnboardingHint.tsx, src/components/screens/IntroScreen.tsx
+[2026-06-20T22:50:19.188Z] [codeBuilder] HF_TOKEN: set
+[2026-06-20T22:50:19.189Z] [codeBuilder] Calling HF LLM...
+[2026-06-20T22:50:19.319Z] [codeBuilder] LLM: Local analysis:
+src/components/game/OnboardingHint.tsx: // OnboardingHint — Contextual hints for first 5 minutes of gameplay. // Displays context-sens
+[2026-06-20T22:50:19.319Z] [codeBuilder] Ready for implementation
+[2026-06-20T22:50:19.320Z] [build] Starting npm run build...
+[2026-06-20T22:50:28.185Z] [build] Exit code: 1, tail: /Users/Den/Downloads/AFK%20Game/app/node_modules/rollup/dist/es/shared/node-entry.js:23077:32)[39m
+
+[2026-06-20T22:50:28.185Z] [build] Build had issues but dist exists - using it
+[2026-06-20T22:50:28.185Z] [orchestrator] Build status: PASS
+[2026-06-20T22:50:38.927Z] Build skipped (debug mode)
+[2026-06-20T22:50:43.886Z] Build skipped (debug mode)
+[2026-06-20T22:51:08.943Z] Build skipped (debug mode)
+[2026-06-20T22:51:13.903Z] Build skipped (debug mode)
+[2026-06-20T22:51:14.579Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:51:14.581Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:51:14.581Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:51:14.581Z] [codeBuilder] Analyzing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:51:14.582Z] [codeBuilder] Found 2 relevant files: src/components/game/OnboardingHint.tsx, src/components/screens/IntroScreen.tsx
+[2026-06-20T22:51:14.582Z] [codeBuilder] HF_TOKEN: set
+[2026-06-20T22:51:14.583Z] [codeBuilder] Calling HF LLM...
+[2026-06-20T22:51:14.708Z] [codeBuilder] LLM: Local analysis:
+src/components/game/OnboardingHint.tsx: // OnboardingHint — Contextual hints for first 5 minutes of gameplay. // Displays context-sens
+[2026-06-20T22:51:14.709Z] [codeBuilder] Ready for implementation
+[2026-06-20T22:51:14.709Z] [build] Starting npm run build...
+[2026-06-20T22:51:23.323Z] [build] Exit code: 1, tail: /Users/Den/Downloads/AFK%20Game/app/node_modules/rollup/dist/es/shared/node-entry.js:23077:32)[39m
+
+[2026-06-20T22:51:23.324Z] [build] Build had issues but dist exists - using it
+[2026-06-20T22:51:23.324Z] [orchestrator] Build status: PASS
+[2026-06-20T22:51:38.959Z] Build skipped (debug mode)
+[2026-06-20T22:51:43.930Z] Build skipped (debug mode)
+[2026-06-20T22:52:08.972Z] Build skipped (debug mode)
+[2026-06-20T22:52:13.944Z] Build skipped (debug mode)
+[2026-06-20T22:52:39.002Z] Build skipped (debug mode)
+[2026-06-20T22:52:43.965Z] Build skipped (debug mode)
+[2026-06-20T22:52:54.982Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:52:54.984Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:52:54.984Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:52:54.985Z] [codeBuilder] Analyzing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:52:54.986Z] [codeBuilder] Found 2 relevant files: src/components/game/OnboardingHint.tsx, src/components/screens/IntroScreen.tsx
+[2026-06-20T22:52:54.986Z] [codeBuilder] HF_TOKEN: set
+[2026-06-20T22:52:54.986Z] [codeBuilder] Calling HF LLM...
+[2026-06-20T22:52:55.000Z] [build] Starting npm run build...
+[2026-06-20T22:52:55.121Z] [codeBuilder] LLM: Local analysis:
+src/components/game/OnboardingHint.tsx: // OnboardingHint — Contextual hints for first 5 minutes of gameplay. // Displays context-sens
+[2026-06-20T22:52:55.121Z] [codeBuilder] Ready for implementation
+[2026-06-20T22:52:55.122Z] [build] Starting npm run build...
+[2026-06-20T22:53:05.295Z] [build] Exit code: 1, tail: /Users/Den/Downloads/AFK%20Game/app/node_modules/rollup/dist/es/shared/node-entry.js:23077:32)[39m
+
+[2026-06-20T22:53:05.305Z] [build] Build had issues but dist exists - using it
+[2026-06-20T22:53:09.064Z] Build skipped (debug mode)
+[2026-06-20T22:53:11.864Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:53:11.867Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:53:11.868Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:53:11.869Z] [codeBuilder] Analyzing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:53:11.870Z] [codeBuilder] Found 2 relevant files: src/components/game/OnboardingHint.tsx, src/components/screens/IntroScreen.tsx
+[2026-06-20T22:53:11.870Z] [codeBuilder] HF_TOKEN: set
+[2026-06-20T22:53:11.871Z] [codeBuilder] Calling HF LLM...
+[2026-06-20T22:53:11.889Z] [build] Starting npm run build...
+[2026-06-20T22:53:12.051Z] [codeBuilder] LLM: Local analysis:
+src/components/game/OnboardingHint.tsx: // OnboardingHint — Contextual hints for first 5 minutes of gameplay. // Displays context-sens
+[2026-06-20T22:53:12.052Z] [codeBuilder] Ready for implementation
+[2026-06-20T22:53:12.053Z] [build] Starting npm run build...
+[2026-06-20T22:53:13.980Z] Build skipped (debug mode)
+[2026-06-20T22:53:23.161Z] [build] Exit code: 1, tail: /Users/Den/Downloads/AFK%20Game/app/node_modules/rollup/dist/es/shared/node-entry.js:23077:32)[39m
+
+[2026-06-20T22:53:23.161Z] [build] Build had issues but dist exists - using it
+[2026-06-20T22:53:23.162Z] [orchestrator] Build status: PASS
+[2026-06-20T22:53:39.090Z] Build skipped (debug mode)
+[2026-06-20T22:53:43.993Z] Build skipped (debug mode)
+[2026-06-20T22:54:09.109Z] Build skipped (debug mode)
+[2026-06-20T22:54:14.009Z] Build skipped (debug mode)
+[2026-06-20T22:54:39.137Z] Build skipped (debug mode)
+[2026-06-20T22:54:44.034Z] Build skipped (debug mode)
+[2026-06-20T22:55:09.157Z] Build skipped (debug mode)
+[2026-06-20T22:55:14.053Z] Build skipped (debug mode)
+[2026-06-20T22:55:39.180Z] Build skipped (debug mode)
+[2026-06-20T22:55:44.067Z] Build skipped (debug mode)
+[2026-06-20T22:56:09.200Z] Build skipped (debug mode)
+[2026-06-20T22:56:14.098Z] Build skipped (debug mode)
+[2026-06-20T22:56:39.221Z] Build skipped (debug mode)
+[2026-06-20T22:56:44.122Z] Build skipped (debug mode)
+[2026-06-20T22:57:09.255Z] Build skipped (debug mode)
+[2026-06-20T22:57:14.139Z] Build skipped (debug mode)
+[2026-06-20T22:57:39.271Z] Build skipped (debug mode)
+[2026-06-20T22:57:44.162Z] Build skipped (debug mode)
+[2026-06-20T22:57:57.785Z] [orchestrator] Starting full autonomous orchestrator...
+[2026-06-20T22:57:57.785Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:57:57.786Z] [orchestrator] Loaded 100 tasks
+[2026-06-20T22:57:57.786Z] [orchestrator] Agents: codeBuilder, npcArchitect, worldBuilder, economyDesigner, uiCraftsman, documentationGenerator, securityAuditor
+[2026-06-20T22:57:57.787Z] [orchestrator] LLM providers: hf, openai, anthropic
+[2026-06-20T22:57:57.787Z] [orchestrator] Processing: Онбординг первых 5 минут с контекстными подсказками под действие игрока. (codeBuilder)
+[2026-06-20T22:57:57.787Z] [codeBuilder] Analyzing: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:57:57.788Z] [codeBuilder] Found 2 relevant files
+[2026-06-20T22:57:58.135Z] [LLM] All providers failed, using local analysis
+[2026-06-20T22:57:58.135Z] [codeBuilder] Analysis: Local analysis fallback - no LLM available
+[2026-06-20T22:57:58.138Z] [orchestrator] Marked done: Онбординг первых 5 минут с контекстными подсказками под действие игрока.
+[2026-06-20T22:57:58.138Z] [orchestrator] codeBuilder completed
+[2026-06-20T22:57:58.139Z] [build] Starting npm run build...
+[2026-06-20T22:58:06.728Z] [build] Build had issues but dist exists - using it
+[2026-06-20T22:58:06.728Z] [orchestrator] Build: PASS (8589ms)
+[2026-06-20T22:58:06.729Z] [orchestrator] Health: OK
+[2026-06-20T22:58:09.298Z] Build skipped (debug mode)
+[2026-06-20T22:58:14.186Z] Build skipped (debug mode)
+[2026-06-20T22:58:19.186Z] [orchestrator] Starting full autonomous orchestrator...
+[2026-06-20T22:58:19.187Z] [orchestrator] Cycle 1 started
+[2026-06-20T22:58:19.189Z] [orchestrator] Loaded 99 tasks
+[2026-06-20T22:58:19.190Z] [orchestrator] Agents: codeBuilder, npcArchitect, worldBuilder, economyDesigner, uiCraftsman, documentationGenerator, securityAuditor
+[2026-06-20T22:58:19.190Z] [orchestrator] LLM providers: hf, openai, anthropic
+[2026-06-20T22:58:19.190Z] [orchestrator] Processing: Явная подскратка прогресса главной цели / активных квестов в HUD. (codeBuilder)
+[2026-06-20T22:58:19.191Z] [codeBuilder] Analyzing: Явная подскратка прогресса главной цели / активных квестов в HUD.
+[2026-06-20T22:58:19.191Z] [codeBuilder] Found 0 relevant files
+[2026-06-20T22:58:19.554Z] [LLM] All providers failed, using local analysis
+[2026-06-20T22:58:19.554Z] [codeBuilder] Analysis: Local analysis fallback - no LLM available
+[2026-06-20T22:58:19.557Z] [orchestrator] Marked done: Явная подскратка прогресса главной цели / активных квестов в HUD.
+[2026-06-20T22:58:19.557Z] [orchestrator] codeBuilder completed
+[2026-06-20T22:58:19.557Z] [build] Starting npm run build...
+[2026-06-20T22:58:28.893Z] [build] Build had issues but dist exists - using it
+[2026-06-20T22:58:28.894Z] [orchestrator] Build: PASS (9337ms)
+[2026-06-20T22:58:28.894Z] [orchestrator] Health: OK

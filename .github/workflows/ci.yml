@@ -1,0 +1,64 @@
+name: Quality Gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci
+        working-directory: app
+
+      - name: TypeScript check
+        run: npm run build
+        working-directory: app
+
+      - name: Check for secrets
+        run: |
+          if grep -r "sk-\|api_key" app/src --include="*.ts" | grep -v "mock\|example"; then
+            echo "❌ Secrets detected"
+            exit 1
+          fi
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+        working-directory: app
+      - run: npm test
+        working-directory: app
+
+  size:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - run: npm ci
+        working-directory: app
+      - name: Check bundle size
+        run: |
+          SIZE=$(du -b app/dist/*.js 2>/dev/null | awk '{sum+=$1} END {print sum}')
+          if [ "$SIZE" -gt 512000 ]; then
+            echo "❌ Bundle > 500KB"
+            exit 1
+          fi
+          echo "✅ Bundle OK: $SIZE bytes"

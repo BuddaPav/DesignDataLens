@@ -1,0 +1,101 @@
+{
+  "asset": {
+    "version": "2.0",
+    "generator": "chronos-generate-aaa-mass-model-pack"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "prop_bulk_gen_0660_lod0",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "prop_bulk_gen_0660_lod0"
+    }
+  ],
+  "meshes": [
+    {
+      "name": "prop_bulk_gen_0660_lod0_mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 1
+          },
+          "indices": 0,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "name": "prop_bulk_gen_0660_lod0_mat",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.8,
+          0.36,
+          0.62,
+          1
+        ],
+        "metallicFactor": 0.08,
+        "roughnessFactor": 0.85
+      }
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5123,
+      "count": 126,
+      "type": "SCALAR",
+      "max": [
+        125
+      ],
+      "min": [
+        0
+      ]
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 126,
+      "type": "VEC3",
+      "min": [
+        0,
+        0,
+        0
+      ],
+      "max": [
+        0.8250000000000001,
+        0.25993750000000004,
+        0.08175
+      ]
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 252,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 252,
+      "byteLength": 1512,
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 1764,
+      "uri": "data:application/octet-stream;base64,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"
+    }
+  ]
+}

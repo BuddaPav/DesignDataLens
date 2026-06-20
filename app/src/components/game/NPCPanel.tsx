@@ -1,8 +1,9 @@
 // NPC Panel — рамки/статусы из Kimi-ассетов + заглушка портрета из реестра
 
 import * as RadixTooltip from '@radix-ui/react-tooltip';
-import { User } from 'lucide-react';
+import { Send, User } from 'lucide-react';
 import { memo, useCallback, useState } from 'react';
+import { Textarea } from '@/components/ui/textarea';
 import type { NPC } from '@/types/game';
 import {
   chronosPlaceholderGlyphUrl,
@@ -99,11 +100,19 @@ const NpcRow = memo(function NpcRow({
 }) {
   const initialSrc = resolveNpcAvatarImgSrc(npc);
   const [faceSrc, setFaceSrc] = useState(initialSrc);
+  const [replyDraft, setReplyDraft] = useState('');
   const placeholder = chronosPlaceholderGlyphUrl();
 
   const onPortraitError = useCallback(() => {
     setFaceSrc((s) => (s === placeholder ? s : placeholder));
   }, [placeholder]);
+
+  const sendReply = useCallback(() => {
+    const line = replyDraft.trim();
+    if (!line) return;
+    onInteract(npc.id, 'talk', line);
+    setReplyDraft('');
+  }, [npc.id, onInteract, replyDraft]);
 
   return (
     <div
@@ -207,6 +216,43 @@ const NpcRow = memo(function NpcRow({
               {t('game.combat_attack', language)}
             </Button>
           )}
+          <div
+            className="mt-3 space-y-2 rounded-lg border border-slate-800 bg-slate-950/40 p-2"
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
+          >
+            <p className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
+              {t('dialog.your_line', language)}
+            </p>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Textarea
+                value={replyDraft}
+                onChange={(e) => setReplyDraft(e.target.value)}
+                placeholder={t('dialog.reply_placeholder', language)}
+                rows={2}
+                className="min-h-[56px] resize-none border-slate-700 bg-slate-900/80 text-sm text-slate-100 placeholder:text-slate-600 focus-visible:border-violet-500/50"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendReply();
+                  }
+                }}
+              />
+              <Button
+                type="button"
+                size="sm"
+                disabled={!replyDraft.trim()}
+                className="shrink-0 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 disabled:opacity-40"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  sendReply();
+                }}
+              >
+                <Send className="mr-1.5 h-3.5 w-3.5" />
+                {t('dialog.send', language)}
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

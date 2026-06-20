@@ -4,6 +4,7 @@ import {
   applyChoiceConsequencesBatch,
   type ChoiceBatchSideEffects,
 } from '@/domain/consequences/applyChoiceConsequences';
+import { deriveDialogueConsequences } from '@/domain/consequences/deriveDialogueConsequences';
 import type { Consequence, Player, Quest, WorldLogEntry } from '@/types/game';
 
 function dummyQuest(id: string): Quest {
@@ -165,18 +166,58 @@ describe('applyChoiceConsequencesBatch', () => {
     expect(flags).toEqual([{ key: 'met_dragon', value: true }]);
   });
 
+  it('unlocks dialogue followup quest with talk objective from derived consequences', () => {
+    const prev = basePlayer({ storyProgress: { ...basePlayer().storyProgress, activeQuests: [] } });
+    const log: WorldLogEntry[] = [];
+    const flags: { key: string; value: unknown }[] = [];
+    const cons = deriveDialogueConsequences({
+      line: 'Please help me with the caravan trade route.',
+      npcId: 'elara',
+      locationId: 'starting_village',
+      lang: 'en',
+    });
+    const next = applyChoiceConsequencesBatch(prev, cons, 'en', log, flags);
+    const unlock = cons.find((c) => c.type === 'quest_unlock');
+    const quest = next.storyProgress.activeQuests.find((q) => q.id === unlock?.key);
+    expect(quest).toBeTruthy();
+    expect(quest?.objectives[0]?.type).toBe('talk_to_npc');
+    expect(quest?.objectives[0]?.target).toBe('elara');
+    expect(quest?.title).not.toContain('dialogue_followup:');
+    expect(log.some((e) => e.message.includes(quest!.title))).toBe(true);
+  });
+
+  it('does not duplicate dialogue followup quest on repeat unlock', () => {
+    const prev = basePlayer({ storyProgress: { ...basePlayer().storyProgress, activeQuests: [] } });
+    const log: WorldLogEntry[] = [];
+    const flags: { key: string; value: unknown }[] = [];
+    const cons: Consequence[] = [
+      {
+        type: 'quest_unlock',
+        key: 'dialogue_followup:starting_village:dup',
+        value: { npcId: 'elara', tags: ['help'] },
+      },
+    ];
+    const once = applyChoiceConsequencesBatch(prev, cons, 'en', log, flags);
+    const twice = applyChoiceConsequencesBatch(once, cons, 'en', log, flags);
+    expect(
+      twice.storyProgress.activeQuests.filter((q) => q.id === 'dialogue_followup:starting_village:dup'),
+    ).toHaveLength(1);
+  });
+
   it('unlocks quest into activeQuests', () => {
     const prev = basePlayer();
     const log: WorldLogEntry[] = [];
     const flags: { key: string; value: unknown }[] = [];
     const next = applyChoiceConsequencesBatch(
       prev,
-      [{ type: 'quest_unlock', key: 'q_new', value: 1 }],
+      [{ type: 'quest_unlock', key: 'caravan_supply:river_port:777', value: 1 }],
       'en',
       log,
       flags,
     );
-    expect(next.storyProgress.activeQuests.some((q) => q.id === 'q_new')).toBe(true);
+    const unlocked = next.storyProgress.activeQuests.find((q) => q.id === 'caravan_supply:river_port:777');
+    expect(unlocked).toBeTruthy();
+    expect(unlocked?.objectives[0]?.target).toBe('river_port');
     expect(log.some((e) => e.message.toLowerCase().includes('quest'))).toBe(true);
   });
 

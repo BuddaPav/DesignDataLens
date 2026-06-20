@@ -44,7 +44,167 @@ React + TypeScript, Vite, Tailwind, shadcn/ui; Three.js / React Three Fiber; Ele
 |------|------------|
 | `CHRONOS_DESIGN.md` | Дизайн Chronos |
 | `docs/orchestrate/README.md` | Pipeline Orchestrate |
+| `docs/aaa/README.md` | AAA production framework: bibles, contracts, gates |
 | `game-design.md` | Заглушка (старый черновик другого жанра не используется) |
+
+## Handover для нового чата (полный контекст текущей сессии)
+
+> Ниже — детальный снимок проделанной работы в этом чате.  
+> Цель раздела: открыть новый чат и продолжить без потери контекста.
+
+### Что сделано в этой сессии (высокий уровень)
+
+1. **Завершены вехи по `PROJECT_MILESTONES.md`** в рамках Phase CONTENT/POLISH:
+   - новые регионы и расширение графа локаций;
+   - расширенные маршруты караванов и связка с экономикой;
+   - контентные улучшения генератора (item/template-aware цели и последствия);
+   - улучшения графики (tier-телеметрия, shadow preset/fallback, dpr cap);
+   - стабилизация lint/test/deps checks.
+
+2. **Собран и исполнен 600-шаговый релизный roadmap** (в контексте чата):
+   - приоритет 50/30/20: разумные NPC / причинность / 3D-графика;
+   - ключевые технические блоки реализованы инкрементально;
+   - все созданные в чате todo-пакеты переведены в `completed`.
+
+3. **Сделан “production hardening” после аудита**:
+   - безопасность URL обновлений;
+   - устойчивость autosave и локального хранения;
+   - локальная обработка ошибок world tick;
+   - UX-восстановление 3D после падения;
+   - частичное снятие hot-path нагрузки в игровых апдейтах.
+
+### Ключевые архитектурные и доменные изменения (по файлам)
+
+#### 1) Граф мира и локации
+
+- **Новый источник истины локаций**: `app/src/domain/world/storyLocations.ts`
+  - вынесен канонический список `STORY_LOCATIONS`;
+  - добавлены локации: `river_port`, `sunken_marsh`, `ember_hills`;
+  - утилиты: `getStoryLocationById`, `isStoryLocationConnected`, `sanitizeDiscoveredLocations`.
+- `app/src/hooks/useGameState.ts`
+  - мигрирован на `STORY_LOCATIONS`;
+  - travel guard по ребру графа;
+  - санация `discoveredLocations` при миграции загрузки.
+- `app/src/engine/worldTiles.ts`
+  - добавлены якоря координат для новых локаций.
+- Тесты:
+  - `app/src/domain/world/__tests__/storyLocations.test.ts` (уникальность id, симметрия рёбер, связность графа).
+
+#### 2) Караваны, слухи, экономика
+
+- `app/src/engine/traderCaravan.ts`
+  - расширены маршруты: `delta_marsh_run`, `ashen_ridge_line`, `frontier_chain`;
+  - обновлён `ensureDefaultCaravans`.
+- Тесты:
+  - `app/src/engine/__tests__/traderCaravan.defaults.test.ts` (без дубликатов, покрытие всех маршрутов);
+  - `app/src/engine/__tests__/traderCaravan.graph.test.ts` — теперь проверяет маршруты против `STORY_LOCATIONS`.
+- `app/src/hooks/useGameState.ts`
+  - синхронизирован порядок причинной цепочки в `advanceTime`:
+    - и в sync, и в worker ветке: **spread слухов -> караваны -> market supply**;
+  - добавлены world-log строки при смене market tone.
+- `app/src/domain/economy/caravanEconomyConstants.ts` (вынесены константы supply/tone).
+- `app/src/components/game/ShopPanel.tsx`
+  - визуальная полоса состояния рынка (tone + multiplier).
+
+#### 3) Детерминизм / причинность
+
+- `app/src/domain/sim/deterministicRng.ts`
+  - добавлены `seedFromString`, `createDeterministicRng`.
+- `app/src/engine/gossipSpreadPure.ts`
+  - `decayAndSpreadRumors` принимает `randomFn`.
+- `app/src/engine/gossipNetwork.ts`
+  - `tickActiveRumorsSync(..., randomFn?)`.
+- `app/src/engine/gossipSpreadWorkerClient.ts` и `app/src/engine/gossipSpread.worker.ts`
+  - добавлен проброс `seed` в worker payload.
+- `app/src/hooks/useGameState.ts`
+  - в `advanceTime` для spread вычисляется `rumorSeed`, одинаково используется в sync/worker/fallback.
+- Тесты:
+  - `app/src/domain/sim/__tests__/deterministicRng.test.ts`;
+  - `app/src/engine/__tests__/gossipNetwork.seed.test.ts`;
+  - обновлены `app/src/engine/__tests__/gossipSpreadPure.test.ts`.
+
+#### 4) Разумность NPC / диалоги
+
+- `app/src/engine/NPCSystem.ts`
+  - введён cap памяти NPC: `CHRONOS_NPC_MEMORY_MAX=120`;
+  - улучшено ранжирование релевантных воспоминаний (importance + term hits + recency).
+- `app/src/engine/localAI.ts`
+  - усилен cache key (`v3`) состоянием NPC/отношений/памяти/квестного контекста;
+  - улучшен отбор памяти в system prompt с учётом `playerMessage`.
+- Тесты:
+  - `app/src/engine/__tests__/npcSystem.memory.test.ts`.
+
+#### 5) 3D перф / устойчивость
+
+- `app/src/components/game/WorldScene3D.tsx`
+  - введён weak-GPU профиль и ограничитель;
+  - `high` tier dpr capped до `1.5` (вместо `2`);
+  - улучшена телеметрия FPS по tier.
+- `app/src/debug/chronosTelemetry.ts`
+  - учёт EMA FPS per tier (`low/balanced/high`), snapshot API.
+- `app/src/components/game/WorldViewport.tsx`
+  - fallback после 3D-ошибки с кнопкой `Retry 3D` (ремаунт boundary/canvas).
+
+#### 6) Security / error handling / DX hardening
+
+- `app/src/components/game/UpdateBanner.tsx`
+  - безопасная валидация URL обновления (allow `https` + `localhost` для dev http).
+- `app/src/hooks/useGameState.ts`
+  - локальный `catch` в `advanceTime` + пользовательский toast при ошибке.
+- `app/src/hooks/useGameState.ts`
+  - стабилизирован autosave: ref-based interval без постоянного пересоздания.
+- `app/src/App.tsx`
+  - устранён hot-path write в `localStorage` для level-up эффекта.
+- `app/src/engine/SoundManager.ts`
+  - `loadSettings` теперь с `try/catch` на битый JSON.
+
+### Что обновлено в документации во время сессии
+
+- `PROJECT_MILESTONES.md`
+  - отмечены закрытые пункты CONTENT/POLISH;
+  - добавлены строки в `DECISIONS LOG` по новым архитектурным решениям.
+- `docs/architecture/world-social-graphics.md`
+  - отражены новые регионы/маршруты, deterministic spread hooks, графические настройки.
+- `docs/orchestrate/NPC_WORLD_LOGIC.md`
+  - уточнён порядок шагов spread/караваны и причинная последовательность.
+
+### Текущее качество после изменений
+
+Команда качества (из `app/`):
+
+```bash
+npm run orchestrate:gate
+```
+
+Последний результат в этом чате: **зелёный**.
+- lint: ok
+- tests: **38 files / 161 tests passed**
+- deps:circular: no cycles
+
+### Что делать в следующем чате (рекомендованный старт)
+
+1. Прочитать:
+   - `PROJECT_MILESTONES.md`
+   - `docs/architecture/world-social-graphics.md`
+   - `docs/orchestrate/NPC_WORLD_LOGIC.md`
+   - этот раздел `README.md` (handover).
+2. Продолжить с приоритетом:
+   - a11y/семантика UI (критические панели и модалки);
+   - дальнейшее дробление `useGameState` (уменьшение «god-hook»);
+   - усиление deterministic pipeline для всех оставшихся `Math.random` в соц-цепочке;
+   - UI/UX polish states (skeleton/empty/error) до консистентного design-system уровня.
+3. Перед завершением каждой итерации:
+   - запускать `npm run orchestrate:gate`;
+   - обновлять `PROJECT_MILESTONES.md` + `DECISIONS LOG`;
+   - синхронизировать этот README (если менялось поведение/контракты).
+
+### Готовый промпт для нового чата (копипаст)
+
+```text
+Прочитай README.md (раздел "Handover для нового чата"), PROJECT_MILESTONES.md и docs/architecture/world-social-graphics.md.
+Продолжай работу с текущего состояния: gate должен оставаться зелёным, не ломай существующие контракты.
+Сфокусируйся на следующем блоке: a11y + декомпозиция useGameState + deterministic социальная цепочка.
+```
 
 ## Лицензия
 
@@ -169,6 +329,7 @@ React + TypeScript, Vite, Tailwind, shadcn/ui; Three.js / React Three Fiber; Ele
 
 - **Готово:** **полноценное приложение-игра** — **основной** путь: **десктоп** на **Electron** (собственное окно Windows, **.exe**): `npm run desktop` или **`START_DESKTOP.bat`**; для пользователей без Node — **установщик NSIS** **`BUILD_DESKTOP_INSTALLER.bat`** / `npm run desktop:installer` → `desktop-installer/Chronos AI Chronicles-Setup-*.exe`; портативная сборка **`BUILD_DESKTOP_EXE.bat`** / `npm run desktop:pack` → `desktop-dist/ChronosChronicles-win32-x64/ChronosChronicles.exe`. Внутри клиента — **GPU-ускоренный** рендер (шейдеры, пост, IBL). Опционально **генерация сплэш-арта** внешней моделью: `npm run generate:ai-art` при **`OPENAI_API_KEY`**, **`IntroScreen`** читает `generated/manifest.json`. Цикл интро → создание персонажа (**эпоха мира** `character.worldEra`) → `playing`. **Два режима карты мира:** (1) **тактическая 2D-карта** (Canvas) — до **1 000 000 × 1 000 000** тайлов, чанки **50×50**, атлас из `generate-chronos-atlas.mjs`, день/ночь, погода, **рельеф и «сканер»** на тайлах; (2) при **«Высокое качество графики»** — **3D-сцена** (`WorldViewport` → `WorldScene3D`): рельеф, simplex, **туман через `SceneFog`** (модификаторы по погоде/эпохе и **пресету качества**), PMREM, instanced-декор, **вода** с волнами, **псевдо-отражение неба** на воде (сила зависит от пресета), плавающие острова, горизонт с LOD, ресурсы, фауна, **постобработка с пресетами** low/balanced/high (Bloom, GodRays с обнулением нагрузки на low, шум, хроматика, **колористика Hue/Sat по эпохе**, виньетка, ACES, SMAA), **dpr** 1 / 1.5 / 2 по пресету, тени 1024, Chronolith + опциональный GLB; реплики сцены в мире (CSS2D). В **настройках** — переключатель **«Качество 3D-мира»** (низкое / сбалансированное / высокое), сохраняется в `chronos_settings.worldGraphicsTier`. При сбое 3D — откат на **2D** `WorldCanvas`. **Социум:** расширенный граф отношений, толпа на карте в том же социальном тике, **слухи с TTL** и **несколько торговых маршрутов / караванов** при пропуске времени (**«Ждать»**); **`factionReputation`** дрейфует при распространении слухов с `factionTags`; панель **«Мир»** (`WorldStatusPanel`) — репутация, активные слухи, коалиции. **Последствия сцены:** `npc_relationship` применяется к доверию/симпатии NPC (через `ChoiceBatchSideEffects`); смерть NPC — тип **`npc_mark_dead`** или поле **`markNpcDead`** в payload события/квеста → `NPCSystem.markNpcDead` и наследование обиды у союзников погибшего. **NPC:** знания, психика, WebLLM-гибрид, настройка «только процедурные». **Инвентарь:** доменные правила, **каталог шаблонов** `itemCatalog`, последствия `gold` / `item_gain` / `item_loss`. **Сохранения** localStorage + IndexedDB. **Smoke:** `app/scripts/smoke-story.mjs`. Сборка: `cd app && npm run build`.
 - **Навигация и карта (игрок):** полноэкранный **оверлей тактической карты** с blur (`WorldTacticalMapOverlay`, **M** / кнопка карты), зум колёсиком, перетаскивание, **ПКМ — вейпоинт** (тост подтверждения), вкладка **«Путешествие»** со списком локаций (`MapPanel`); при **первом** открытии карты — одноразовая строка с подсказкой **M / G / Esc** (`localStorage` флаг `chronos_map_coach_dismissed`); фокус и Tab циклятся внутри оверлея (a11y); **миникарта** в углу (`NavigationMinimap`, настройка в «Игра»); **компас** с маркером ближайшего NPC в мире в 2D-режиме (`NavigationCompassBar`); **G** — краткий **пинг** на текущем тайле (2D + 3D-кольца); данные меток — `localStorage` ключ **`chronos_navigation`** (`navigationStorage.ts`).
+- **Плавная интеграция 3D по всему пользовательскому пути:** профиль графики можно выбрать уже на интро и в подтверждении персонажа (`Performance / Balanced / Cinematic`), он сохраняется в `chronos_settings` до входа в игру; при активном HQ прогревается чанк `WorldViewport`, а в `GameScreen` есть мягкий transition overlay при смене режима/пресета рендера.
 - **О графике и референсах (NMS и др.):** ориентир — **визуальная плотность и атмосфера** амбициозных миров; продукт **не** заявляется «урезанной копией» — цель: **лучшая** реализуемая картинка **в составе данного клиента** без отказа от детализации мира. При необходимости **другой** низкоуровневой движок (Godot/Unity/Unreal) — это **эволюция** поставки, **не** оправдание деградации текущего **замысла**.
 - **В работе / задел:** UI коалиций врагов в **бою** с повседневным геймплеем (HUD коалиций и карта — есть); полный граф поколений; **LOD** instanced-декора при смене чанка и стабильный FPS; отдельные игровые режимы (охота, стройка, ферма) из дизайн-доков; **полный EN** для всего процедурного текста (расширены ключи для **App**, **GameScreen**, **UpdateBanner** и игровых тостов — остаётся процедурный контент движка); **ESLint:** `npm run lint` — **0 errors**, дальнейшая зачистка `exhaustive-deps` там, где это безопасно.
 

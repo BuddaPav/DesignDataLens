@@ -138,6 +138,7 @@ export function GameScreen({
   const [showCharacterPanel, setShowCharacterPanel] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showParticles] = useState(true);
+  const [worldTransitioning, setWorldTransitioning] = useState(false);
   const [hqWorld, setHqWorld] = useState(readHighQualityGraphics);
   const [worldGraphicsTier, setWorldGraphicsTier] = useState(readWorldGraphicsTier);
   const lang = useLanguage();
@@ -181,13 +182,21 @@ export function GameScreen({
 
   useEffect(() => {
     const sync = () => {
+      setWorldTransitioning(true);
       setHqWorld(readHighQualityGraphics());
       setWorldGraphicsTier(readWorldGraphicsTier());
       setSettingsTick((n) => n + 1);
+      window.setTimeout(() => setWorldTransitioning(false), 480);
     };
     window.addEventListener('chronos:settings_updated', sync);
     return () => window.removeEventListener('chronos:settings_updated', sync);
   }, []);
+
+  useEffect(() => {
+    if (!hqWorld) return;
+    const timer = window.setTimeout(() => setWorldTransitioning(false), 420);
+    return () => window.clearTimeout(timer);
+  }, [hqWorld, worldGraphicsTier]);
 
   useEffect(() => {
     const syncNav = () => setNavHud(loadNavigation());
@@ -510,6 +519,13 @@ export function GameScreen({
 
       {/* Main: при HQ-3D — мир на весь блок + компактный сюжет поверх; иначе классическая двухколонка */}
       <main className="flex-1 flex overflow-hidden relative z-10">
+        {worldTransitioning && (
+          <div className="pointer-events-none absolute inset-0 z-[18] bg-slate-950/45 backdrop-blur-[1.5px]">
+            <div className="absolute inset-x-0 top-4 mx-auto w-fit rounded-full border border-cyan-400/25 bg-black/55 px-3 py-1 text-xs text-cyan-100/90">
+              {t('game.story_unfolding', lang)}
+            </div>
+          </div>
+        )}
         {hqWorld ? (
           <div className="relative flex flex-1 min-w-0 min-h-0 flex-col">
             <div className="min-h-0 flex-1 shrink-0 border-b border-[var(--chronos-border)]/70 p-4 md:p-6">
@@ -653,7 +669,12 @@ export function GameScreen({
                     </div>
                   }
                 >
-                  <InventoryPanel inventory={player.inventory} stats={player.stats} />
+                  <InventoryPanel
+                      inventory={player.inventory}
+                      stats={player.stats}
+                      onDropItem={undefined}
+                      onOfferToNpc={undefined}
+                    />
                 </Suspense>
               )}
 
@@ -721,6 +742,8 @@ export function GameScreen({
                     activeRumors={player.storyProgress.activeRumors}
                     enemyCoalitions={player.storyProgress.enemyCoalitions}
                     worldEventLog={player.storyProgress.worldEventLog}
+                    delayedConsequences={player.storyProgress.delayedConsequences}
+                    playerObligations={player.storyProgress.playerObligations}
                     npcs={npcs}
                     playerLocationId={currentLocation.id}
                     lang={lang}
@@ -1023,6 +1046,7 @@ export function GameScreen({
             setTacticalMapOpen(false);
           }}
           enemyCoalitions={player.storyProgress.enemyCoalitions ?? []}
+          delayedConsequences={player.storyProgress.delayedConsequences}
         />
       )}
 

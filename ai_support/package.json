@@ -1,0 +1,9 @@
+{
+  "type": "module",
+  "scripts": {
+    "index": "node run.ts index",
+    "search": "node run.ts search",
+    "analyze": "node run.ts analyze",
+    "help": "node run.ts help"
+  }
+}

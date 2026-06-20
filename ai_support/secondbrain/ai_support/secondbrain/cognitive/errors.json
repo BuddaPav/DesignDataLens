@@ -1,0 +1,122 @@
+[
+  {
+    "id": "e1781991391027",
+    "error": "spawn C:\\WINDOWS\\system32\\cmd.exe ENOENT",
+    "context": "compile",
+    "timestamp": 1781991391027,
+    "resolved": false
+  },
+  {
+    "id": "e1781991419815",
+    "error": "spawn cmd.exe ENOENT",
+    "context": "compile",
+    "timestamp": 1781991419815,
+    "resolved": false
+  },
+  {
+    "id": "e1781991430832",
+    "error": "spawn C:\\WINDOWS\\system32\\cmd.exe ENOENT",
+    "context": "compile",
+    "timestamp": 1781991430832,
+    "resolved": false
+  },
+  {
+    "id": "e1781991467126",
+    "error": "spawn cmd ENOENT",
+    "context": "compile",
+    "timestamp": 1781991467126,
+    "resolved": false
+  },
+  {
+    "id": "e1781991486247",
+    "error": "spawn C:\\WINDOWS\\system32\\cmd.exe ENOENT",
+    "context": "compile",
+    "timestamp": 1781991486247,
+    "resolved": false
+  },
+  {
+    "id": "e1781991496292",
+    "error": "Exit code undefined: ",
+    "context": "compile",
+    "timestamp": 1781991496292,
+    "resolved": false
+  },
+  {
+    "id": "e1781991506318",
+    "error": "Exit code 1: ",
+    "context": "compile",
+    "timestamp": 1781991506318,
+    "resolved": false
+  },
+  {
+    "id": "e1781991540940",
+    "error": "Exit code 1: ",
+    "context": "compile",
+    "timestamp": 1781991540940,
+    "resolved": false
+  },
+  {
+    "id": "e1781991572592",
+    "error": "Exit code 1: ",
+    "context": "build",
+    "stack": "Exit code 1: ",
+    "timestamp": 1781991572592,
+    "resolved": false
+  },
+  {
+    "id": "e1781991581797",
+    "error": "Exit code 1: no output",
+    "context": "build",
+    "stack": "Exit code 1: no output",
+    "timestamp": 1781991581797,
+    "resolved": false
+  },
+  {
+    "id": "e1781991638212",
+    "error": "Exit code 1: no output",
+    "context": "build",
+    "stack": "Exit code 1: no output",
+    "timestamp": 1781991638212,
+    "resolved": false
+  },
+  {
+    "id": "e1781991646372",
+    "error": "Exit code 1: no output",
+    "context": "build",
+    "stack": "Exit code 1: no output",
+    "timestamp": 1781991646372,
+    "resolved": false
+  },
+  {
+    "id": "e1781991656428",
+    "error": "Exit code 1: require is not defined",
+    "context": "build",
+    "stack": "Exit code 1: require is not defined",
+    "timestamp": 1781991656428,
+    "resolved": false
+  },
+  {
+    "id": "e1781991666794",
+    "error": "require is not defined",
+    "context": "build",
+    "stack": "require is not defined",
+    "timestamp": 1781991666794,
+    "resolved": false
+  },
+  {
+    "id": "e1781991693139",
+    "error": "require is not defined",
+    "context": "build",
+    "stack": "require is not defined",
+    "timestamp": 1781991693139,
+    "resolved": false
+  },
+  {
+    "id": "e1781991705069",
+    "error": "require is not defined",
+    "context": "build",
+    "stack": "require is not defined",
+    "timestamp": 1781991705069,
+    "resolved": false
+  }
+]

@@ -80,15 +80,19 @@ export function resetLlmWeightLoadCounters(): void {
 let r3fLastTs = 0;
 let r3fEmaFps = 60;
 let r3fLowWarned = false;
+const r3fTierEma = new Map<string, number>();
 
 /** Вызывать из одного `useFrame` в Canvas (React Three Fiber). */
-export function recordR3fFrameTick(): void {
+export function recordR3fFrameTick(tier: 'low' | 'balanced' | 'high' = 'balanced'): void {
   if (!isTelemetryEnabled()) return;
   const now = performance.now();
   if (r3fLastTs > 0) {
     const dt = Math.max(1e-6, now - r3fLastTs);
     const inst = 1000 / dt;
     r3fEmaFps = r3fEmaFps * 0.92 + inst * 0.08;
+    const prevTier = r3fTierEma.get(tier) ?? 60;
+    const nextTier = prevTier * 0.92 + inst * 0.08;
+    r3fTierEma.set(tier, nextTier);
     if (r3fEmaFps < 47 && !r3fLowWarned) {
       r3fLowWarned = true;
       console.warn('[chronos/telemetry] R3F FPS (EMA) ниже ~50:', r3fEmaFps.toFixed(1));
@@ -102,8 +106,13 @@ export function resetR3fFpsTelemetry(): void {
   r3fLastTs = 0;
   r3fEmaFps = 60;
   r3fLowWarned = false;
+  r3fTierEma.clear();
 }
 
 export function getR3fFpsEmaSnapshot(): number {
   return r3fEmaFps;
+}
+
+export function getR3fFpsEmaByTierSnapshot(): ReadonlyMap<string, number> {
+  return new Map(r3fTierEma);
 }

@@ -1,0 +1,57 @@
+# Cursor Rules для AFK Game
+
+## Style Guidelines
+- TypeScript strict mode
+- Functional components with hooks
+- camelCase for variables, PascalCase for components
+- Добавлять типы для всех функций
+- Избегать `any`, использовать `unknown`
+
+## Patterns
+
+### React Component
+```tsx
+export const ComponentName = memo(function ComponentName({
+  prop1,
+  prop2
+}: {
+  prop1: string;
+  prop2?: number;
+}) {
+  const value = useMemo(() => computeValue(prop1), [prop1]);
+
+  return <div>{value}</div>;
+});
+```
+
+### Game Hook
+```ts
+export function useGameFeature() {
+  const gameState = useGameState();
+  const feature = useMemo(() => [...], [gameState]);
+
+  return feature;
+}
+```
+
+### Domain Logic
+```ts
+export function computeSomething(input: Input): Output {
+  validateInput(input);
+  return computeOutput(input);
+}
+```
+
+## Prohibited
+- ❌ console.log в production
+- ❌ any тип
+- ❌ синхронные вызовы в game loop
+- ❌ прямой DOM доступ
+- ❌ hardcoded secrets
+
+## Always Do
+- ✅ Валидировать input
+- ✅ Добавлять error boundaries
+- ✅ Использовать memo/useCallback
+- ✅ Типизировать возвращаемые значения
+- ✅ Добавлять JSDoc для complex functions

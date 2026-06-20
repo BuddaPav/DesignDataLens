@@ -8,12 +8,14 @@ import type {
   Quest,
   Scene,
   Choice,
+  Consequence,
   ChoiceRecord,
   EmotionRecord,
   Location,
   ShopItem,
   NPC,
   ActiveRumor,
+  WorldLogEntry,
 } from '@/types/game';
 
 import { getAIStoryEngine } from '@/engine/AIStoryEngine';
@@ -65,17 +67,33 @@ import {
   type ChoiceBatchSideEffects,
   type StoryFlagOp,
 } from '@/domain/consequences/applyChoiceConsequences';
+import { deriveDialogueConsequences } from '@/domain/consequences/deriveDialogueConsequences';
+import {
+  enqueueDelayedConsequences,
+  tickDelayedConsequencesQueue,
+} from '@/domain/consequences/delayedConsequenceQueue';
+import { collectDelayedConsequenceLogLines } from '@/domain/consequences/delayedConsequenceJournal';
+import {
+  detectObligationKinds,
+  enqueuePlayerObligations,
+  tickPlayerObligationQueue,
+} from '@/domain/consequences/playerObligationQueue';
 import { decayAndSpreadRumorsInWorker } from '@/engine/gossipSpreadWorkerClient';
 import { traceAsync, traceSync } from '@/debug/chronosTelemetry';
-import { applyMarketSupplyFromCaravanVisits } from '@/domain/economy/caravanEconomy';
+import {
+  applyMarketSupplyFromCaravanVisits,
+  marketToneFromSupply,
+  readMarketSupplyForLocation,
+} from '@/domain/economy/caravanEconomy';
 import { purchaseShopItemWithGold, type ShopPurchaseResult } from '@/domain/economy/shopPurchase';
+import { detectSoftEndings, getBestEnding } from '@/domain/softEndings';
 import { collectEligibleDefeatNpcIdsForQuestGeneration } from '@/domain/npc/defeatObjectiveRules';
 import { applyDefeatEnemyProgressForMarkedDead } from '@/domain/quest/defeatEnemyObjective';
 import {
-  CHRONOS_QUICK_COMBAT_LOSS_HP,
   canLethallyKillNpcInCombat,
   isNpcHostileForQuickCombat,
   resolveQuickHostileCombat,
+  getCombatHpLoss,
 } from '@/domain/combat/quickHostileCombat';
 import {
   collectFactionRepShiftLines,
@@ -89,6 +107,14 @@ import {
   migratePersistedSaveRevived,
   type PersistedChronosSave,
 } from '@/domain/save/saveSchema';
+import {
+  STORY_LOCATIONS,
+  getStoryLocationById,
+  isStoryLocationConnected,
+  sanitizeDiscoveredLocations,
+} from '@/domain/world/storyLocations';
+import { shouldTriggerRoadEvent, getRandomRoadEvent, applyRoadEventConsequences } from '@/domain/world/roadEvents';
+import { createDeterministicRng, seedFromString } from '@/domain/sim/deterministicRng';
 
 const MAX_ACTIVE_RUMORS_BUFFER = 52;
 
@@ -99,6 +125,9 @@ const createInitialCharacter = (name: string): Character => ({
   title: 'The Chosen',
   level: 1,
   experience: 0,
+  hp: 100,
+  maxHp: 100,
+  gold: 50,
   attributes: {
     strength: 10,
     intelligence: 10,
@@ -145,7 +174,9 @@ const createInitialPlayer = (name: string): Player => ({
     achievements: [],
     battlesWon: 0,
     battlesLost: 0,
-    enemiesDefeated: 0
+    enemiesDefeated: 0,
+    playedTime: 0,
+    inCombat: false
   },
   inventory: {
     gold: 100,
@@ -181,6 +212,8 @@ const createInitialPlayer = (name: string): Player => ({
     },
     tradeCaravans: ensureDefaultCaravans(undefined),
     rumorConsequenceQueue: [],
+    delayedConsequences: [],
+    playerObligations: [],
   },
   choices: [],
   archetype: 'storyteller',
@@ -219,6 +252,12 @@ function migrateLoadedPlayer(player: Player): void {
   if (!player.storyProgress.rumorConsequenceQueue) {
     player.storyProgress.rumorConsequenceQueue = [];
   }
+  if (!player.storyProgress.delayedConsequences) {
+    player.storyProgress.delayedConsequences = [];
+  }
+  if (!player.storyProgress.playerObligations) {
+    player.storyProgress.playerObligations = [];
+  }
   if (!player.storyProgress.factionReputation) {
     player.storyProgress.factionReputation = {
       guild_merchants: 0,
@@ -227,6 +266,9 @@ function migrateLoadedPlayer(player: Player): void {
       academy: 0
     };
   }
+  player.storyProgress.discoveredLocations = sanitizeDiscoveredLocations(
+    player.storyProgress.discoveredLocations,
+  );
   player.storyProgress.tradeCaravans = ensureDefaultCaravans(player.storyProgress.tradeCaravans);
   if (player.inventory.storyTokens === undefined) {
     player.inventory.storyTokens = 0;
@@ -234,92 +276,54 @@ function migrateLoadedPlayer(player: Player): void {
 }
 
 
-const initialLocations: Location[] = [
-  {
-    id: 'starting_village',
-    name: 'Willbrook Village',
-    type: 'city',
-    description: 'A small village nestled between rolling hills and an ancient forest. The air smells of hearth fires and freshly baked bread.',
-    atmosphere: {
-      mood: 'peaceful',
-      lighting: 'golden',
-      sounds: ['birds', 'wind', 'distant chatter'],
-      music: 'ambient_peaceful'
-    },
-    connectedLocations: ['whispering_forest', 'old_ruins', 'misty_crossroads'],
-    npcs: ['elara', 'thorin'],
-    pointsOfInterest: [
-      { id: 'village_inn', name: 'The Hearthstone Inn', type: 'building', description: 'A cozy inn with a warm fire', interactable: true },
-      { id: 'village_square', name: 'Village Square', type: 'landmark', description: 'The heart of the village', interactable: true }
-    ],
-    secrets: []
-  },
-  {
-    id: 'misty_crossroads',
-    name: 'Misty Crossroads',
-    type: 'landmark',
-    description: 'A windworn crossroads where traders and wanderers swap rumors under a pale sky.',
-    atmosphere: {
-      mood: 'watchful',
-      lighting: 'silver',
-      sounds: ['wind', 'distant hooves', 'whispers'],
-      music: 'ambient_mysterious'
-    },
-    connectedLocations: ['starting_village', 'whispering_forest'],
-    npcs: [],
-    pointsOfInterest: [
-      { id: 'crossroads_stone', name: 'Waystone', type: 'landmark', description: 'An old stone with chipped runes', interactable: true }
-    ],
-    secrets: []
-  },
-  {
-    id: 'whispering_forest',
-    name: 'Whispering Forest',
-    type: 'forest',
-    description: 'Ancient trees tower overhead, their leaves whispering secrets in a language only the wind understands.',
-    atmosphere: {
-      mood: 'mysterious',
-      lighting: 'dappled',
-      sounds: ['rustling leaves', 'distant whispers', 'creaking wood'],
-      music: 'ambient_mysterious'
-    },
-    connectedLocations: ['starting_village', 'old_ruins', 'misty_crossroads'],
-    npcs: ['vesper'],
-    pointsOfInterest: [
-      { id: 'ancient_oak', name: 'The Ancient Oak', type: 'landmark', description: 'A tree older than memory', interactable: true },
-      { id: 'hidden_grove', name: 'Hidden Grove', type: 'entrance', description: 'Something glimmers in the shadows', interactable: true }
-    ],
-    secrets: [
-      { id: 'forest_secret_1', content: 'The forest is alive and watches all who enter', knownBy: [], discoveredByPlayer: false, revealConditions: [] }
-    ]
-  },
-  {
-    id: 'old_ruins',
-    name: 'Forgotten Ruins',
-    type: 'ruins',
-    description: 'Crumbling stone walls bear witness to a civilization long past. Magic lingers here, old and dangerous.',
-    atmosphere: {
-      mood: 'ominous',
-      lighting: 'shadowy',
-      sounds: ['howling wind', 'stone grinding', 'echoes'],
-      music: 'ambient_dark'
-    },
-    connectedLocations: ['starting_village', 'whispering_forest'],
-    npcs: ['mortimer'],
-    pointsOfInterest: [
-      { id: 'ruined_temple', name: 'Ruined Temple', type: 'building', description: 'A temple to forgotten gods', interactable: true },
-      { id: 'underground_entrance', name: 'Dark Passage', type: 'entrance', description: 'Stairs descend into darkness', interactable: true }
-    ],
-    secrets: [
-      { id: 'ruins_secret_1', content: 'An ancient power sleeps beneath the ruins', knownBy: ['mortimer'], discoveredByPlayer: false, revealConditions: [] }
-    ]
-  }
-];
+const initialLocations: Location[] = STORY_LOCATIONS;
 
 /** Пауза после входа в playing, чтобы не конкурировать с первым кадром/3D. */
 const WEBLLM_START_GRACE_MS = 750;
 /** Дедлайн для requestIdleCallback, если main thread долго занят. */
 const WEBLLM_IDLE_DEADLINE_MS = 2600;
+
+function buildNarrativeFallbackScene(location: Location): Scene {
+  const lang = getLanguage();
+  const sid = `scene_fallback_${Date.now()}`;
+  const text =
+    lang === 'ru'
+      ? `Мир не остановился: в «${location.name}» по-прежнему идут слухи, сделки и личные драмы. Вы можете продолжить через осторожную разведку.`
+      : `The world keeps moving: in "${location.name}" rumors, deals, and personal drama continue. You can proceed through careful reconnaissance.`;
+  return {
+    id: sid,
+    location: location.id,
+    narrative: text,
+    choices: [
+      {
+        id: `${sid}_ff`,
+        text:
+          lang === 'ru'
+            ? 'Собрать факты в округе и продолжить сюжет'
+            : 'Gather local intel and continue the story',
+        type: 'strategic',
+        consequences: [
+          {
+            type: 'quest_unlock',
+            key: `caravan_supply:${location.id}:${Math.floor(Math.random() * 900 + 100)}`,
+            value: 1,
+          },
+          {
+            type: 'world_event',
+            key: 'fallback_story_probe',
+            value: {
+              message:
+                lang === 'ru'
+                  ? 'Вы перехватили зацепку, которая возвращает вас в поток событий.'
+                  : 'You picked up a lead that puts you back into the event flow.',
+              locationReputationDelta: { [location.id]: 1 },
+            },
+          },
+        ],
+      },
+    ],
+  };
+}
 
 // ==================== GAME STATE HOOK ====================
 
@@ -333,6 +337,8 @@ export function useGameState() {
   const rumorWorkerToken = useRef(0);
   const isAdvanceTimeInFlight = useRef(false);
   const playerRef = useRef<Player | null>(null);
+  const gamePhaseRef = useRef<'intro' | 'character_creation' | 'playing'>('intro');
+  const saveGameRef = useRef<() => unknown>(() => null);
 
   // Player state
   const [player, setPlayer] = useState<Player | null>(null);
@@ -369,6 +375,10 @@ export function useGameState() {
   useEffect(() => {
     playerRef.current = player;
   }, [player]);
+
+  useEffect(() => {
+    gamePhaseRef.current = gamePhase;
+  }, [gamePhase]);
 
   useEffect(() => {
     if (gamePhase !== 'playing' || !player) {
@@ -514,6 +524,7 @@ export function useGameState() {
         console.error('Failed to generate initial scene:', e);
         const msg = e instanceof Error ? e.message : 'Failed to generate initial scene';
         setLastError(msg);
+        setCurrentScene(buildNarrativeFallbackScene(currentLocation));
         const L = getLanguage();
         const failTitle = t('app.toast.scene_generation_failed', L);
         const failDesc = t('app.toast.scene_generation_failed_desc', L);
@@ -588,6 +599,7 @@ export function useGameState() {
       console.error('Failed to generate scene:', e);
       const msg = e instanceof Error ? e.message : 'Failed to generate scene';
       setLastError(msg);
+      setCurrentScene(buildNarrativeFallbackScene(effectiveLocation));
       const L = getLanguage();
       const failTitle = t('app.toast.scene_generation_failed', L);
       const failDesc = t('app.toast.scene_generation_failed_desc', L);
@@ -616,13 +628,14 @@ export function useGameState() {
 
   // ==================== CHOICE HANDLING ====================
 
-  const applyConsequences = useCallback((consequences: Choice['consequences']) => {
-    if (!player) return;
-
-    setPlayer((prev) => {
-      if (!prev) return null;
-      const lang = getLanguage();
-      const log = [...(prev.storyProgress.worldEventLog || [])];
+  const applyConsequenceBatchToPlayer = useCallback(
+    (
+      prev: Player,
+      consequences: Consequence[],
+      log: WorldLogEntry[],
+      lang: ReturnType<typeof getLanguage>
+    ): Player => {
+      if (consequences.length === 0) return prev;
       const storyFlags: StoryFlagOp[] = [];
       const sideEffects: ChoiceBatchSideEffects = { npcRelDeltas: [], npcIdsToMarkDead: [] };
       let next = applyChoiceConsequencesBatch(prev, consequences, lang, log, storyFlags, sideEffects);
@@ -655,8 +668,47 @@ export function useGameState() {
         );
       }
       return next;
+    },
+    [],
+  );
+
+  const applyConsequences = useCallback((
+    consequences: Choice['consequences'],
+    source: 'choice' | 'dialogue' | 'world' = 'choice',
+  ) => {
+    if (!player) return;
+
+    setPlayer((prev) => {
+      if (!prev) return null;
+      const lang = getLanguage();
+      const log = [...(prev.storyProgress.worldEventLog || [])];
+      const immediate = consequences.filter((c) => !c.delay || c.delay <= 0);
+      let next = applyConsequenceBatchToPlayer(prev, immediate, log, lang);
+      const beforeDelayed = next.storyProgress.delayedConsequences ?? [];
+      const beforeIds = new Set(beforeDelayed.map((p) => p.id));
+      const delayedQueue = enqueueDelayedConsequences(
+        beforeDelayed,
+        consequences,
+        source,
+        currentLocation.id,
+      );
+      const added = delayedQueue.filter((p) => !beforeIds.has(p.id));
+      for (const line of collectDelayedConsequenceLogLines(added, lang, 'enqueue')) {
+        pushWorldLog(log, line, 'info', 'social');
+      }
+      if (delayedQueue !== beforeDelayed || added.length > 0) {
+        next = {
+          ...next,
+          storyProgress: {
+            ...next.storyProgress,
+            delayedConsequences: delayedQueue,
+            worldEventLog: log,
+          },
+        };
+      }
+      return next;
     });
-  }, [player]);
+  }, [player, applyConsequenceBatchToPlayer, currentLocation.id]);
 
   /** Быстрая схватка с враждебным NPC из панели «Люди»: смерть только для тех же id, что и defeat_enemy (proc_*, allowlist). */
   const resolveQuickCombatWithNpc = useCallback(
@@ -695,7 +747,7 @@ export function useGameState() {
             ...prev,
             stats: {
               ...prev.stats,
-              health: Math.max(1, prev.stats.health - CHRONOS_QUICK_COMBAT_LOSS_HP),
+              health: Math.max(1, prev.stats.health - getCombatHpLoss()),
               battlesLost: prev.stats.battlesLost + 1,
             },
             storyProgress: { ...prev.storyProgress, worldEventLog: log },
@@ -795,8 +847,20 @@ export function useGameState() {
   // ==================== LOCATION MANAGEMENT ====================
 
   const travelTo = useCallback((locationId: string) => {
-    const location = initialLocations.find(l => l.id === locationId);
+    const location = getStoryLocationById(locationId);
     if (!location) return;
+    if (!isStoryLocationConnected(currentLocation.id, locationId)) {
+      toast.error(t('game.travel_unreachable', getLanguage()));
+      return;
+    }
+
+    // Проверяем случайное событие на дороге
+    const fromBiome = currentLocation.biome;
+    const toBiome = location.biome;
+    const seed = Date.now() ^ (currentLocation.id.length + location.id.length);
+    const roadEvent = shouldTriggerRoadEvent(seed, fromBiome, toBiome)
+      ? getRandomRoadEvent(seed, fromBiome ?? toBiome)
+      : null;
 
     setCurrentLocation(location);
     emotionDetector.current.recordAction('location_entered', { locationId });
@@ -807,8 +871,23 @@ export function useGameState() {
         ? prev.storyProgress.discoveredLocations
         : [...prev.storyProgress.discoveredLocations, locationId];
       const wp = randomPointNearAnchor(locationId, Date.now() ^ prev.id.length);
+
+      // Применяем последствия дорожного события
+      let charHp = prev.character.hp;
+      let charGold = prev.character.gold;
+      if (roadEvent) {
+        const result = applyRoadEventConsequences({ character: prev.character }, roadEvent);
+        charHp = result.hp;
+        charGold = result.gold;
+        toast.warning(roadEvent.title[getLanguage()], {
+          description: roadEvent.description[getLanguage()],
+          icon: roadEvent.hpChange && roadEvent.hpChange < 0 ? '⚔️' : '✨'
+        });
+      }
+
       return {
         ...prev,
+        character: { ...prev.character, hp: charHp, gold: charGold },
         storyProgress: {
           ...prev.storyProgress,
           discoveredLocations: discovered,
@@ -818,21 +897,26 @@ export function useGameState() {
     });
 
     generateScene({ currentLocation: location });
-  }, [generateScene]);
+  }, [generateScene, currentLocation.id, currentLocation.biome]);
 
   /** Плавное перемещение по карте (Canvas): delta в тайлах за кадр */
   const updateWorldPosition = useCallback((delta: { dTileX: number; dTileY: number }) => {
+    if (Math.abs(delta.dTileX) < 0.0001 && Math.abs(delta.dTileY) < 0.0001) return;
     setPlayer(prev => {
       if (!prev) return null;
       const p = prev.storyProgress.worldPosition;
+      const nextPos = clampWorldPosition({
+        tileX: p.tileX + delta.dTileX,
+        tileY: p.tileY + delta.dTileY
+      });
+      if (nextPos.tileX === p.tileX && nextPos.tileY === p.tileY) {
+        return prev;
+      }
       return {
         ...prev,
         storyProgress: {
           ...prev.storyProgress,
-          worldPosition: clampWorldPosition({
-            tileX: p.tileX + delta.dTileX,
-            tileY: p.tileY + delta.dTileY
-          })
+          worldPosition: nextPos
         }
       };
     });
@@ -1017,6 +1101,50 @@ export function useGameState() {
         });
       }
 
+      if (isFollowUp) {
+        const dialogueConsequences = deriveDialogueConsequences({
+          line: playerLine,
+          npcId,
+          locationId: currentLocation.id,
+          lang,
+        });
+        if (dialogueConsequences.length > 0) {
+          applyConsequences(dialogueConsequences, 'dialogue');
+        }
+        const obligationKinds = detectObligationKinds(playerLine);
+        if (obligationKinds.length > 0) {
+          setPlayer((prev) => {
+            if (!prev) return null;
+            const obligations = enqueuePlayerObligations(
+              prev.storyProgress.playerObligations ?? [],
+              obligationKinds,
+              currentLocation.id,
+              npcId,
+              18,
+            );
+            const beforeObl = prev.storyProgress.playerObligations ?? [];
+            if (obligations.length === beforeObl.length) return prev;
+            const log = [...(prev.storyProgress.worldEventLog || [])];
+            pushWorldLog(
+              log,
+              lang === 'ru'
+                ? 'Мир запомнил ваше обещание — последствия проявятся позже.'
+                : 'The world noted your commitment — consequences will surface later.',
+              'info',
+              'social',
+            );
+            return {
+              ...prev,
+              storyProgress: {
+                ...prev.storyProgress,
+                playerObligations: obligations,
+                worldEventLog: log,
+              },
+            };
+          });
+        }
+      }
+
       const sceneId = `dialogue_${Date.now()}`;
       const scene: Scene = {
         id: sceneId,
@@ -1087,7 +1215,7 @@ export function useGameState() {
           });
       }
     },
-    [player, currentLocation, crowdNPCs, resolveQuickCombatWithNpc]
+    [player, currentLocation, crowdNPCs, resolveQuickCombatWithNpc, applyConsequences]
   );
 
   // ==================== QUEST MANAGEMENT ====================
@@ -1180,13 +1308,19 @@ export function useGameState() {
       flags: Record<string, unknown>;
     };
     npcData: unknown;
+    /** Unix timestamp when save was created */
+    timestamp: number;
+    /** Total played time in milliseconds */
+    playedTime: number;
+    /** Whether player is currently in combat */
+    inCombat: boolean;
   };
 
   const applyLoadedSnapshot = useCallback(
     (saveData: LoadedSaveSnapshot) => {
       migrateLoadedPlayer(saveData.player);
       setPlayer(saveData.player);
-      const loc = initialLocations.find((l) => l.id === saveData.currentLocation);
+      const loc = getStoryLocationById(saveData.currentLocation);
       if (loc) setCurrentLocation(loc);
       memorySystem.current.importMemories(saveData.memorySystem);
       npcSystem.current.importData(saveData.npcData);
@@ -1217,7 +1351,9 @@ export function useGameState() {
       memorySystem: memorySystem.current.exportMemories(),
       emotionHistory: emotionDetector.current.getEmotionHistory(86400000),
       npcData: npcSystem.current.exportData(),
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      playedTime: player.stats.playedTime ?? 0,
+      inCombat: player.stats.inCombat ?? false
     };
 
     const serialized = serializeMaps(saveData);
@@ -1229,6 +1365,10 @@ export function useGameState() {
     void saveFullWorldToIndexedDB(serialized).catch(() => {});
     return saveData;
   }, [player, currentLocation]);
+
+  useEffect(() => {
+    saveGameRef.current = saveGame;
+  }, [saveGame]);
 
   const clearSaveLoadError = useCallback(() => setSaveLoadError(null), []);
 
@@ -1332,6 +1472,43 @@ export function useGameState() {
     }
   }, [applyLoadedSnapshot, tryMigrateSave]);
 
+  /** Get save metadata without loading full game (for intro screen display) */
+  const getSaveMetadata = useCallback((): {
+    playerName: string;
+    locationId: string;
+    playedTime: number;
+    inCombat: boolean;
+    timestamp: number;
+  } | null => {
+    const saveString = localStorage.getItem('chronos_save');
+    if (!saveString) return null;
+    try {
+      const raw = JSON.parse(saveString);
+      const saveData = reviveMaps(raw) as LoadedSaveSnapshot;
+      return {
+        playerName: saveData.player?.name ?? 'Unknown',
+        locationId: saveData.currentLocation ?? 'unknown',
+        playedTime: saveData.playedTime ?? 0,
+        inCombat: saveData.inCombat ?? false,
+        timestamp: saveData.timestamp ?? 0
+      };
+    } catch {
+      return null;
+    }
+  }, []);
+
+  /** Get available soft endings based on current player progress */
+  const getAvailableEndings = useCallback(() => {
+    if (!player) return [];
+    return detectSoftEndings(player, player.storyProgress);
+  }, [player]);
+
+  /** Get the best ending for current progress */
+  const getCurrentEnding = useCallback(() => {
+    if (!player) return null;
+    return getBestEnding(player, player.storyProgress);
+  }, [player]);
+
   const deleteLocalSave = useCallback(async () => {
     await clearBrowserSaveSlots();
     setSaveLoadError(null);
@@ -1380,6 +1557,10 @@ export function useGameState() {
         const adj = buildLocationAdjacency(initialLocations);
         let rumors = [...(snapshot.storyProgress.activeRumors ?? [])];
         let factionPowers = snapshot.storyProgress.worldState.factionPowers;
+        const marketLocId = currentLocation?.id ?? snapshot.storyProgress.discoveredLocations[0] ?? 'starting_village';
+        const marketToneBefore = marketToneFromSupply(
+          readMarketSupplyForLocation(factionPowers, marketLocId),
+        );
         maybeSpawnOrganicRumor(npcSystem.current, currentLocation?.id, rumors, lang);
         const rumorsBeforeSpread: ActiveRumor[] = rumors.map((r) => ({
           ...r,
@@ -1387,40 +1568,74 @@ export function useGameState() {
           factionTags: [...r.factionTags],
         }));
         const caravans = [...ensureDefaultCaravans(snapshot.storyProgress.tradeCaravans)];
+        const rumorSeed = seedFromString(
+          `${snapshot.id}:${newTime.year}-${newTime.month}-${newTime.day}-${newTime.hour}:${token}:rumor`,
+        );
 
         const isHeavyRumorTick = shouldSpreadRumorsInWorker(h, rumorsBeforeSpread.length);
 
         if (!isHeavyRumorTick) {
-          rumors = traceSync('advanceTime/rumorsSync', () => tickActiveRumorsSync(rumorsBeforeSpread, h, adj));
+          rumors = traceSync('advanceTime/rumorsSync', () =>
+            tickActiveRumorsSync(rumorsBeforeSpread, h, adj, createDeterministicRng(rumorSeed)),
+          );
           const visited = traceSync('advanceTime/caravansSync', () =>
             tickTradeCaravans(caravans, CHRONOS_TRADE_ROUTES, rumors, h, log, lang),
           );
           factionPowers = applyMarketSupplyFromCaravanVisits(factionPowers, visited, h);
         } else {
-          const visited = traceSync('advanceTime/caravansPre', () =>
-            tickTradeCaravans(caravans, CHRONOS_TRADE_ROUTES, rumorsBeforeSpread, h, log, lang),
+          const res = await traceAsync('advanceTime/rumorsWorker', () =>
+            decayAndSpreadRumorsInWorker(rumorsBeforeSpread, h, adj, token, rumorSeed),
+          );
+          const out =
+            res?.rumors ??
+            tickActiveRumorsSync(rumorsBeforeSpread, h, adj, createDeterministicRng(rumorSeed));
+          rumors = out.map((r) => ({ ...r }));
+          const visited = traceSync('advanceTime/caravansWorker', () =>
+            tickTradeCaravans(caravans, CHRONOS_TRADE_ROUTES, rumors, h, log, lang),
           );
           factionPowers = applyMarketSupplyFromCaravanVisits(factionPowers, visited, h);
-          const res = await traceAsync('advanceTime/rumorsWorker', () =>
-            decayAndSpreadRumorsInWorker(rumorsBeforeSpread, h, adj, token),
+        }
+
+        let progressedPlayer = snapshot;
+        const delayedTick = tickDelayedConsequencesQueue(
+          snapshot.storyProgress.delayedConsequences ?? [],
+          h,
+        );
+        if (delayedTick.released.length > 0) {
+          progressedPlayer = applyConsequenceBatchToPlayer(
+            progressedPlayer,
+            delayedTick.released.map((p) => p.consequence),
+            log,
+            lang,
           );
-          const out = res?.rumors ?? tickActiveRumorsSync(rumorsBeforeSpread, h, adj);
-          rumors = out.map((r) => ({ ...r }));
-          if (visited.length > 0) {
-            for (const r of rumors) {
-              const reach = new Set(r.reachedLocationIds);
-              for (const v of visited) reach.add(v);
-              r.reachedLocationIds = [...reach];
-            }
+          for (const line of collectDelayedConsequenceLogLines(delayedTick.released, lang, 'release')) {
+            pushWorldLog(log, line, 'info', 'social');
           }
         }
 
-        let rumorQueue = [...(snapshot.storyProgress.rumorConsequenceQueue ?? [])];
+        const obligationTick = tickPlayerObligationQueue(
+          progressedPlayer.storyProgress.playerObligations ?? [],
+          h,
+          lang,
+        );
+        if (obligationTick.released.length > 0) {
+          progressedPlayer = applyConsequenceBatchToPlayer(
+            progressedPlayer,
+            obligationTick.released,
+            log,
+            lang,
+          );
+          for (const line of obligationTick.logLines) {
+            pushWorldLog(log, line, 'dramatic', 'social');
+          }
+        }
+
+        let rumorQueue = [...(progressedPlayer.storyProgress.rumorConsequenceQueue ?? [])];
         const queueTick = tickRumorConsequenceQueue(rumorQueue, h);
         rumorQueue = queueTick.queue;
 
         let factionReputation = mergeFactionReputation(
-          snapshot.storyProgress.factionReputation,
+          progressedPlayer.storyProgress.factionReputation,
           queueTick.releasedReputationDelta,
         );
         for (const line of collectFactionRepShiftLines(queueTick.releasedReputationDelta, lang)) {
@@ -1436,6 +1651,14 @@ export function useGameState() {
           pushWorldLog(log, line, 'rumor', 'social');
         }
         flushRumorJournalHighlights(rumors, log, lang, currentLocation?.id);
+        const marketToneAfter = marketToneFromSupply(readMarketSupplyForLocation(factionPowers, marketLocId));
+        if (marketToneAfter !== marketToneBefore) {
+          const marketToneLine =
+            lang === 'ru'
+              ? t(`game.market_tone_shift.${marketToneAfter}` as const, lang).replace('{{loc}}', marketLocId)
+              : t(`game.market_tone_shift.${marketToneAfter}` as const, lang).replace('{{loc}}', marketLocId);
+          pushWorldLog(log, marketToneLine, 'info', 'economy');
+        }
 
         const coalitions = tryEnemyCoalitionFormation(
           npcSystem.current.getAllNPCs(),
@@ -1459,17 +1682,19 @@ export function useGameState() {
         if (playerRef.current !== snapshot) return;
 
         setPlayer({
-          ...snapshot,
+          ...progressedPlayer,
           storyProgress: {
-            ...snapshot.storyProgress,
+            ...progressedPlayer.storyProgress,
             enemyCoalitions: coalitions,
             worldEventLog: log,
             activeRumors: rumors,
             tradeCaravans: caravans,
             factionReputation,
             rumorConsequenceQueue: rumorQueue,
+            delayedConsequences: delayedTick.queue,
+            playerObligations: obligationTick.queue,
             worldState: {
-              ...snapshot.storyProgress.worldState,
+              ...progressedPlayer.storyProgress.worldState,
               factionPowers,
               time: newTime,
             },
@@ -1479,6 +1704,14 @@ export function useGameState() {
         for (const npc of npcSystem.current.getAllNPCs()) {
           npcSystem.current.simulateNPCTurn(npc.id, h, newTime.hour);
         }
+      } catch (e) {
+        console.error('advanceTime failed:', e);
+        const title = lang === 'ru' ? 'Не удалось обновить мир' : 'World update failed';
+        const description =
+          lang === 'ru'
+            ? 'Попробуйте ещё раз. Состояние мира осталось без частичного применения.'
+            : 'Please try again. The world state was not partially committed.';
+        toast.error(title, { description });
       } finally {
         if (rumorWorkerToken.current === token) {
           isAdvanceTimeInFlight.current = false;
@@ -1486,7 +1719,7 @@ export function useGameState() {
         }
       }
     })();
-  }, [crowdNPCs, currentLocation?.id]);
+  }, [crowdNPCs, currentLocation?.id, applyConsequenceBatchToPlayer]);
 
   // ==================== SHOP ====================
 
@@ -1561,13 +1794,31 @@ export function useGameState() {
   useEffect(() => {
     // Auto-save every 5 minutes
     const interval = setInterval(() => {
-      if (player && gamePhase === 'playing') {
-        saveGame();
+      if (playerRef.current && gamePhaseRef.current === 'playing') {
+        saveGameRef.current();
       }
     }, 300000);
 
     return () => clearInterval(interval);
-  }, [player, gamePhase, saveGame]);
+  }, []);
+
+  // Track played time
+  useEffect(() => {
+    if (!player || gamePhase !== 'playing') return;
+    const playedTimer = setInterval(() => {
+      setPlayer(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          stats: {
+            ...prev.stats,
+            playedTime: (prev.stats.playedTime ?? 0) + 1000
+          }
+        };
+      });
+    }, 1000);
+    return () => clearInterval(playedTimer);
+  }, [player, gamePhase]);
 
   // ==================== RETURN ====================
 
@@ -1605,6 +1856,9 @@ export function useGameState() {
     loadGameFromIndexedDB,
     loadGameWithRecovery,
     deleteLocalSave,
+    getSaveMetadata,
+    getAvailableEndings,
+    getCurrentEnding,
     purchaseShopItem,
     saveLoadError,
     clearSaveLoadError,

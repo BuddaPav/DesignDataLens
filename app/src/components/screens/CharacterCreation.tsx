@@ -7,6 +7,13 @@ import { Slider } from '@/components/ui/slider';
 import type { Player, Character, WorldEra } from '@/types/game';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { t } from '@/i18n';
+import {
+  applyGraphicsProfile,
+  detectGraphicsProfile,
+  loadChronosGameSettings,
+  saveChronosGameSettings,
+  type ChronosGraphicsProfile,
+} from '@/lib/chronosGameSettings';
 
 interface CharacterCreationProps {
   onComplete: (character: Partial<Character>) => void;
@@ -111,6 +118,9 @@ export function CharacterCreation({ onComplete, player }: CharacterCreationProps
     }
   });
   const [selectedTone, setSelectedTone] = useState('heroic');
+  const [graphicsProfile, setGraphicsProfile] = useState<ChronosGraphicsProfile>(() =>
+    detectGraphicsProfile(loadChronosGameSettings())
+  );
 
   const updateAttribute = (attr: string, value: number) => {
     setCharacter(prev => ({
@@ -133,6 +143,9 @@ export function CharacterCreation({ onComplete, player }: CharacterCreationProps
   };
 
   const handleComplete = () => {
+    const nextSettings = applyGraphicsProfile(loadChronosGameSettings(), graphicsProfile);
+    saveChronosGameSettings(nextSettings);
+    window.dispatchEvent(new Event('chronos:settings_updated'));
     onComplete({
       ...character,
       backstory: `A ${character.origin?.replace('_', ' ')} who seeks their destiny.`
@@ -364,6 +377,32 @@ export function CharacterCreation({ onComplete, player }: CharacterCreationProps
                         ? t('cc.era_future', language)
                         : t('cc.era_medieval', language)}
                   </p>
+                </div>
+              </div>
+
+              <div className="border-t border-slate-800 pt-4">
+                <span className="text-slate-500 text-sm">
+                  {language === 'ru' ? 'Графический профиль' : 'Graphics profile'}
+                </span>
+                <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3">
+                  {([
+                    { id: 'performance', ru: 'Производительность', en: 'Performance' },
+                    { id: 'balanced', ru: 'Сбалансированный', en: 'Balanced' },
+                    { id: 'cinematic', ru: 'Кинематограф', en: 'Cinematic' }
+                  ] as const).map((p) => (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => setGraphicsProfile(p.id)}
+                      className={`rounded-lg border px-3 py-2 text-sm transition-all ${
+                        graphicsProfile === p.id
+                          ? 'border-violet-400/60 bg-violet-500/20 text-violet-100'
+                          : 'border-slate-700 bg-slate-900/70 text-slate-300 hover:border-slate-500'
+                      }`}
+                    >
+                      {language === 'ru' ? p.ru : p.en}
+                    </button>
+                  ))}
                 </div>
               </div>
 

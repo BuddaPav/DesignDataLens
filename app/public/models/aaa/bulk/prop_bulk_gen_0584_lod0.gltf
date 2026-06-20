@@ -1,0 +1,101 @@
+{
+  "asset": {
+    "version": "2.0",
+    "generator": "chronos-generate-aaa-mass-model-pack"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "prop_bulk_gen_0584_lod0",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "prop_bulk_gen_0584_lod0"
+    }
+  ],
+  "meshes": [
+    {
+      "name": "prop_bulk_gen_0584_lod0_mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 1
+          },
+          "indices": 0,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "name": "prop_bulk_gen_0584_lod0_mat",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.68,
+          0.42,
+          0.58,
+          1
+        ],
+        "metallicFactor": 0.08,
+        "roughnessFactor": 0.85
+      }
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5123,
+      "count": 126,
+      "type": "SCALAR",
+      "max": [
+        125
+      ],
+      "min": [
+        0
+      ]
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 126,
+      "type": "VEC3",
+      "min": [
+        0,
+        0,
+        0
+      ],
+      "max": [
+        0.8350000000000001,
+        0.24831250000000002,
+        0.0845
+      ]
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 252,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 252,
+      "byteLength": 1512,
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 1764,
+      "uri": "data:application/octet-stream;base64,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"
+    }
+  ]
+}

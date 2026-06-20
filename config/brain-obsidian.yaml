@@ -1,0 +1,80 @@
+# Brain-Obsidian Integration Config
+#
+# Configuration linking Brain agent system with Obsidian "Второй Мозг" vault
+# Used for RAG-style context retrieval
+
+obsidian:
+  # Path to Obsidian vault
+  vault_path: "c:/Users/Den/Documents/История Шарма/История про Шарма/Второй Мозг"
+
+  # Layer mapping (vector number -> layer file)
+  layers_map:
+    0: "00-Когнитивный слой.md"
+    1: "01-Инфраструктурный слой.md"
+    2: "02-Промптовый слой.md"
+    3: "03-Артефактный слой.md"
+    4: "04-Процессный слой.md"
+    5: "05-Comms слой.md"
+    6: "06-Security слой.md"
+    7: "07-SRE слой.md"
+    8: "08-Data слой.md"
+    9: "09-Release слой.md"
+    10: "10-Network слой.md"
+    11: "11-Onboarding слой.md"
+    12: "12-Epistemology слой.md"
+    13: "13-Метакогнитивный слой.md"
+    14: "14-Коммуникационный слой.md"
+    15: "15-Процессный расширенный слой.md"
+    16: "16-Инфраструктурный расширенный слой.md"
+    17: "17-Экономический слой.md"
+    18: "18-Этический слой.md"
+    19: "19-Организационный слой.md"
+    20: "20-Технический глубинный слой.md"
+    21: "21-Качество генерации слой.md"
+    22: "22-Средовой слой.md"
+    23: "23-Risk слой.md"
+    24: "24-Vibe слой.md"
+
+  # Templates directory
+  templates_dir: "TEMPLATES"
+
+  # Search settings
+  search:
+    max_results: 10
+    snippet_length: 200
+
+# Brain system configuration
+brain:
+  # Ollama endpoint
+  ollama_url: "http://localhost:11434"
+
+  # Default model
+  default_model: "llama3.2:3b"
+
+  # Model selection by complexity
+  models:
+    tiny: "llama3.2:1b"      # Classification, context extraction
+    small: "llama3.2:3b"      # Simple code generation
+    medium: "gemma2:9b"      # Complex generation
+
+  # Context window
+  context:
+    max_tokens: 32000
+    summarize_at: 16000
+
+  # Latency targets (ms)
+  latency:
+    tiny: 500
+    small: 2000
+    medium: 10000
+
+# Vector database (future)
+vector_db:
+  enabled: false
+  url: "http://localhost:6333"
+  collection: "brain-memory"
+
+# Event bus (future)
+event_bus:
+  enabled: false
+  url: "redis://localhost:6379"

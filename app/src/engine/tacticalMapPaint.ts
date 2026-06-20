@@ -3,7 +3,7 @@
  * Используется полноэкранной картой и миникартой.
  */
 import type { NPC, Weather } from '@/types/game';
-import { TILE_PX, biomeAt, biomeColors, npcWorldTile, CHUNK_SIZE } from '@/engine/worldTiles';
+import { TILE_PX, biomeAt, biomeColors, npcWorldTile, CHUNK_SIZE, elevationAt } from '@/engine/worldTiles';
 import type { NavPing, NavWaypoint } from '@/lib/navigationStorage';
 
 export type TacticalPaintParams = {
@@ -28,6 +28,8 @@ export type TacticalPaintParams = {
   lite?: boolean;
   /** Маркеры угроз коалиций (тактическая карта). */
   coalitionPins?: Array<{ tileX: number; tileY: number }>;
+  /** Ожидаемые отложенные последствия (эффект бабочки). */
+  pendingConsequencePins?: Array<{ tileX: number; tileY: number; urgency01: number }>;
 };
 
 /**
@@ -53,6 +55,7 @@ export function paintTacticalMap(p: TacticalPaintParams): void {
     now,
     lite,
     coalitionPins,
+    pendingConsequencePins,
   } = p;
 
   const seed = worldSeed;
@@ -82,6 +85,34 @@ export function paintTacticalMap(p: TacticalPaintParams): void {
       g.addColorStop(1, col.bottom + (lite ? 'ee' : 'ee'));
       ctx.fillStyle = g;
       ctx.fillRect(px, py, pixelScale + 0.5, pixelScale + 0.5);
+      const elev = elevationAt(tix, tiy, seed);
+      if (!lite && biome !== 'deep_water' && biome !== 'shallow') {
+        const ridge = Math.max(0, elev - 0.36);
+        const cliff = Math.max(0, elev - 0.62);
+        const relief = Math.min(pixelScale * 0.58, ridge * pixelScale * 2.2 + cliff * pixelScale * 2.1);
+        if (relief > 0.02) {
+          ctx.fillStyle = `rgba(255,255,255,${Math.min(0.2, 0.04 + relief * 0.05)})`;
+          ctx.fillRect(px + 0.5, py + 0.5, pixelScale - 1, Math.max(1, relief * 0.45));
+          ctx.fillStyle = `rgba(8,12,20,${Math.min(0.32, 0.08 + relief * 0.08)})`;
+          ctx.fillRect(
+            px + 0.5,
+            py + pixelScale - Math.max(1, relief * 0.6),
+            pixelScale - 1,
+            Math.max(1, relief * 0.6)
+          );
+        }
+        if (elev > 0.5) {
+          const contourBand = Math.floor(elev * 36);
+          if ((contourBand + tix + tiy) % 7 === 0) {
+            ctx.strokeStyle = `rgba(245,245,255,${0.06 + Math.min(0.08, (elev - 0.5) * 0.18)})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(px + 1, py + pixelScale * 0.62);
+            ctx.lineTo(px + pixelScale - 1, py + pixelScale * 0.35);
+            ctx.stroke();
+          }
+        }
+      }
       if (!lite && (biome === 'deep_water' || biome === 'shallow')) {
         const wave = Math.sin(tix * 0.11 + tiy * 0.09) * 0.5 + 0.5;
         ctx.fillStyle = `rgba(130,210,255,${0.05 + wave * 0.08})`;
@@ -161,6 +192,31 @@ export function paintTacticalMap(p: TacticalPaintParams): void {
     ctx.strokeStyle = 'rgba(196,181,253,0.9)';
     ctx.lineWidth = lite ? 1 : 1.5;
     ctx.stroke();
+  }
+
+  if (!lite && pendingConsequencePins && pendingConsequencePins.length > 0) {
+    for (const pin of pendingConsequencePins) {
+      const sx = (pin.tileX * TILE_PX - viewLeft) * ps;
+      const sy = (pin.tileY * TILE_PX - viewTop) * ps;
+      if (sx < -40 || sy < -40 || sx > cw + 40 || sy > ch + 40) continue;
+      const alpha = 0.45 + pin.urgency01 * 0.5;
+      ctx.save();
+      ctx.strokeStyle = `rgba(34,211,238,${alpha})`;
+      ctx.fillStyle = `rgba(6,182,212,${alpha * 0.35})`;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath();
+      ctx.arc(sx, sy, 12 + pin.urgency01 * 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = 'rgba(165,243,252,0.95)';
+      ctx.font = 'bold 11px system-ui,sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('◷', sx, sy);
+      ctx.restore();
+    }
   }
 
   if (!lite && coalitionPins && coalitionPins.length > 0) {

@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "updatedAt": "2026-05-14",
+  "targets": {
+    "environmentProps": 1200,
+    "modularKits": 120,
+    "landmarks": 80,
+    "keyCharacters": 25,
+    "crowdVariants": 150,
+    "animationClips": 1500,
+    "vfxSystems": 400,
+    "sfxEvents": 20000,
+    "musicMinutes": 480,
+    "quests": 150,
+    "dialogueLines": 80000
+  },
+  "actual": {
+    "environmentProps": 1200,
+    "modularKits": 120,
+    "landmarks": 80,
+    "keyCharacters": 25,
+    "crowdVariants": 150,
+    "animationClips": 1500,
+    "vfxSystems": 400,
+    "sfxEvents": 20000,
+    "musicMinutes": 480,
+    "quests": 150,
+    "dialogueLines": 80000
+  }
+}

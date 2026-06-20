@@ -1,0 +1,79 @@
+name: Personal Autonomous Agents
+description: User's personal automated development agents
+
+agents:
+  - id: code-builder
+    priority: high
+    continuous: true
+    skills:
+      - code-scaffold
+      - type-generator
+      - hook-creator
+      - test-generator
+
+  - id: 3d-engineer
+    priority: high
+    continuous: true
+    skills:
+      - model-importer
+      - texture-packer
+      - material-creator
+      - lighting-setup
+
+  - id: npc-architect
+    priority: high
+    continuous: true
+    skills:
+      - npc-generator
+      - dialogue-builder
+      - personality-model
+      - gossip-propagator
+
+  - id: economy-designer
+    priority: medium
+    continuous: true
+    skills:
+      - economy-balancer
+      - item-generator
+      - price-calculator
+      - trade-route-manager
+
+  - id: world-builder
+    priority: medium
+    continuous: true
+    skills:
+      - world-generator
+      - biome-creator
+      - poi-manager
+      - landmark-placer
+
+  - id: ui-craftsman
+    priority: medium
+    continuous: true
+    skills:
+      - panel-constructor
+      - menu-builder
+      - hud-builder
+      - minimap-overlay
+
+  - id: audio-engineer
+    priority: low
+    continuous: true
+    skills:
+      - sound-designer
+      - music-mixer
+      - ambient-audio
+      - spatial-audio
+
+  - id: devops-agent
+    priority: low
+    continuous: true
+    skills:
+      - build-automator
+      - release-manager
+      - deploy-automator
+
+settings:
+  confirmFirst: false
+  maxConcurrent: 4
+  autoRecovery: true

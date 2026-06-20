@@ -17,10 +17,6 @@ export type RumorSpreadDTO = {
   factionTags: string[];
 };
 
-function rng(): number {
-  return Math.random();
-}
-
 export function activeRumorToDto(a: ActiveRumor): RumorSpreadDTO {
   return {
     id: a.id,
@@ -65,7 +61,8 @@ function trimReachedLocations(r: RumorSpreadDTO, reach: Set<string>): string[] {
 export function decayAndSpreadRumors(
   rumors: RumorSpreadDTO[],
   hours: number,
-  adjacency: Record<string, string[]>
+  adjacency: Record<string, string[]>,
+  randomFn: () => number = Math.random,
 ): RumorSpreadDTO[] {
   const h = Math.min(168, Math.max(0, hours));
   const intensity = Math.min(1, h / 12);
@@ -81,7 +78,7 @@ export function decayAndSpreadRumors(
       if (!neighbors) continue;
       for (const next of neighbors) {
         if (reach.has(next)) continue;
-        if (rng() < 0.12 * intensity) {
+        if (randomFn() < 0.12 * intensity) {
           reach.add(next);
           addedThisSpread++;
           if (addedThisSpread >= CHRONOS_GOSSIP_NEW_LOCATIONS_PER_SPREAD_MAX) break spread;

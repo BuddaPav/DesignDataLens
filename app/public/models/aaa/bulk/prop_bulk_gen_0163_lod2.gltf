@@ -1,0 +1,101 @@
+{
+  "asset": {
+    "version": "2.0",
+    "generator": "chronos-generate-aaa-mass-model-pack"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "prop_bulk_gen_0163_lod2",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "prop_bulk_gen_0163_lod2"
+    }
+  ],
+  "meshes": [
+    {
+      "name": "prop_bulk_gen_0163_lod2_mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 1
+          },
+          "indices": 0,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "name": "prop_bulk_gen_0163_lod2_mat",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.31,
+          0.47,
+          0.55,
+          1
+        ],
+        "metallicFactor": 0.08,
+        "roughnessFactor": 0.85
+      }
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5123,
+      "count": 21,
+      "type": "SCALAR",
+      "max": [
+        20
+      ],
+      "min": [
+        0
+      ]
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 21,
+      "type": "VEC3",
+      "min": [
+        0,
+        0,
+        0.006
+      ],
+      "max": [
+        0.401325,
+        0.051421249999999995,
+        0.07075000000000001
+      ]
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 42,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 44,
+      "byteLength": 252,
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 296,
+      "uri": "data:application/octet-stream;base64,AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAAAAAAAAAAAAAAKabRDxCPig9bxKDO/T9VDyJJHo8izILPTm0CD1xPYo9AAAAAKabxDyP5BI+bxKDO5ZDCz2Egcc9onpLPUSLbD0AAAA+AAAAALx0Ez2b5j0+bxKDOzEILD179xc+0eguPYGVgz3XozA+AAAAAKabRD02q14+bxKDO83MTD3D8EE+AFcSPWDlkD3NzIw+AAAAAKabxDufq7U+bxKDO5ZDizwj85w+F59SPbByKD0zM6M+AAAAALx0kzxoIsQ+bxKDO83MzDxDBLA+RQ02PW8SQz3herQ+AAAAAI/C9Tx4es0+bxKDOwIrBz2p9r0+dHsZPS2yXT0="
+    }
+  ]
+}

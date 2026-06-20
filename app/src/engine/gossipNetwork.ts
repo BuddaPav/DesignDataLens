@@ -22,10 +22,11 @@ export function buildLocationAdjacency(locations: Location[]): Record<string, st
 export function tickActiveRumorsSync(
   rumors: ActiveRumor[],
   hours: number,
-  adjacency: Record<string, string[]>
+  adjacency: Record<string, string[]>,
+  randomFn?: () => number,
 ): ActiveRumor[] {
   if (rumors.length === 0) return [];
-  return decayAndSpreadRumors(rumors.map(activeRumorToDto), hours, adjacency).map(dtoToActiveRumor);
+  return decayAndSpreadRumors(rumors.map(activeRumorToDto), hours, adjacency, randomFn).map(dtoToActiveRumor);
 }
 
 /** Порог по шкале импакта разговора (харизма/случайность), не по −100…100. */

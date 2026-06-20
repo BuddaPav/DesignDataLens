@@ -24,6 +24,7 @@ import * as THREE from 'three';
 import type { NPC, Weather, WorldEra } from '@/types/game';
 import type { WorldGraphicsTier } from '@/types/chronosGraphics';
 import { loadChronosGameSettings } from '@/lib/chronosGameSettings';
+import { usePlayerControls } from '@/hooks/usePlayerControls';
 import {
   biomeAt,
   elevationAt,
@@ -60,11 +61,14 @@ import type { NpcSpatialDialogue } from '@/ui/spatial/NpcCss2DLabels';
 import { HorizonHeroLandmarks } from '@/world/HorizonHeroLandmarks';
 import { ResourcePickups } from '@/world/ResourcePickups';
 import { WanderingCritters } from '@/entities/WanderingCritters';
+import { MassGeneratedProps } from '@/components/game/world/MassGeneratedProps';
+import { OptionalLocalGlb } from '@/rendering/OptionalLocalGlb';
+import { chronosMassModelLodSet } from '@/domain/assets/chronosMassModelCatalog';
 
 const PLANE_TILES = 96;
 const SEG = 256;
 const HEIGHT_SCALE = 16;
-const MOVE_SPEED = 9;
+const MOVE_SPEED = 12; // Increased from 9 for better responsiveness
 const MAX_NPC_MESH = 72;
 const MAX_FLOATING = 48;
 
@@ -104,6 +108,19 @@ export interface WorldScene3DProps {
   worldPings?: NavPing[];
   /** Качество рендера (из настроек). По умолчанию balanced. */
   graphicsTier?: WorldGraphicsTier;
+}
+
+function isWeakGpuProfile(): boolean {
+  if (typeof navigator === 'undefined') return false;
+  if (typeof navigator.hardwareConcurrency !== 'number') return false;
+  return navigator.hardwareConcurrency > 0 && navigator.hardwareConcurrency <= 4;
+}
+
+function shadowMapSizeForTier(graphicsTier: WorldGraphicsTier, weakGpu: boolean): number {
+  if (weakGpu) return 512;
+  if (graphicsTier === 'high') return 2048;
+  if (graphicsTier === 'low') return 512;
+  return 1024;
 }
 
 function strokeToColor(hex: string): THREE.Color {
@@ -1158,33 +1175,57 @@ function WeatherVfx({ weather }: { weather: Weather }) {
   );
 }
 
-function WorldPingRings({ worldSeed, pings }: { worldSeed: number; pings: NavPing[] }) {
+const PING_BEACON_CAP = 3;
+const PING_BEACON_MODEL_BAND = 32;
+
+function WorldPingRings({
+  worldSeed,
+  pings,
+  graphicsTier
+}: {
+  worldSeed: number;
+  pings: NavPing[];
+  graphicsTier: WorldGraphicsTier;
+}) {
   const t = useRef(0);
   useFrame((st) => {
     t.current = st.clock.elapsedTime;
   });
   const now = Date.now();
+  const active = pings.filter((p) => p.until > now).slice(0, PING_BEACON_CAP);
+  const beaconMaxDist = graphicsTier === 'high' ? 72 : 52;
+
   return (
     <group>
-      {pings.map((p, i) => {
-        if (p.until <= now) return null;
+      {active.map((p, i) => {
         const y = elevationAt(p.tileX + 0.5, p.tileY + 0.5, worldSeed) * HEIGHT_SCALE + 2.8;
+        const groundY = elevationAt(p.tileX + 0.5, p.tileY + 0.5, worldSeed) * HEIGHT_SCALE + 0.08;
         const fade = Math.min(1, (p.until - now) / 3000);
+        const h = tileHash01(p.tileX, p.tileY, worldSeed + 55009 + i);
+        const lodPaths = chronosMassModelLodSet(1 + Math.floor(h * PING_BEACON_MODEL_BAND));
         return (
-          <mesh
-            key={`${p.tileX}_${p.tileY}_${i}_${p.until}`}
-            position={[p.tileX, y, p.tileY]}
-            rotation={[Math.PI / 2, t.current * 0.6, 0]}
-          >
-            <torusGeometry args={[2.4, 0.14, 8, 48]} />
-            <meshBasicMaterial
-              color="#38bdf8"
-              transparent
-              opacity={0.42 * fade}
-              depthWrite={false}
-              blending={THREE.AdditiveBlending}
+          <group key={`${p.tileX}_${p.tileY}_${i}_${p.until}`}>
+            <mesh position={[p.tileX, y, p.tileY]} rotation={[Math.PI / 2, t.current * 0.6, 0]}>
+              <torusGeometry args={[2.4, 0.14, 8, 48]} />
+              <meshBasicMaterial
+                color="#38bdf8"
+                transparent
+                opacity={0.42 * fade}
+                depthWrite={false}
+                blending={THREE.AdditiveBlending}
+              />
+            </mesh>
+            <OptionalLocalGlb
+              path={lodPaths[0]}
+              lodPaths={[...lodPaths]}
+              position={[p.tileX + 0.5, groundY, p.tileY + 0.5]}
+              rotation={[0, h * Math.PI * 2, 0]}
+              scale={0.5 + h * 0.28}
+              maxDistance={beaconMaxDist}
+              minTier="low"
+              graphicsTier={graphicsTier}
             />
-          </mesh>
+          </group>
         );
       })}
     </group>
@@ -1257,9 +1298,10 @@ function WorldContent(props: WorldContentProps) {
     graphicsTier: graphicsTierProp
   } = props;
   const graphicsTier = graphicsTierProp ?? 'balanced';
+  const weakGpu = isWeakGpuProfile();
+  const shadowMapSize = shadowMapSizeForTier(graphicsTier, weakGpu);
   const era = worldEra ?? 'medieval';
   const rootRef = useRef<THREE.Group>(null);
-  const keysRef = useRef<Record<string, boolean>>({});
   const propsRef = useRef(props);
   propsRef.current = props;
 
@@ -1269,39 +1311,49 @@ function WorldContent(props: WorldContentProps) {
     return { cx: originX + PLANE_TILES / 2, cz: originY + PLANE_TILES / 2 };
   }, [playerTileX, playerTileY]);
 
+  // Camera mode state: first-person (0) or third-person (1)
+  const [cameraMode, setCameraMode] = useState<0 | 1>(1);
+  const cameraTransitionRef = useRef({ target: 1, current: 1 });
+
+  // Load settings from chronosGameSettings for hook initialization
+  const gameSettings = useMemo(() => loadChronosGameSettings(), []);
+  const initialSettings = useMemo(() => ({
+    sensitivity: gameSettings.mouseSensitivity ?? 1.0,
+    invertY: gameSettings.invertMouseY ?? false,
+    cameraMode: (gameSettings.cameraMode === 'first' ? 'first' : 'third') as 'first' | 'third'
+  }), [gameSettings]);
+
+  // Initialize usePlayerControls hook - provides first/third person, pointer lock, mouse look
+  const {
+    cameraMode: hookCameraMode,
+    getMovementVector
+  } = usePlayerControls(initialSettings);
+
+  // Sync camera mode between hook and local state
   useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      keysRef.current[e.key.toLowerCase()] = true;
-      if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' '].includes(e.key.toLowerCase())) {
-        e.preventDefault();
-      }
-    };
-    const up = (e: KeyboardEvent) => {
-      keysRef.current[e.key.toLowerCase()] = false;
-    };
-    window.addEventListener('keydown', down);
-    window.addEventListener('keyup', up);
-    return () => {
-      window.removeEventListener('keydown', down);
-      window.removeEventListener('keyup', up);
-    };
-  }, []);
+    const newMode = hookCameraMode === 'first' ? 0 : 1;
+    if (cameraMode !== newMode) {
+      setCameraMode(newMode);
+      cameraTransitionRef.current.target = newMode;
+    }
+  }, [hookCameraMode]);
+
+  // Smooth camera transition for first/third person toggle
+  useFrame((_, dt) => {
+    const trans = cameraTransitionRef.current;
+    if (Math.abs(trans.current - trans.target) > 0.01) {
+      trans.current += (trans.target - trans.current) * Math.min(1, dt / 0.25);
+    } else {
+      trans.current = trans.target;
+    }
+  });
 
   useFrame((_, dt) => {
     const w = propsRef.current;
-    const k = keysRef.current;
-    let dx = 0;
-    let dy = 0;
-    if (k['d'] || k['arrowright']) dx += 1;
-    if (k['a'] || k['arrowleft']) dx -= 1;
-    if (k['s'] || k['arrowdown']) dy += 1;
-    if (k['w'] || k['arrowup']) dy -= 1;
-    if (dx !== 0 && dy !== 0) {
-      dx *= 0.707;
-      dy *= 0.707;
-    }
-    if (dx !== 0 || dy !== 0) {
-      w.onMove({ dTileX: dx * MOVE_SPEED * dt, dTileY: dy * MOVE_SPEED * dt });
+    // Use hook's movement vector instead of manual WASD parsing
+    const move = getMovementVector();
+    if (move.length() > 0) {
+      w.onMove({ dTileX: move.x * MOVE_SPEED * dt, dTileY: -move.z * MOVE_SPEED * dt });
     }
     const py =
       heightAtWorld(w.playerTileX, w.playerTileY, w.worldSeed) + 1.2;
@@ -1334,27 +1386,26 @@ function WorldContent(props: WorldContentProps) {
         weather={weather}
         graphicsTier={graphicsTier}
       />
-      <OrbitControls
-        makeDefault
-        enablePan={false}
-        enableDamping
-        dampingFactor={0.07}
-        minPolarAngle={0.38}
-        maxPolarAngle={Math.PI / 2 - 0.06}
-        minDistance={10}
-        maxDistance={62}
-        target={[0, 1.8, 0]}
-      />
+      {cameraMode === 1 && (
+        <OrbitControls
+          makeDefault
+          enablePan={false}
+          enableDamping
+          dampingFactor={0.07}
+          minPolarAngle={0.38}
+          maxPolarAngle={Math.PI / 2 - 0.06}
+          minDistance={cameraTransitionRef.current.current < 0.5 ? 0.1 : 8}
+          maxDistance={72}
+          target={[0, 1.8, 0]}
+        />
+      )}
       <ambientLight intensity={isNight ? 0.12 : era === 'future' ? 0.22 : 0.28} />
       <directionalLight
         position={[sunVec.x * 0.002, sunVec.y * 0.002 + 40, sunVec.z * 0.002]}
         intensity={isNight ? 0.15 : era === 'future' ? 0.88 : 1.05}
         castShadow
         color={era === 'future' ? '#cfe8ff' : '#ffffff'}
-        shadow-mapSize={[
-          graphicsTier === 'high' ? 2048 : graphicsTier === 'low' ? 512 : 1024,
-          graphicsTier === 'high' ? 2048 : graphicsTier === 'low' ? 512 : 1024
-        ]}
+        shadow-mapSize={[shadowMapSize, shadowMapSize]}
         shadow-camera-far={220}
         shadow-camera-left={-70}
         shadow-camera-right={70}
@@ -1451,6 +1502,7 @@ function WorldContent(props: WorldContentProps) {
         worldSeed={worldSeed}
         playerTileX={playerTileX}
         playerTileY={playerTileY}
+        graphicsTier={graphicsTier}
       />
       <ResourcePickups
         worldSeed={worldSeed}
@@ -1490,7 +1542,13 @@ function WorldContent(props: WorldContentProps) {
         sunDir={sunDirWorld}
         graphicsTier={graphicsTier}
       />
-      <WorldPingRings worldSeed={worldSeed} pings={worldPings ?? []} />
+      <MassGeneratedProps
+        worldSeed={worldSeed}
+        playerTileX={playerTileX}
+        playerTileY={playerTileY}
+        graphicsTier={graphicsTier}
+      />
+      <WorldPingRings worldSeed={worldSeed} pings={worldPings ?? []} graphicsTier={graphicsTier} />
       </group>
       <SunAnchor stateRef={worldAnchorRef} sunRef={sunRef} />
       <LightningFlash weather={weather} />
@@ -1543,9 +1601,9 @@ function HudOverlay({
 }
 
 /** Телеметрия кадра для предупреждения о низком FPS (localStorage `chronos_debug_telemetry=1`). */
-function ChronosFpsTelemetryRecorder() {
+function ChronosFpsTelemetryRecorder({ graphicsTier }: { graphicsTier: WorldGraphicsTier }) {
   useFrame(() => {
-    recordR3fFrameTick();
+    recordR3fFrameTick(graphicsTier);
   });
   return null;
 }
@@ -1573,6 +1631,10 @@ function ChronosFpsStats() {
 /** Корневая обёртка: Canvas снаружи вызывает этот компонент без useThree в родителе */
 export function WorldScene3DCanvas(props: WorldScene3DProps) {
   const powerPaused = useChronosPowerSavePaused();
+  const weakGpu = isWeakGpuProfile();
+  const requestedTier = props.graphicsTier ?? 'balanced';
+  const graphicsTier: WorldGraphicsTier = weakGpu && requestedTier === 'high' ? 'balanced' : requestedTier;
+  const colorGrading = useMemo(() => loadChronosGameSettings().colorGrading ?? 'default', []) as 'default' | 'cinematic' | 'vibrant' | 'desaturated';
   const sunRef = useRef<THREE.Mesh>(null);
   const worldAnchorRef = useRef<SunAnchorState>({
     px: 0,
@@ -1592,31 +1654,31 @@ export function WorldScene3DCanvas(props: WorldScene3DProps) {
       />
       <Canvas
         frameloop={powerPaused ? 'never' : 'always'}
-        shadows={props.graphicsTier !== 'low'}
+        shadows={graphicsTier !== 'low'}
         dpr={
-          props.graphicsTier === 'low'
+          graphicsTier === 'low'
             ? [1, 1]
-            : props.graphicsTier === 'high'
-              ? [1, 2]
+            : graphicsTier === 'high'
+              ? [1, 1.5]
               : [1, 1.5]
         }
-        gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
+        gl={{ antialias: !weakGpu, alpha: false, powerPreference: 'high-performance' }}
         camera={{ fov: 52, near: 0.1, far: 920, position: [0, 22, 32] }}
         onCreated={({ camera }) => {
           camera.lookAt(0, 2, 0);
         }}
       >
         <color attach="background" args={['#05070d']} />
-        <WorldContent {...props} sunRef={sunRef} worldAnchorRef={worldAnchorRef} />
+        <WorldContent {...props} graphicsTier={graphicsTier} sunRef={sunRef} worldAnchorRef={worldAnchorRef} />
         <WorldPostFX
           isNight={props.timeHour < 6 || props.timeHour > 20}
           weather={props.weather}
           worldEra={props.worldEra}
-          sunRef={sunRef}
-          graphicsTier={props.graphicsTier ?? 'balanced'}
+          graphicsTier={graphicsTier}
+          colorGrading={colorGrading}
         />
         <Css2DWorldOverlay />
-        <ChronosFpsTelemetryRecorder />
+        <ChronosFpsTelemetryRecorder graphicsTier={graphicsTier} />
         <ChronosFpsStats />
       </Canvas>
       <HudOverlay

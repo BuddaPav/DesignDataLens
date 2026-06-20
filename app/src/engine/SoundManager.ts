@@ -261,9 +261,14 @@ class SoundManager {
   }
 
   loadSettings() {
-    const saved = localStorage.getItem('chronos_sound_settings');
-    if (saved) {
-      this.settings = { ...this.settings, ...JSON.parse(saved) };
+    try {
+      const saved = localStorage.getItem('chronos_sound_settings');
+      if (saved) {
+        const parsed = JSON.parse(saved) as Partial<SoundSettings>;
+        this.settings = { ...this.settings, ...parsed };
+      }
+    } catch {
+      // ignore malformed localStorage payload
     }
   }
 

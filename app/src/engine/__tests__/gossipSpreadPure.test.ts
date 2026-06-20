@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { decayAndSpreadRumors } from '@/engine/gossipSpreadPure';
 
 describe('gossipSpreadPure', () => {
@@ -19,7 +19,6 @@ describe('gossipSpreadPure', () => {
   });
 
   it('spreads reach along edges when rng opens frontier', () => {
-    const rnd = vi.spyOn(Math, 'random').mockReturnValue(0);
     const adj = { a: ['b'], b: ['c'], c: [] };
     const rumors = [
       {
@@ -31,14 +30,12 @@ describe('gossipSpreadPure', () => {
         reachedLocationIds: ['a']
       }
     ];
-    const next = decayAndSpreadRumors(rumors, 24, adj);
-    rnd.mockRestore();
+    const next = decayAndSpreadRumors(rumors, 24, adj, () => 0);
     const r = next[0];
     expect(r?.reachedLocationIds.includes('b')).toBe(true);
   });
 
   it('caps how many new locations can be reached in one spread step', () => {
-    const rnd = vi.spyOn(Math, 'random').mockReturnValue(0);
     const leaves = Array.from({ length: 24 }, (_, i) => `L${i}`);
     const adj: Record<string, string[]> = { hub: leaves };
     for (const L of leaves) adj[L] = ['hub'];
@@ -52,10 +49,31 @@ describe('gossipSpreadPure', () => {
         reachedLocationIds: ['hub'],
       },
     ];
-    const next = decayAndSpreadRumors(rumors, 24, adj);
-    rnd.mockRestore();
+    const next = decayAndSpreadRumors(rumors, 24, adj, () => 0);
     const r = next[0];
     expect(r?.reachedLocationIds.length).toBeLessThanOrEqual(7);
     expect(r?.reachedLocationIds.includes('hub')).toBe(true);
+  });
+
+  it('is deterministic with the same supplied RNG sequence', () => {
+    const adj = { a: ['b', 'c'], b: ['a'], c: ['a'] };
+    const rumors = [
+      {
+        id: '1',
+        message: 'x',
+        ttlHours: 100,
+        originLocationId: 'a',
+        factionTags: [],
+        reachedLocationIds: ['a'],
+      },
+    ];
+    const seq = [0.01, 0.9, 0.02, 0.95, 0.03];
+    const mkRng = () => {
+      let i = 0;
+      return () => seq[(i++) % seq.length]!;
+    };
+    const left = decayAndSpreadRumors(rumors, 24, adj, mkRng());
+    const right = decayAndSpreadRumors(rumors, 24, adj, mkRng());
+    expect(right).toEqual(left);
   });
 });

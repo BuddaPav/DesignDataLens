@@ -5,9 +5,14 @@
 import type { CSSProperties } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { X, Crosshair, MapPinned, Trash2, Navigation, Settings } from 'lucide-react';
-import type { EnemyCoalition, Location, NPC, Weather } from '@/types/game';
+import type { DelayedConsequencePending, EnemyCoalition, Location, NPC, Weather } from '@/types/game';
 import { buildCoalitionMapPins, type CoalitionMapPin } from '@/domain/map/coalitionMapPins';
-import { TILE_PX } from '@/engine/worldTiles';
+import {
+  buildDelayedConsequenceMapPins,
+  type DelayedConsequenceMapPin,
+} from '@/domain/map/delayedConsequenceMapPins';
+import { delayedConsequenceStats } from '@/domain/consequences/delayedConsequenceQueue';
+import { getLocationAnchor, TILE_PX } from '@/engine/worldTiles';
 import { paintTacticalMap } from '@/engine/tacticalMapPaint';
 import {
   loadNavigation,
@@ -46,6 +51,7 @@ export interface WorldTacticalMapOverlayProps {
   currentLocation: Location;
   onTravel: (locationId: string) => void;
   enemyCoalitions?: EnemyCoalition[];
+  delayedConsequences?: DelayedConsequencePending[];
 }
 
 export function WorldTacticalMapOverlay({
@@ -62,6 +68,7 @@ export function WorldTacticalMapOverlay({
   currentLocation,
   onTravel,
   enemyCoalitions,
+  delayedConsequences,
 }: WorldTacticalMapOverlayProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const lang = getLanguage();
@@ -73,16 +80,32 @@ export function WorldTacticalMapOverlay({
     null
   );
   const rafRef = useRef(0);
+  const navFrameRef = useRef<NavigationState>(nav);
   const shellRef = useRef<HTMLDivElement>(null);
+  const mapFrameRef = useRef<HTMLDivElement>(null);
   const [coachRev, setCoachRev] = useState(0);
   const [coalitionHover, setCoalitionHover] = useState<CoalitionMapPin | null>(null);
+  const [pendingHover, setPendingHover] = useState<DelayedConsequenceMapPin | null>(null);
+  const [mapReady, setMapReady] = useState(false);
 
   const coalitionPins = useMemo(
     () => buildCoalitionMapPins(enemyCoalitions, npcs),
     [enemyCoalitions, npcs],
   );
+  const pendingPins = useMemo(
+    () => buildDelayedConsequenceMapPins(delayedConsequences),
+    [delayedConsequences],
+  );
+  const pendingStats = useMemo(
+    () => delayedConsequenceStats(delayedConsequences),
+    [delayedConsequences],
+  );
 
-  const syncNav = useCallback(() => setNav(loadNavigation()), []);
+  const syncNav = useCallback(() => {
+    const n = loadNavigation();
+    navFrameRef.current = n;
+    setNav(n);
+  }, []);
 
   const coachDismissed = (): boolean => {
     try {
@@ -105,7 +128,18 @@ export function WorldTacticalMapOverlay({
     syncNav();
     panRef.current = { x: 0, y: 0 };
     zoomRef.current = 1;
+    setTab('world');
+    setMapReady(false);
   }, [open, syncNav]);
+
+  useEffect(() => {
+    if (!open) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [open]);
 
   const dismissMapCoach = useCallback(() => {
     try {
@@ -151,8 +185,32 @@ export function WorldTacticalMapOverlay({
   }, [open, coachRev]);
 
   const persist = useCallback((next: NavigationState) => {
+    navFrameRef.current = next;
     setNav(next);
     saveNavigation(next);
+  }, []);
+
+  const updateMapReadyFromSize = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const cw = canvas.clientWidth;
+    const ch = canvas.clientHeight;
+    if (cw >= 8 && ch >= 8) setMapReady(true);
+  }, []);
+
+  /** Navigation read/prune — at most once per animation frame (see RAF loop). */
+  const tickNavigationFrame = useCallback(() => {
+    const n = loadNavigation();
+    const pings = pruneExpiredPings(n.pings);
+    if (pings.length !== n.pings.length) {
+      const next = { ...n, pings };
+      saveNavigation(next);
+      navFrameRef.current = next;
+      setNav(next);
+      return next;
+    }
+    navFrameRef.current = n;
+    return n;
   }, []);
 
   const projectScreenToTile = useCallback(
@@ -175,99 +233,106 @@ export function WorldTacticalMapOverlay({
     [playerTileX, playerTileY, nav.settings.mapZoomSensitivity],
   );
 
-  const paint = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || !open || tab !== 'world') return;
-    const ctx = canvas.getContext('2d', { alpha: false });
-    if (!ctx) return;
-    const cw = canvas.clientWidth;
-    const ch = canvas.clientHeight;
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
-    const tw = Math.floor(cw * dpr);
-    const th = Math.floor(ch * dpr);
-    if (canvas.width !== tw || canvas.height !== th) {
-      canvas.width = tw;
-      canvas.height = th;
-      canvas.style.width = `${cw}px`;
-      canvas.style.height = `${ch}px`;
-    }
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const paint = useCallback(
+    (frameNav: NavigationState) => {
+      const canvas = canvasRef.current;
+      if (!canvas || !open || tab !== 'world') return;
+      const ctx = canvas.getContext('2d', { alpha: false });
+      if (!ctx) return;
+      const cw = canvas.clientWidth;
+      const ch = canvas.clientHeight;
+      if (cw < 8 || ch < 8) return;
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const tw = Math.floor(cw * dpr);
+      const th = Math.floor(ch * dpr);
+      if (canvas.width !== tw || canvas.height !== th) {
+        canvas.width = tw;
+        canvas.height = th;
+        canvas.style.width = `${cw}px`;
+        canvas.style.height = `${ch}px`;
+      }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    const z = Math.min(3.2, Math.max(0.45, zoomRef.current)) * nav.settings.mapZoomSensitivity;
-    const wWide = cw * z;
-    const hWide = ch * z;
-    const cx = playerTileX * TILE_PX + panRef.current.x;
-    const cy = playerTileY * TILE_PX + panRef.current.y;
-    const viewLeft = cx - wWide / 2;
-    const viewTop = cy - hWide / 2;
+      const z =
+        Math.min(3.2, Math.max(0.45, zoomRef.current)) * nav.settings.mapZoomSensitivity;
+      const wWide = cw * z;
+      const hWide = ch * z;
+      const cx = playerTileX * TILE_PX + panRef.current.x;
+      const cy = playerTileY * TILE_PX + panRef.current.y;
+      const viewLeft = cx - wWide / 2;
+      const viewTop = cy - hWide / 2;
 
-    ctx.save();
-    ctx.scale(1 / z, 1 / z);
-    const n = loadNavigation();
-    const pings = pruneExpiredPings(n.pings);
-    if (pings.length !== n.pings.length) {
-      saveNavigation({ ...n, pings });
-    }
+      ctx.save();
+      ctx.scale(1 / z, 1 / z);
 
-    paintTacticalMap({
-      ctx,
-      cw: wWide,
-      ch: hWide,
-      pixelScale: TILE_PX,
-      viewLeft,
-      viewTop,
+      paintTacticalMap({
+        ctx,
+        cw: wWide,
+        ch: hWide,
+        pixelScale: TILE_PX,
+        viewLeft,
+        viewTop,
+        worldSeed,
+        timeHour,
+        weather,
+        npcs,
+        playerTileX,
+        playerTileY,
+        waypoints: frameNav.waypoints,
+        pings: frameNav.pings,
+        now: Date.now(),
+        lite: false,
+        coalitionPins: coalitionPins.map((p) => ({ tileX: p.tileX, tileY: p.tileY })),
+        pendingConsequencePins: pendingPins.map((p) => ({
+          tileX: p.tileX,
+          tileY: p.tileY,
+          urgency01: Math.max(0, Math.min(1, 1 - p.remainingHours / 48)),
+        })),
+      });
+      ctx.restore();
+    },
+    [
+      open,
+      tab,
       worldSeed,
       timeHour,
       weather,
       npcs,
       playerTileX,
       playerTileY,
-      waypoints: n.waypoints,
-      pings,
-      now: Date.now(),
-      lite: false,
-      coalitionPins: coalitionPins.map((p) => ({ tileX: p.tileX, tileY: p.tileY })),
-    });
-    ctx.restore();
-  }, [
-    open,
-    tab,
-    worldSeed,
-    timeHour,
-    weather,
-    npcs,
-    playerTileX,
-    playerTileY,
-    nav.settings.mapZoomSensitivity,
-    coalitionPins,
-  ]);
+      nav.settings.mapZoomSensitivity,
+      coalitionPins,
+      pendingPins,
+    ],
+  );
 
   useEffect(() => {
     if (!open || tab !== 'world') return;
+    let running = true;
     const loop = () => {
-      paint();
+      if (!running) return;
+      const frameNav = tickNavigationFrame();
+      paint(frameNav);
       rafRef.current = requestAnimationFrame(loop);
     };
     rafRef.current = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [open, tab, paint]);
+    return () => {
+      running = false;
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [open, tab, paint, tickNavigationFrame]);
 
   useEffect(() => {
-    if (!open) return;
-    let resizeRaf = 0;
-    const schedulePaint = () => {
-      if (resizeRaf) cancelAnimationFrame(resizeRaf);
-      resizeRaf = requestAnimationFrame(() => {
-        resizeRaf = 0;
-        paint();
-      });
-    };
-    window.addEventListener('resize', schedulePaint);
-    return () => {
-      window.removeEventListener('resize', schedulePaint);
-      if (resizeRaf) cancelAnimationFrame(resizeRaf);
-    };
-  }, [open, paint]);
+    if (!open || tab !== 'world') return;
+    const frame = mapFrameRef.current;
+    if (!frame || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(() => {
+      updateMapReadyFromSize();
+    });
+    ro.observe(frame);
+    updateMapReadyFromSize();
+    return () => ro.disconnect();
+  }, [open, tab, updateMapReadyFromSize]);
 
   const onWheel = (e: React.WheelEvent) => {
     e.preventDefault();
@@ -303,9 +368,16 @@ export function WorldTacticalMapOverlay({
     const mx = e.clientX - rect.left;
     const my = e.clientY - rect.top;
     const t = projectScreenToTile(mx, my);
-    const hit =
+    const pendingHit =
+      pendingPins.find((p) => Math.hypot(t.tileX - p.tileX, t.tileY - p.tileY) < 2.4) ?? null;
+    setPendingHover(pendingHit);
+    if (pendingHit) {
+      setCoalitionHover(null);
+      return;
+    }
+    const coalitionHit =
       coalitionPins.find((p) => Math.hypot(t.tileX - p.tileX, t.tileY - p.tileY) < 2.4) ?? null;
-    setCoalitionHover(hit);
+    setCoalitionHover(coalitionHit);
   };
 
   const endDrag = () => {
@@ -353,7 +425,7 @@ export function WorldTacticalMapOverlay({
     <div
       ref={shellRef}
       data-testid="chronos-tactical-map"
-      className="fixed inset-0 z-[200] flex max-h-[100dvh] animate-in fade-in flex-col duration-200 outline-none"
+      className="fixed inset-0 z-[200] flex h-[100dvh] w-screen animate-in fade-in flex-col overflow-hidden duration-200 outline-none"
       style={{ background: `rgba(4,6,12,${dim})` }}
       role="dialog"
       aria-modal
@@ -365,7 +437,7 @@ export function WorldTacticalMapOverlay({
         style={{ WebkitBackdropFilter: 'blur(14px)' } as CSSProperties}
       />
       <div
-        className="relative z-[1] flex min-h-0 min-w-0 flex-1 flex-col px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-[max(0.5rem,env(safe-area-inset-top))]"
+        className="relative z-[1] flex min-h-0 min-w-0 flex-1 flex-col"
       >
         {mapCoachVisible ? (
           <div
@@ -384,7 +456,7 @@ export function WorldTacticalMapOverlay({
             </Button>
           </div>
         ) : null}
-        <div className="mb-2 flex shrink-0 flex-wrap items-center justify-between gap-2">
+        <div className="z-30 flex shrink-0 flex-wrap items-center justify-between gap-2 px-2 pb-2 pt-[max(0.5rem,env(safe-area-inset-top))]">
           <div className="flex items-center gap-2 rounded-xl border border-cyan-500/25 bg-black/55 px-2 py-1 backdrop-blur-md">
             <Button
               type="button"
@@ -457,8 +529,19 @@ export function WorldTacticalMapOverlay({
           </div>
         </div>
 
+        {pendingStats.count > 0 && tab === 'world' && (
+          <p className="mx-2 mb-2 shrink-0 rounded-lg border border-cyan-400/25 bg-cyan-950/40 px-2 py-1 text-[11px] text-cyan-100/90">
+            {lang === 'ru'
+              ? `Ожидаемые последствия на карте: ${pendingStats.count} (ближайшее ~${pendingStats.minHours} ч.)`
+              : `Pending consequences on map: ${pendingStats.count} (next ~${pendingStats.minHours}h)`}
+          </p>
+        )}
+
         {tab === 'world' ? (
-          <div className="relative min-h-0 flex-1 overflow-hidden border-y border-cyan-500/25 shadow-[inset_0_0_80px_rgba(34,211,238,0.06)]">
+          <div
+            ref={mapFrameRef}
+            className="relative mx-2 mb-2 min-h-0 min-h-[50dvh] flex-1 overflow-hidden rounded-lg border border-cyan-500/25 shadow-[inset_0_0_80px_rgba(34,211,238,0.06)]"
+          >
             <canvas
               ref={canvasRef}
               role="img"
@@ -471,10 +554,35 @@ export function WorldTacticalMapOverlay({
               onMouseLeave={() => {
                 endDrag();
                 setCoalitionHover(null);
+                setPendingHover(null);
               }}
               onContextMenu={onContextMenu}
             />
-            {coalitionHover && (
+            {!mapReady && (
+              <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-black/40 text-xs uppercase tracking-[0.18em] text-cyan-100/85">
+                {lang === 'ru' ? 'Загрузка карты…' : 'Loading map...'}
+              </div>
+            )}
+            {pendingHover && (
+              <div
+                className="pointer-events-none absolute bottom-14 left-2 right-14 z-10 rounded-lg border border-cyan-500/45 bg-cyan-950/92 px-3 py-2 text-left text-[11px] text-cyan-50 shadow-lg backdrop-blur-md sm:right-20"
+                role="status"
+              >
+                <p className="font-semibold text-cyan-100/95">{t('nav.pending_tooltip_title', lang)}</p>
+                <p className="mt-1 text-cyan-100/85">
+                  {t('nav.pending_tooltip_body', lang)
+                    .replace(
+                      '{{loc}}',
+                      lang === 'ru'
+                        ? getLocationAnchor(pendingHover.locationId).labelRu
+                        : pendingHover.locationId.replace(/_/g, ' '),
+                    )
+                    .replace('{{hours}}', String(pendingHover.remainingHours))
+                    .replace('{{type}}', pendingHover.consequenceType)}
+                </p>
+              </div>
+            )}
+            {coalitionHover && !pendingHover && (
               <div
                 className="pointer-events-none absolute bottom-14 left-2 right-14 z-10 rounded-lg border border-rose-500/45 bg-rose-950/92 px-3 py-2 text-left text-[11px] text-rose-50 shadow-lg backdrop-blur-md sm:right-20"
                 role="status"

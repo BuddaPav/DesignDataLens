@@ -1,0 +1,101 @@
+{
+  "asset": {
+    "version": "2.0",
+    "generator": "chronos-generate-aaa-mass-model-pack"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "prop_bulk_gen_0204_lod0",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "prop_bulk_gen_0204_lod0"
+    }
+  ],
+  "meshes": [
+    {
+      "name": "prop_bulk_gen_0204_lod0_mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 1
+          },
+          "indices": 0,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "name": "prop_bulk_gen_0204_lod0_mat",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.78,
+          0.72,
+          0.38,
+          1
+        ],
+        "metallicFactor": 0.08,
+        "roughnessFactor": 0.85
+      }
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5123,
+      "count": 126,
+      "type": "SCALAR",
+      "max": [
+        125
+      ],
+      "min": [
+        0
+      ]
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 126,
+      "type": "VEC3",
+      "min": [
+        0,
+        0,
+        0
+      ],
+      "max": [
+        0.8850000000000001,
+        0.25412500000000005,
+        0.08175
+      ]
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 252,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 252,
+      "byteLength": 1512,
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 1764,
+      "uri": "data:application/octet-stream;base64,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"
+    }
+  ]
+}

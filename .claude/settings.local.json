@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node run.ts index)",
+      "Bash(npm list -g tsx)",
+      "Bash(node run.js index)",
+      "Bash(node run.js analyze \"engine/localAI.ts\")",
+      "Bash(node run.js analyze \"engine/NPCSystem.ts\")",
+      "Bash(node run.js analyze \"engine/dialogueSystem.ts\")",
+      "Bash(node run.js search \"TODO\")",
+      "Bash(node run.js search \"FIXME\")",
+      "Bash(node run.js skills)",
+      "WebSearch",
+      "Bash(npm test -- --run)",
+      "Bash(npm run test -- --passWithNoTests)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(set)",
+      "Bash(where ollama llama sd stable-diffusion comfy)",
+      "Bash(where blender bforgershaper makehuman_2 cla.exe)",
+      "Bash(pip --version)",
+      "Bash(pip list)",
+      "Bash(npx tsx ai_support/agents/autonomousOrchestrator.ts)",
+      "Bash(npm run build)",
+      "Bash(timeout 45 npx tsx ai_support/secondbrain/autonomous.ts)",
+      "Bash(npx tsx autonomous.ts)",
+      "Bash(npx tsc --noEmit --skipLibCheck)"
+    ]
+  }
+}

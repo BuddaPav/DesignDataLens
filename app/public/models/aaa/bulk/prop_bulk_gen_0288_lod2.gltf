@@ -1,0 +1,101 @@
+{
+  "asset": {
+    "version": "2.0",
+    "generator": "chronos-generate-aaa-mass-model-pack"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "prop_bulk_gen_0288_lod2",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "prop_bulk_gen_0288_lod2"
+    }
+  ],
+  "meshes": [
+    {
+      "name": "prop_bulk_gen_0288_lod2_mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 1
+          },
+          "indices": 0,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "name": "prop_bulk_gen_0288_lod2_mat",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.36,
+          0.44,
+          0.78,
+          1
+        ],
+        "metallicFactor": 0.08,
+        "roughnessFactor": 0.85
+      }
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5123,
+      "count": 21,
+      "type": "SCALAR",
+      "max": [
+        20
+      ],
+      "min": [
+        0
+      ]
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 21,
+      "type": "VEC3",
+      "min": [
+        0,
+        0,
+        0.006
+      ],
+      "max": [
+        0.43545,
+        0.053165,
+        0.0845
+      ]
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 42,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 44,
+      "byteLength": 252,
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 296,
+      "uri": "data:application/octet-stream;base64,AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAAAAAAAAAAAAAAKabxDx+HTg9bxKDO/T91DxiZ4o8AFcSPe58Pz1cj4I9AAAAALx0Ez0YJgM+bxKDO8UgMD2Z07U9RQ02PWZmhj0pXA8+AAAAAKabRD2dEWU+bxKDO4/CdT16UzE+i8NZPVYOrT3sUTg+AAAAAKabxDvpSG4+bxKDOwrXIzwf9Ew+6J8gPSUGAT0Uroc+AAAAALx0kzwYlaw+bxKDOxsv3TzHKZY+LlZEPQRWTj0AAJA+AAAAAI/C9TzIB6U+bxKDO7bz/Twk0Zc+izILPZhuUj0AAMA+AAAAADEILD1N894+bxKDO6abRD29+8s+0eguPTvfjz0="
+    }
+  ]
+}

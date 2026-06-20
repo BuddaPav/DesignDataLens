@@ -1,0 +1,101 @@
+{
+  "asset": {
+    "version": "2.0",
+    "generator": "chronos-generate-aaa-mass-model-pack"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "prop_bulk_gen_0622_lod0",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "prop_bulk_gen_0622_lod0"
+    }
+  ],
+  "meshes": [
+    {
+      "name": "prop_bulk_gen_0622_lod0_mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 1
+          },
+          "indices": 0,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "name": "prop_bulk_gen_0622_lod0_mat",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.74,
+          0.68,
+          0.6,
+          1
+        ],
+        "metallicFactor": 0.08,
+        "roughnessFactor": 0.85
+      }
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5123,
+      "count": 126,
+      "type": "SCALAR",
+      "max": [
+        125
+      ],
+      "min": [
+        0
+      ]
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 126,
+      "type": "VEC3",
+      "min": [
+        0,
+        0,
+        0
+      ],
+      "max": [
+        0.905,
+        0.2250625,
+        0.080375
+      ]
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 252,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 252,
+      "byteLength": 1512,
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 1764,
+      "uri": "data:application/octet-stream;base64,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"
+    }
+  ]
+}

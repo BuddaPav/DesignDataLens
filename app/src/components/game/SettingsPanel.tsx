@@ -1,10 +1,11 @@
 // Settings Panel - Comprehensive game settings
 
 import { useState, useEffect } from 'react';
-import { 
+import {
   Volume2, VolumeX, Music, Monitor, Smartphone, Map,
   Accessibility, Palette, Bell, Save,
-  ChevronRight, RotateCcw, Check, Sparkles, Gauge, Brain
+  ChevronRight, RotateCcw, Check, Sparkles, Gauge, Brain,
+  FlipHorizontal
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
@@ -374,10 +375,78 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                       <p className="text-sm text-slate-400">{t('settings.screen_shake_desc', lang)}</p>
                     </div>
                   </div>
-                  <Switch 
+                  <Switch
                     checked={settings.screenShake}
                     onCheckedChange={(checked) => updateSetting('screenShake', checked)}
                   />
+                </div>
+
+                {/* Camera Mode */}
+                <div className="space-y-2">
+                  <Label className="font-medium">{t('settings.camera_mode', lang)}</Label>
+                  <p className="text-sm text-slate-400">{t('settings.camera_mode_desc', lang)}</p>
+                  <Select
+                    value={settings.cameraMode}
+                    onValueChange={(v) => updateSetting('cameraMode', v as 'first' | 'third')}
+                  >
+                    <SelectTrigger className="w-full max-w-md border-slate-700 bg-slate-950">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="first">{t('settings.camera_first', lang)}</SelectItem>
+                      <SelectItem value="third">{t('settings.camera_third', lang)}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Mouse Sensitivity */}
+                <div className="space-y-2">
+                  <Label className="font-medium">{t('settings.mouse_sensitivity', lang)}</Label>
+                  <p className="text-sm text-slate-400">{t('settings.mouse_sensitivity_desc', lang)}</p>
+                  <Slider
+                    value={[settings.mouseSensitivity * 100]}
+                    onValueChange={([v]) => updateSetting('mouseSensitivity', v / 100)}
+                    min={10}
+                    max={200}
+                    step={10}
+                    className="max-w-md"
+                  />
+                  <p className="text-xs text-slate-500">{settings.mouseSensitivity.toFixed(1)}x</p>
+                </div>
+
+                {/* Invert Y */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <FlipHorizontal className="w-5 h-5 text-teal-400" />
+                    <div>
+                      <Label className="font-medium">{t('settings.invert_y', lang)}</Label>
+                      <p className="text-sm text-slate-400">{t('settings.invert_y_desc', lang)}</p>
+                    </div>
+                  </div>
+                  <Switch
+                    checked={settings.invertMouseY}
+                    onCheckedChange={(checked) => updateSetting('invertMouseY', checked)}
+                  />
+                </div>
+
+                {/* Color Grading */}
+                <div className="space-y-2">
+                  <Label className="font-medium">{t('settings.color_grading', lang)}</Label>
+                  <p className="text-sm text-slate-400">{t('settings.color_grading_desc', lang)}</p>
+                  <Select
+                    value={settings.colorGrading}
+                    onValueChange={(v) => updateSetting('colorGrading', v as 'default' | 'cinematic' | 'vibrant' | 'desaturated')}
+                  >
+                    <SelectTrigger className="w-full max-w-md border-slate-700 bg-slate-950">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="default">{t('settings.color_default', lang)}</SelectItem>
+                      <SelectItem value="cinematic">{t('settings.color_cinematic', lang)}</SelectItem>
+                      <SelectItem value="vibrant">{t('settings.color_vibrant', lang)}</SelectItem>
+                      <SelectItem value="desaturated">{t('settings.color_desaturated', lang)}</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             )}
@@ -592,6 +661,28 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                       {t('settings.lang_en', lang)}
                     </button>
                   </div>
+                </div>
+
+                <div className="space-y-3">
+                  <Label>{t('settings.difficulty', lang)}</Label>
+                  <div className="flex gap-2">
+                    {(['easy', 'normal', 'hard'] as const).map((diff) => (
+                      <button
+                        key={diff}
+                        onClick={() => updateSetting('gameDifficulty', diff)}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                          settings.gameDifficulty === diff
+                            ? 'bg-violet-600 text-white'
+                            : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                        }`}
+                      >
+                        {t(`settings.difficulty_${diff}`, lang)}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-slate-500">
+                    {t(`settings.difficulty_hint_${settings.gameDifficulty}`, lang)}
+                  </p>
                 </div>
               </div>
             )}

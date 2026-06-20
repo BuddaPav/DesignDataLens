@@ -32,6 +32,9 @@ export type NPCSystemSerialized = {
   relationships: Array<{ id: string; rels: [string, Relationship][] }>;
 };
 
+const CHRONOS_NPC_MEMORY_MAX = 120;
+const CHRONOS_NPC_RELEVANT_MEMORY_LIMIT = 3;
+
 // ==================== NPC TEMPLATES ====================
 
 interface NPCTemplate {
@@ -727,22 +730,39 @@ export class NPCSystem {
 
     npc.memories.push(memory);
 
-    // Сортировка только для удобства выборки в диалоге — записи не выбрасываем (память не «стирается»).
+    // В релизном цикле память ограничиваем, чтобы не раздувать save/session.
     npc.memories.sort((a, b) => {
-      const scoreA = a.importance * 10 + (Date.now() - a.timestamp) / 86400000;
-      const scoreB = b.importance * 10 + (Date.now() - b.timestamp) / 86400000;
+      const scoreA = a.importance * 10 - (Date.now() - a.timestamp) / 86400000;
+      const scoreB = b.importance * 10 - (Date.now() - b.timestamp) / 86400000;
       return scoreB - scoreA;
     });
+    if (npc.memories.length > CHRONOS_NPC_MEMORY_MAX) {
+      npc.memories.length = CHRONOS_NPC_MEMORY_MAX;
+    }
   }
 
   getRelevantMemories(npcId: string, context: string): NPCMemory[] {
     const npc = this.npcs.get(npcId);
     if (!npc) return [];
-
-    // Simple relevance scoring based on content matching
+    const query = context.trim().toLowerCase();
+    if (!query) {
+      return npc.memories.slice(0, CHRONOS_NPC_RELEVANT_MEMORY_LIMIT);
+    }
+    const terms = query.split(/\s+/).filter(Boolean);
     return npc.memories
-      .filter(m => m.content.toLowerCase().includes(context.toLowerCase()))
-      .slice(0, 3);
+      .map((m) => {
+        const content = m.content.toLowerCase();
+        let termHits = 0;
+        for (const term of terms) {
+          if (content.includes(term)) termHits += 1;
+        }
+        const recencyHours = Math.max(0, (Date.now() - m.timestamp) / 3_600_000);
+        const score = m.importance * 10 + termHits * 14 - recencyHours * 0.04;
+        return { m, score };
+      })
+      .sort((a, b) => b.score - a.score)
+      .slice(0, CHRONOS_NPC_RELEVANT_MEMORY_LIMIT)
+      .map((x) => x.m);
   }
 
   // ==================== DIALOGUE GENERATION ====================

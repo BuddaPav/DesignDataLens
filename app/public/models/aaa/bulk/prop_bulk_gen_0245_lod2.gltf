@@ -1,0 +1,101 @@
+{
+  "asset": {
+    "version": "2.0",
+    "generator": "chronos-generate-aaa-mass-model-pack"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "prop_bulk_gen_0245_lod2",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "prop_bulk_gen_0245_lod2"
+    }
+  ],
+  "meshes": [
+    {
+      "name": "prop_bulk_gen_0245_lod2_mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 1
+          },
+          "indices": 0,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "name": "prop_bulk_gen_0245_lod2_mat",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.55,
+          0.39,
+          0.73,
+          1
+        ],
+        "metallicFactor": 0.08,
+        "roughnessFactor": 0.85
+      }
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5123,
+      "count": 24,
+      "type": "SCALAR",
+      "max": [
+        23
+      ],
+      "min": [
+        0
+      ]
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 24,
+      "type": "VEC3",
+      "min": [
+        0,
+        0,
+        0
+      ],
+      "max": [
+        0.492325,
+        0.051421249999999995,
+        0.08175
+      ]
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 48,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 48,
+      "byteLength": 288,
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 336,
+      "uri": "data:application/octet-stream;base64,AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAAAAAAAAAAAAAAAAAcayLPW8SgztvEgM8E2baPLoxPT228/08H4VrPQAAAACmm0Q8TtHRPW8SgztCYGU8aFyYPQBXEj0EVg49FK4HPgAAAACmm8Q8HHxRPm8SgzsCKwc9eqUkPi5WRD156WY94Xo0PgAAAAC8dBM9EHpmPm8Sgzt3vh89cXJHPnR7GT2iRXY9cT2KPgAAAACmm0Q9XCCxPm8SgztokW09dY6ZPqJ6Sz2LbKc9mpmZPgAAAACmm8Q7GJW0Pm8SgzsK1yM8s+qjPuifID0lBgE9MzPTPgAAAAC8dJM8BhL8Pm8Sgztoke08ilnjPhefUj2amVk9H4XbPgAAAACPwvU8hXz4Pm8SgzspXA89iqvmPl3EJz3D9Wg9"
+    }
+  ]
+}

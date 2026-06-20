@@ -1,0 +1,101 @@
+{
+  "asset": {
+    "version": "2.0",
+    "generator": "chronos-generate-aaa-mass-model-pack"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "prop_bulk_gen_0416_lod0",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "prop_bulk_gen_0416_lod0"
+    }
+  ],
+  "meshes": [
+    {
+      "name": "prop_bulk_gen_0416_lod0_mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 1
+          },
+          "indices": 0,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "name": "prop_bulk_gen_0416_lod0_mat",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.82,
+          0.4,
+          0.3,
+          1
+        ],
+        "metallicFactor": 0.08,
+        "roughnessFactor": 0.85
+      }
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5123,
+      "count": 132,
+      "type": "SCALAR",
+      "max": [
+        131
+      ],
+      "min": [
+        0
+      ]
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 132,
+      "type": "VEC3",
+      "min": [
+        0,
+        0,
+        0
+      ],
+      "max": [
+        0.665,
+        0.196,
+        0.068
+      ]
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 264,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 264,
+      "byteLength": 1584,
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 1848,
+      "uri": "data:application/octet-stream;base64,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"
+    }
+  ]
+}

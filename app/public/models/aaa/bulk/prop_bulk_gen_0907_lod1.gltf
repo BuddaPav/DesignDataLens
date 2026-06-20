@@ -1,0 +1,101 @@
+{
+  "asset": {
+    "version": "2.0",
+    "generator": "chronos-generate-aaa-mass-model-pack"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "prop_bulk_gen_0907_lod1",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "prop_bulk_gen_0907_lod1"
+    }
+  ],
+  "meshes": [
+    {
+      "name": "prop_bulk_gen_0907_lod1_mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 1
+          },
+          "indices": 0,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "name": "prop_bulk_gen_0907_lod1_mat",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.49,
+          0.31,
+          0.75,
+          1
+        ],
+        "metallicFactor": 0.08,
+        "roughnessFactor": 0.85
+      }
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5123,
+      "count": 36,
+      "type": "SCALAR",
+      "max": [
+        35
+      ],
+      "min": [
+        0
+      ]
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 36,
+      "type": "VEC3",
+      "min": [
+        0,
+        0,
+        0
+      ],
+      "max": [
+        0.8592500000000001,
+        0.0686,
+        0.07575
+      ]
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 72,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 72,
+      "byteLength": 432,
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 504,
+      "uri": "data:application/octet-stream;base64,AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAAAAAAAAAAAC8dBM95/upPW8SgzvFIDA9AU0EPdXnaj1mZoY9SOF6PQAAAACmm0Q91XgJPm8SgzuHFlk9Iv22PT55WD0QWJk916PwPQAAAACmm8Q7/tQ4Pm8Sgzu8dBM8KcsQPqYKRj20yPY8zcwsPgAAAAC8dJM8bxJjPm8SgzvjpZs8CflAPg+cMz2uRyE9KVyPPgAAAACPwvU88KfGPm8SgzsxCCw9C0alPih+jD0nMYg9zcysPgAAAAAxCCw92/nePm8Sgzv0/VQ9LpDAPtxGgz3RIps9FK7HPgAAAAAAAAAAarz0Pm8SgztvEgM89UrZPiEfdD228/08AADgPgAAAACmm0Q8z/cDP28Sgzu8dJM8YHbvPoqwYT0v3SQ9j8L1PgAAAACmm8Q8ukkMP28SgztCYOU8N4kBP/JBTz2DwEo94XoEPwAAAAC8dBM9+FMTP28SgzvjpRs9kQ8KP1vTPD3Xo3A9zcwMPwAAAACmm0Q9hxYZP28Sgzumm0Q9PE4RP8NkKj2WQ4s9mplBPwAAAACmm8Q7z/dbP28SgzuWQ4s86gRMP4Lihz2wcig9"
+    }
+  ]
+}

@@ -9,7 +9,10 @@ import {
   Sparkle,
   Gamepad2,
   Brain,
-  Infinity as InfinityIcon
+  Infinity as InfinityIcon,
+  MapPin,
+  Sword,
+  Shield
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,11 +33,26 @@ import {
   CHRONOS_BROWSER_NOTIFY_TAGS,
   notifyGameBrowserEvent,
 } from '@/domain/notifications/browserNotifications';
+import {
+  applyGraphicsProfile,
+  detectGraphicsProfile,
+  loadChronosGameSettings,
+  saveChronosGameSettings,
+  type ChronosGraphicsProfile,
+} from '@/lib/chronosGameSettings';
 
 const NAME_SUGGESTIONS = {
   ru: ['Артемис', 'Соларис', 'Луна', 'Феникс', 'Орион', 'Астра'],
   en: ['Artemis', 'Solaris', 'Luna', 'Phoenix', 'Orion', 'Astra']
 } as const;
+
+interface SaveMetadata {
+  playerName: string;
+  locationId: string;
+  playedTime: number;
+  inCombat: boolean;
+  timestamp: number;
+}
 
 interface IntroScreenProps {
   onStart: (name: string) => void;
@@ -48,6 +66,7 @@ interface IntroScreenProps {
   saveLoadError?: string | null;
   onClearSaveLoadError?: () => void;
   onDeleteSave?: () => void | Promise<void>;
+  getSaveMetadata?: () => SaveMetadata | null;
 }
 
 export function IntroScreen({
@@ -57,6 +76,7 @@ export function IntroScreen({
   saveLoadError,
   onClearSaveLoadError,
   onDeleteSave,
+  getSaveMetadata,
 }: IntroScreenProps) {
   const language = useLanguage();
   const [step, setStep] = useState<'title' | 'name'>('title');
@@ -65,12 +85,42 @@ export function IntroScreen({
   const [hasIndexedBackup, setHasIndexedBackup] = useState(false);
   const [showParticles] = useState(true);
   const [splashUrl, setSplashUrl] = useState(() => chronosSplashDefaultUrl());
+  const [graphicsProfile, setGraphicsProfile] = useState<ChronosGraphicsProfile>(() =>
+    detectGraphicsProfile(loadChronosGameSettings())
+  );
+  const [saveMetadata, setSaveMetadata] = useState<SaveMetadata | null>(null);
 
   useEffect(() => {
     const save = localStorage.getItem('chronos_save');
     setHasSave(!!save);
+    if (getSaveMetadata) {
+      setSaveMetadata(getSaveMetadata());
+    }
     void loadFullWorldFromIndexedDB().then((raw) => setHasIndexedBackup(raw != null && typeof raw === 'object'));
-  }, []);
+  }, [getSaveMetadata]);
+
+  /** Format played time as H:MM:SS */
+  const formatPlayedTime = (ms: number): string => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    if (hours > 0) {
+      return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  /** Format timestamp as locale date/time */
+  const formatTimestamp = (ts: number): string => {
+    if (!ts) return '';
+    return new Date(ts).toLocaleString(language === 'ru' ? 'ru-RU' : 'en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
 
   /** Опциональный фон из `npm run generate:ai-art` (manifest + backdrop.png в generated/) */
   useEffect(() => {
@@ -134,6 +184,28 @@ export function IntroScreen({
     void loadFullWorldFromIndexedDB().then((raw) =>
       setHasIndexedBackup(raw != null && typeof raw === 'object'),
     );
+  };
+
+  const applyProfile = (profile: ChronosGraphicsProfile) => {
+    const current = loadChronosGameSettings();
+    const next = applyGraphicsProfile(current, profile);
+    saveChronosGameSettings(next);
+    setGraphicsProfile(profile);
+    window.dispatchEvent(new Event('chronos:settings_updated'));
+    soundManager.play('click');
+    const title =
+      profile === 'performance'
+        ? language === 'ru'
+          ? 'Профиль: Производительность'
+          : 'Profile: Performance'
+        : profile === 'cinematic'
+          ? language === 'ru'
+            ? 'Профиль: Кинематограф'
+            : 'Profile: Cinematic'
+          : language === 'ru'
+            ? 'Профиль: Сбалансированный'
+            : 'Profile: Balanced';
+    toast.success(title);
   };
 
   return (
@@ -249,16 +321,58 @@ export function IntroScreen({
             
             {(hasSave || hasIndexedBackup) && (
               <TiltCard>
-                <Button
-                  data-testid="intro-continue"
-                  onClick={() => void handleLoad()}
-                  variant="outline"
-                  size="lg"
-                  className="border-slate-700 hover:bg-slate-800 text-slate-300 px-10 py-7 text-lg relative overflow-hidden group"
-                >
-                  <Clock className="w-5 h-5 mr-2 group-hover:animate-spin" />
-                  {t('intro.continue', language)}
-                </Button>
+                <div className="flex flex-col gap-3">
+                  <Button
+                    data-testid="intro-continue"
+                    onClick={() => void handleLoad()}
+                    variant="outline"
+                    size="lg"
+                    className="border-slate-700 hover:bg-slate-800 text-slate-300 px-10 py-7 text-lg relative overflow-hidden group"
+                  >
+                    <Clock className="w-5 h-5 mr-2 group-hover:animate-spin" />
+                    {t('intro.continue', language)}
+                  </Button>
+
+                  {/* Save metadata display */}
+                  {saveMetadata && (
+                    <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-slate-400">
+                      {/* Player name */}
+                      <span className="text-amber-400 font-medium">
+                        {saveMetadata.playerName}
+                      </span>
+
+                      {/* Location */}
+                      <span className="flex items-center gap-1">
+                        <MapPin className="w-3 h-3" />
+                        {saveMetadata.locationId}
+                      </span>
+
+                      {/* Played time */}
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {formatPlayedTime(saveMetadata.playedTime)}
+                      </span>
+
+                      {/* Combat status */}
+                      {saveMetadata.inCombat ? (
+                        <span className="flex items-center gap-1 text-rose-400">
+                          <Sword className="w-3 h-3" />
+                          {language === 'ru' ? 'В бою' : 'In combat'}
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-1 text-emerald-400">
+                          <Shield className="w-3 h-3" />
+                          {language === 'ru' ? 'Безопасно' : 'Safe'}
+                        </span>
+                      )}
+
+                      {/* Last saved */}
+                      <span className="text-slate-500">
+                        {formatTimestamp(saveMetadata.timestamp)}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </TiltCard>
             )}
           </div>
@@ -360,6 +474,33 @@ export function IntroScreen({
               </div>
             </TiltCard>
           </div>
+
+          <div className="mt-8 rounded-xl border border-white/[0.08] bg-black/35 p-4 backdrop-blur-sm">
+            <p className="text-sm text-slate-300 mb-3">
+              {language === 'ru' ? 'Графический профиль (до старта игры)' : 'Graphics profile (before start)'}
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              {([
+                { id: 'performance', ru: 'Производительность', en: 'Performance' },
+                { id: 'balanced', ru: 'Сбалансированный', en: 'Balanced' },
+                { id: 'cinematic', ru: 'Кинематограф', en: 'Cinematic' },
+              ] as const).map((p) => (
+                <Button
+                  key={p.id}
+                  type="button"
+                  variant={graphicsProfile === p.id ? 'secondary' : 'outline'}
+                  className={
+                    graphicsProfile === p.id
+                      ? 'bg-violet-600/35 border-violet-400/55 text-violet-100'
+                      : 'border-slate-700 text-slate-300'
+                  }
+                  onClick={() => applyProfile(p.id)}
+                >
+                  {language === 'ru' ? p.ru : p.en}
+                </Button>
+              ))}
+            </div>
+          </div>
         </div>
       )}
 
@@ -406,6 +547,32 @@ export function IntroScreen({
             >
               {t('intro.back', language)}
             </Button>
+          </div>
+
+          <div className="mt-6 rounded-lg border border-white/[0.08] bg-black/30 p-3">
+            <p className="text-xs text-slate-400 mb-2">
+              {language === 'ru' ? 'Профиль графики' : 'Graphics profile'}
+            </p>
+            <div className="grid grid-cols-3 gap-2">
+              {([
+                { id: 'performance', ru: 'FPS', en: 'FPS' },
+                { id: 'balanced', ru: 'Баланс', en: 'Balanced' },
+                { id: 'cinematic', ru: 'Кино', en: 'Cinematic' },
+              ] as const).map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => applyProfile(p.id)}
+                  className={`rounded-md border px-2 py-1.5 text-xs transition-colors ${
+                    graphicsProfile === p.id
+                      ? 'border-violet-400/60 bg-violet-500/20 text-violet-100'
+                      : 'border-slate-700 bg-slate-900/60 text-slate-300 hover:border-slate-500'
+                  }`}
+                >
+                  {language === 'ru' ? p.ru : p.en}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Name suggestions */}

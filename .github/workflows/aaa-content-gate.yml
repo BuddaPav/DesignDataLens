@@ -1,0 +1,37 @@
+name: AAA content gate
+
+on:
+  pull_request:
+    branches: [main, master, develop]
+  push:
+    branches: [main, master, develop]
+
+jobs:
+  content_gate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Check static asset refs
+        run: npm run check:assets
+      - name: Orchestrate gate
+        run: npm run orchestrate:gate
+      - name: Vertical slice gate
+        run: npm run aaa:vertical-slice:gate
+      - name: Asset factory gate
+        run: npm run aaa:asset-factory:gate
+      - name: Graphics gate
+        run: npm run aaa:graphics:gate
+      - name: Full production progress
+        run: npm run aaa:full-production:progress
+      - name: Release gate
+        run: npm run aaa:release:gate

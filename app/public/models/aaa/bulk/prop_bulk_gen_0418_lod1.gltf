@@ -1,0 +1,101 @@
+{
+  "asset": {
+    "version": "2.0",
+    "generator": "chronos-generate-aaa-mass-model-pack"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "prop_bulk_gen_0418_lod1",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "prop_bulk_gen_0418_lod1"
+    }
+  ],
+  "meshes": [
+    {
+      "name": "prop_bulk_gen_0418_lod1_mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 1
+          },
+          "indices": 0,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "name": "prop_bulk_gen_0418_lod1_mat",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.86,
+          0.78,
+          0.52,
+          1
+        ],
+        "metallicFactor": 0.08,
+        "roughnessFactor": 0.85
+      }
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5123,
+      "count": 33,
+      "type": "SCALAR",
+      "max": [
+        32
+      ],
+      "min": [
+        0
+      ]
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 33,
+      "type": "VEC3",
+      "min": [
+        0,
+        0,
+        0
+      ],
+      "max": [
+        0.72175,
+        0.0686,
+        0.077625
+      ]
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 66,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 68,
+      "byteLength": 396,
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 464,
+      "uri": "data:application/octet-stream;base64,AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAAAAAAAAAAAAAALx0kzx3vp89bxKDO6abxDz+Zfc8irBhPaRwPT24HoU9AAAAAI/C9TwIrBw+bxKDO+OlGz06kss9IR90PSPbeT1xPQo+AAAAADEILD2Nl24+bxKDO/T9VD0zxDE+3EaDPdEimz09Clc+AAAAAAAAAADl0KI+bxKDO6abRDwAb4E+KH6MPQaBFT1mZmY+AAAAAKabRDwEVo4+bxKDO/T9VDyjkno+D5wzPTm0CD1mZpY+AAAAAKabxDzwp7Y+bxKDOxsv3TwFo6I+pgpGPbgeRT32KLw+AAAAALx0Ez03ieE+bxKDO57vJz0VjMo+PnlYPZzEgD3heuQ+AAAAAKabRD3ufAc/bxKDO65HYT2BBPU+1edqPdv5nj0Urgc/AAAAAKabxDvufB8/bxKDO4/CdTwlBhE/bVZ9PRsvHT1mZh4/AAAAALx0kzycxDg/bxKDO2iR7Ty30Sg/guKHPZqZWT3NzAw/AAAAAI/C9TyHFhk/bxKDO4/C9Tw8ThE/w2QqPc3MTD0="
+    }
+  ]
+}

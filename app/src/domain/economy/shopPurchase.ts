@@ -3,7 +3,7 @@ import { t } from '@/i18n';
 import type { Player, ShopItem, WorldLogEntry } from '@/types/game';
 import { clampGold } from '@/domain/inventory/inventoryRules';
 import { pushWorldLog } from '@/engine/worldEvents';
-import { marketSupplyKeyForLocation, priceMultiplierFromMarketSupply } from '@/domain/economy/caravanEconomy';
+import { priceMultiplierFromMarketSupply, readMarketSupplyForLocation } from '@/domain/economy/caravanEconomy';
 
 export function resolveShopGoldPrice(
   goldPriceBase: number,
@@ -11,8 +11,7 @@ export function resolveShopGoldPrice(
   factionPowers: Map<string, number> | undefined,
 ): number {
   if (!Number.isFinite(goldPriceBase) || goldPriceBase <= 0) return 0;
-  const key = marketSupplyKeyForLocation(locationId);
-  const supply = factionPowers?.get(key) ?? 0;
+  const supply = readMarketSupplyForLocation(factionPowers, locationId);
   const mult = priceMultiplierFromMarketSupply(supply);
   const rounded = Math.max(0, Math.round(goldPriceBase * mult));
   return Number.isFinite(rounded) ? rounded : 0;

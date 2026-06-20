@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "sliceId": "vs_region_01",
+  "targets": {
+    "heroAssetsMin": 8,
+    "modelsMin": 40,
+    "animationsMin": 40,
+    "vfxMin": 30,
+    "musicMinutesMin": 20
+  },
+  "actual": {
+    "heroAssets": 0,
+    "models": 0,
+    "animations": 0,
+    "vfx": 0,
+    "musicMinutes": 0
+  },
+  "gates": {
+    "orchestrateGatePassed": false,
+    "questFlowSmokePassed": false,
+    "performanceBudgetPassed": false,
+    "fallbackPathsVerified": false
+  }
+}

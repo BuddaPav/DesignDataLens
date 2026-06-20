@@ -1,0 +1,101 @@
+{
+  "asset": {
+    "version": "2.0",
+    "generator": "chronos-generate-aaa-mass-model-pack"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "prop_bulk_gen_0568_lod0",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "prop_bulk_gen_0568_lod0"
+    }
+  ],
+  "meshes": [
+    {
+      "name": "prop_bulk_gen_0568_lod0_mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 1
+          },
+          "indices": 0,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "name": "prop_bulk_gen_0568_lod0_mat",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.36,
+          0.28,
+          0.38,
+          1
+        ],
+        "metallicFactor": 0.08,
+        "roughnessFactor": 0.85
+      }
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5123,
+      "count": 132,
+      "type": "SCALAR",
+      "max": [
+        131
+      ],
+      "min": [
+        0
+      ]
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 132,
+      "type": "VEC3",
+      "min": [
+        0,
+        0,
+        0
+      ],
+      "max": [
+        0.8850000000000001,
+        0.26575,
+        0.08175
+      ]
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 264,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 264,
+      "byteLength": 1584,
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 1848,
+      "uri": "data:application/octet-stream;base64,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"
+    }
+  ]
+}

@@ -13,8 +13,12 @@ export type BiomeKind = 'deep_water' | 'shallow' | 'beach' | 'plains' | 'forest'
 /** Якоря сюжетных локаций на глобальной сетке (согласовано с initialLocations в useGameState) */
 const LOCATION_ANCHORS: Record<string, { x: number; y: number; labelRu: string }> = {
   starting_village: { x: 500_000, y: 500_000, labelRu: 'Willbrook' },
+  misty_crossroads: { x: 500_120, y: 500_060, labelRu: 'Перекресток' },
   whispering_forest: { x: 500_220, y: 499_880, labelRu: 'Шепчущий лес' },
-  old_ruins: { x: 499_780, y: 500_240, labelRu: 'Руины' }
+  old_ruins: { x: 499_780, y: 500_240, labelRu: 'Руины' },
+  river_port: { x: 500_360, y: 500_120, labelRu: 'Речной порт' },
+  sunken_marsh: { x: 500_340, y: 499_640, labelRu: 'Затопленные топи' },
+  ember_hills: { x: 499_600, y: 499_900, labelRu: 'Угольные холмы' },
 };
 
 export function getLocationAnchor(locationId: string): { x: number; y: number; labelRu: string } {

@@ -1,0 +1,101 @@
+{
+  "asset": {
+    "version": "2.0",
+    "generator": "chronos-generate-aaa-mass-model-pack"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "prop_bulk_gen_0112_lod0",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "prop_bulk_gen_0112_lod0"
+    }
+  ],
+  "meshes": [
+    {
+      "name": "prop_bulk_gen_0112_lod0_mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 1
+          },
+          "indices": 0,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "name": "prop_bulk_gen_0112_lod0_mat",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.34,
+          0.64,
+          0.66,
+          1
+        ],
+        "metallicFactor": 0.08,
+        "roughnessFactor": 0.85
+      }
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5123,
+      "count": 132,
+      "type": "SCALAR",
+      "max": [
+        131
+      ],
+      "min": [
+        0
+      ]
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 132,
+      "type": "VEC3",
+      "min": [
+        0,
+        0,
+        0
+      ],
+      "max": [
+        0.845,
+        0.25993750000000004,
+        0.083125
+      ]
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 264,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 264,
+      "byteLength": 1584,
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 1848,
+      "uri": "data:application/octet-stream;base64,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"
+    }
+  ]
+}

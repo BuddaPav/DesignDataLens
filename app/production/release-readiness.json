@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "phase": "release_candidate",
+  "checks": {
+    "alphaContentComplete": true,
+    "alphaCoreSmoke": true,
+    "alphaNoBlockers": true,
+    "betaFeatureFreeze": true,
+    "betaLocalizationLock": true,
+    "betaPerformanceLock": true,
+    "rcCrashBudget": true,
+    "rcSaveCompatibility": true,
+    "rcInstallerReady": true,
+    "rcCertificationChecklist": true
+  }
+}

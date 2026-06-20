@@ -6,6 +6,7 @@ type RumorSpreadWorkRequest = {
   hours: number;
   adjacency: Record<string, string[]>;
   token: number;
+  seed: number;
 };
 
 type RumorSpreadWorkResponse = {
@@ -31,6 +32,7 @@ export async function decayAndSpreadRumorsInWorker(
   hours: number,
   adjacency: Record<string, string[]>,
   token: number,
+  seed: number,
 ): Promise<{ rumors: ActiveRumor[]; token: number } | null> {
   const w = getRumorWorker();
   if (!w) return null;
@@ -40,6 +42,7 @@ export async function decayAndSpreadRumorsInWorker(
     hours,
     adjacency,
     token,
+    seed,
   };
 
   return await new Promise((resolve) => {

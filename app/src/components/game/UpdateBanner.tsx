@@ -12,10 +12,24 @@ interface UpdateBannerProps {
 
 export function UpdateBanner({ currentVersion, remote, onDismiss }: UpdateBannerProps) {
   const lang = useLanguage();
+
+  const resolveSafeDownloadUrl = (raw: string): string | null => {
+    try {
+      const parsed = new URL(raw, window.location.origin);
+      if (parsed.protocol === 'https:') return parsed.toString();
+      if (parsed.protocol === 'http:' && parsed.hostname === 'localhost') return parsed.toString();
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
   const openUpdate = () => {
     const u = remote.downloadUrl?.trim();
     if (u) {
-      window.open(u, '_blank', 'noopener,noreferrer');
+      const safeUrl = resolveSafeDownloadUrl(u);
+      if (!safeUrl) return;
+      window.open(safeUrl, '_blank', 'noopener,noreferrer');
       return;
     }
     window.location.reload();

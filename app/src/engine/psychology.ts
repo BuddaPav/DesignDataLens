@@ -9,7 +9,9 @@ export function defaultMentalState(): MentalState {
   return {
     stress: 25 + Math.floor(Math.random() * 15),
     happiness: 45 + Math.floor(Math.random() * 20),
-    trauma: 5 + Math.floor(Math.random() * 15)
+    trauma: 5 + Math.floor(Math.random() * 15),
+    anxiety: 20 + Math.floor(Math.random() * 20),
+    trustBaseline: 50 + Math.floor(Math.random() * 15)
   };
 }
 
@@ -22,7 +24,9 @@ export function applyMentalEvent(state: MentalState, opts: { stressDelta?: numbe
   const next = {
     stress: clamp(state.stress + (opts.stressDelta ?? 0), 0, 100),
     happiness: clamp(state.happiness + (opts.happinessDelta ?? 0), 0, 100),
-    trauma: clamp(state.trauma + (opts.traumaDelta ?? 0), 0, 100)
+    trauma: clamp(state.trauma + (opts.traumaDelta ?? 0), 0, 100),
+    anxiety: clamp(state.anxiety + (opts.stressDelta ?? 0) * 0.5, 0, 100),
+    trustBaseline: clamp(state.trustBaseline - (opts.traumaDelta ?? 0) * 0.3, 0, 100)
   };
   // Сильный стресс «съедает» счастье чуть-чуть
   if (next.stress > 75) {
@@ -58,7 +62,9 @@ export function driftMentalState(state: MentalState, hours: number): MentalState
   return {
     stress: clamp(state.stress - relax * 0.3, 0, 100),
     happiness: clamp(state.happiness + relax * 0.1, 0, 100),
-    trauma: clamp(state.trauma, 0, 100)
+    trauma: clamp(state.trauma, 0, 100),
+    anxiety: clamp(state.anxiety - relax * 0.2, 0, 100),
+    trustBaseline: clamp(state.trustBaseline + relax * 0.1, 0, 100)
   };
 }
 

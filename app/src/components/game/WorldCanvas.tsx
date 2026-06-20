@@ -7,6 +7,7 @@ import {
   TILE_PX,
   biomeAt,
   biomeColors,
+  elevationAt,
   npcWorldTile,
   nearestLocationLabel,
   CHUNK_SIZE,
@@ -317,6 +318,35 @@ export function WorldCanvas({
             ctx.fillRect(px, py, TILE_PX + 0.6, TILE_PX + 0.6);
             ctx.fillStyle = mid + '33';
             ctx.fillRect(px, py, TILE_PX + 0.6, 2);
+          }
+
+          if (biome !== 'deep_water' && biome !== 'shallow') {
+            const elev = elevationAt(tix, tiy, seed);
+            const ridge = Math.max(0, elev - 0.35);
+            const cliff = Math.max(0, elev - 0.62);
+            const relief = Math.min(TILE_PX * 0.6, ridge * TILE_PX * 2.4 + cliff * TILE_PX * 2.1);
+            if (relief > 0.02) {
+              ctx.fillStyle = `rgba(255,255,255,${Math.min(0.18, 0.04 + relief * 0.045)})`;
+              ctx.fillRect(px + 0.8, py + 0.8, TILE_PX - 1.4, Math.max(1, relief * 0.42));
+              ctx.fillStyle = `rgba(8,10,16,${Math.min(0.34, 0.08 + relief * 0.08)})`;
+              ctx.fillRect(
+                px + 0.8,
+                py + TILE_PX - Math.max(1, relief * 0.62),
+                TILE_PX - 1.4,
+                Math.max(1, relief * 0.62)
+              );
+            }
+            if (elev > 0.5) {
+              const contourBand = Math.floor(elev * 38);
+              if ((contourBand + tix + tiy) % 7 === 0) {
+                ctx.strokeStyle = `rgba(240,244,255,${0.06 + Math.min(0.09, (elev - 0.5) * 0.2)})`;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(px + 1.2, py + TILE_PX * 0.62);
+                ctx.lineTo(px + TILE_PX - 1.2, py + TILE_PX * 0.35);
+                ctx.stroke();
+              }
+            }
           }
 
           if (biome === 'deep_water' || biome === 'shallow') {

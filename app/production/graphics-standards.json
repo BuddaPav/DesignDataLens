@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "description": "Baseline 3D budgets for AAA asset intake gates.",
+  "minLodCount": 3,
+  "allowedTextureSizes": [256, 512, 1024, 2048, 4096],
+  "triangleBudgetByTier": {
+    "hero": 25000,
+    "mid": 15000,
+    "background": 8000
+  },
+  "materialBudgetByTier": {
+    "hero": 3,
+    "mid": 3,
+    "background": 2
+  },
+  "maxTextureByTier": {
+    "hero": 2048,
+    "mid": 2048,
+    "background": 1024
+  }
+}

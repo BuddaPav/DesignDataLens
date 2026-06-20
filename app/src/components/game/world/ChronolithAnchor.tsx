@@ -1,6 +1,6 @@
 /**
  * Визуальный якорь мира: процедурный «хронолит» (смещение вершин + iridescent physical)
- * и опциональный локальный GLB `public/models/chronolith.glb` при наличии файла.
+ * и опциональный локальный LOD-пакет glTF под `public/models/aaa/`.
  */
 import { useFrame } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
@@ -167,11 +167,16 @@ export function ChronolithAnchor({
       <ChronolithSpire worldEra={era} sunDir={sunDir} />
       <OrbitHalo worldEra={era} />
       <OptionalLocalGlb
-        path="models/chronolith.glb"
+        path="models/aaa/chronolith_anchor_lod0.gltf"
+        lodPaths={[
+          'models/aaa/chronolith_anchor_lod0.gltf',
+          'models/aaa/chronolith_anchor_lod1.gltf',
+          'models/aaa/chronolith_anchor_lod2.gltf'
+        ]}
         position={[0.4, 4.2, 0.6]}
         scale={6}
         maxDistance={graphicsTier === 'high' ? 220 : 140}
-        minTier="balanced"
+        minTier="low"
         graphicsTier={graphicsTier}
       />
     </group>

@@ -5,9 +5,17 @@ import { Detailed } from '@react-three/drei';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
+import type { WorldGraphicsTier } from '@/types/chronosGraphics';
 import { biomeAt, elevationAt } from '@/engine/worldTiles';
+import { OptionalLocalGlb } from '@/rendering/OptionalLocalGlb';
 
 const H_SCALE = 16;
+
+const MARSH_RUINS_ARCHWAY_LOD: [string, string, string] = [
+  'models/aaa/env_marsh_ruins_archway_lod0.gltf',
+  'models/aaa/env_marsh_ruins_archway_lod1.gltf',
+  'models/aaa/env_marsh_ruins_archway_lod2.gltf'
+];
 
 function noiseDeform(geo: THREE.BufferGeometry, amp: number, seed: number): THREE.BufferGeometry {
   const pos = geo.attributes.position as THREE.BufferAttribute;
@@ -108,9 +116,15 @@ export interface HorizonHeroLandmarksProps {
   worldSeed: number;
   playerTileX: number;
   playerTileY: number;
+  graphicsTier?: WorldGraphicsTier;
 }
 
-export function HorizonHeroLandmarks({ worldSeed, playerTileX, playerTileY }: HorizonHeroLandmarksProps) {
+export function HorizonHeroLandmarks({
+  worldSeed,
+  playerTileX,
+  playerTileY,
+  graphicsTier = 'balanced'
+}: HorizonHeroLandmarksProps) {
   const spots = useMemo(() => {
     const arr: { x: number; z: number; y: number; kind: 'freighter' | 'tower' | 'mesa'; ang: number }[] = [];
     const dirs = [
@@ -152,15 +166,18 @@ export function HorizonHeroLandmarks({ worldSeed, playerTileX, playerTileY }: Ho
           );
         }
         return (
-          <mesh key={idx} position={[s.x, s.y + 8, s.z]} castShadow rotation={[0.12, s.ang, 0]}>
-            <coneGeometry args={[16, 28, 5, 1, true]} />
-            <meshStandardMaterial
-              color="#92400e"
-              roughness={0.88}
-              metalness={0.04}
-              side={THREE.DoubleSide}
+          <group key={idx} position={[s.x, s.y, s.z]} rotation={[0, s.ang, 0]}>
+            <OptionalLocalGlb
+              path={MARSH_RUINS_ARCHWAY_LOD[0]}
+              lodPaths={[...MARSH_RUINS_ARCHWAY_LOD]}
+              position={[0, 0, 0]}
+              rotation={[0.12, 0, 0]}
+              scale={14}
+              maxDistance={graphicsTier === 'high' ? 240 : 180}
+              minTier="low"
+              graphicsTier={graphicsTier}
             />
-          </mesh>
+          </group>
         );
       })}
     </group>

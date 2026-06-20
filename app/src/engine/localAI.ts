@@ -4,6 +4,7 @@
 import type { GameTime, NPC, Player, Weather, WorldEra } from '@/types/game';
 import { mentalStateSummary } from '@/engine/psychology';
 import { CHRONOS_WEBLLM_WEIGHT_LOAD_TIMEOUT_SEC } from '@/domain/ai/webllmConstants';
+import { DEFAULT_LOCAL_WEBLLM_MODEL } from '@/domain/ai/npcModelProfiles';
 import { recordLlmWeightLoad } from '@/debug/chronosTelemetry';
 
 const CACHE_PREFIX = 'chronos_llm_cache:';
@@ -21,7 +22,7 @@ export function clearChronosLlmDiskCache(): void {
     /* квота / приватный режим */
   }
 }
-const DEFAULT_MODEL = 'Llama-3.1-8B-Instruct-q4f32_1-MLC';
+const DEFAULT_MODEL = DEFAULT_LOCAL_WEBLLM_MODEL;
 
 /** Процедурные NPC карты — только dialogueSystem, без WebLLM (производительность). */
 export function isBackgroundProceduralNpc(npc: NPC): boolean {
@@ -44,6 +45,30 @@ export function worldStateHash(w: {
 }): string {
   return hashString(
     `${w.time.year}-${w.time.month}-${w.time.day}-${w.time.hour}-${w.weather}-${w.locationId}-${w.worldEra ?? ''}`
+  );
+}
+
+function npcDialogueStateHash(npc: NPC, player: Player): string {
+  const rel = npc.playerRelationship;
+  const ms = npc.mentalState;
+  const memTop = npc.memories
+    .slice(0, 6)
+    .map((m) => `${m.id}:${m.importance}:${Math.floor(m.timestamp / 3_600_000)}`)
+    .join('|');
+  return hashString(
+    [
+      rel.type,
+      rel.trust,
+      rel.affection,
+      rel.respect,
+      rel.fear,
+      Math.round((ms?.stress ?? 0) * 100) / 100,
+      Math.round((ms?.anxiety ?? 0) * 100) / 100,
+      Math.round((ms?.trustBaseline ?? 0) * 100) / 100,
+      memTop,
+      player.storyProgress.activeQuests.length,
+      player.storyProgress.completedQuests.length,
+    ].join('|'),
   );
 }
 
@@ -123,7 +148,14 @@ export class LocalAIManager {
   private buildSystemPrompt(
     npc: NPC,
     player: Player,
-    opts: { time: GameTime; weather: Weather; locationName: string; language: 'ru' | 'en'; worldEra?: WorldEra }
+    opts: {
+      time: GameTime;
+      weather: Weather;
+      locationName: string;
+      language: 'ru' | 'en';
+      worldEra?: WorldEra;
+      playerMessage?: string;
+    }
   ): string {
     const p = npc.personality;
     const rel = npc.playerRelationship;
@@ -134,11 +166,28 @@ export class LocalAIManager {
       .map((f) => f.text);
     const factsJoined = factsList.join(' | ') || '—';
 
+    const terms = (opts.playerMessage ?? '')
+      .toLowerCase()
+      .split(/\s+/)
+      .map((x) => x.trim())
+      .filter((x) => x.length >= 3);
     const memPlayer = [...npc.memories]
-      .filter((m) => m.relatedEntities?.includes(player.id) || m.content.toLowerCase().includes(player.character.name.toLowerCase()))
-      .sort((a, b) => b.timestamp - a.timestamp)
+      .filter(
+        (m) => m.relatedEntities?.includes(player.id) || m.content.toLowerCase().includes(player.character.name.toLowerCase()),
+      )
+      .map((m) => {
+        const lower = m.content.toLowerCase();
+        let termHits = 0;
+        for (const t of terms) {
+          if (lower.includes(t)) termHits += 1;
+        }
+        const recencyHours = Math.max(0, (Date.now() - m.timestamp) / 3_600_000);
+        const score = m.importance * 8 + termHits * 16 - recencyHours * 0.03;
+        return { m, score };
+      })
+      .sort((a, b) => b.score - a.score)
       .slice(0, 10)
-      .map((m) => `• ${m.content}`);
+      .map(({ m }) => `• ${m.content}`);
 
     const memBlock = memPlayer.length > 0 ? memPlayer.join('\n') : opts.language === 'ru' ? '(записей пока мало)' : '(few records yet)';
 
@@ -213,7 +262,7 @@ export class LocalAIManager {
     if (!this.isLoaded || !this.engine) return null;
 
     const cacheKey = hashString(
-      `${npc.id}|${playerMessage}|${worldStateHash(world)}|${player.id}|${this.modelName}|v2`
+      `${npc.id}|${playerMessage}|${worldStateHash(world)}|${npcDialogueStateHash(npc, player)}|${player.id}|${this.modelName}|v3`
     );
     const cached = this.cacheGet(cacheKey);
     if (cached) return cached;
@@ -224,7 +273,8 @@ export class LocalAIManager {
         weather: world.weather,
         locationName: world.locationName,
         language: world.language,
-        worldEra: world.worldEra
+        worldEra: world.worldEra,
+        playerMessage,
       });
 
       try {

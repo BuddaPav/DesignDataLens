@@ -1,11 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Globe2, Swords, X } from 'lucide-react';
-import type { ActiveRumor, EnemyCoalition, NPC, WorldLogEntry } from '@/types/game';
+import type {
+  ActiveRumor,
+  DelayedConsequencePending,
+  EnemyCoalition,
+  NPC,
+  PlayerObligationPending,
+  WorldLogEntry,
+} from '@/types/game';
 import {
   CHRONOS_CORE_FACTION_IDS,
   FACTION_REPUTATION_MAX,
   FACTION_REPUTATION_MIN,
 } from '@/domain/social/factionReputationRules';
+import { delayedConsequenceStats } from '@/domain/consequences/delayedConsequenceQueue';
 import { isWorldLogEntrySocial } from '@/domain/social/worldLogTopicRules';
 import { collectFactionTagsFromRumors, filterRumorsForView } from '@/domain/social/rumorViewRules';
 import type { Language } from '@/i18n/index';
@@ -16,6 +24,8 @@ type WorldStatusPanelProps = {
   activeRumors: ActiveRumor[] | undefined;
   enemyCoalitions: EnemyCoalition[] | undefined;
   worldEventLog: WorldLogEntry[] | undefined;
+  delayedConsequences?: DelayedConsequencePending[];
+  playerObligations?: PlayerObligationPending[];
   npcs: NPC[];
   playerLocationId?: string;
   lang: Language;
@@ -54,6 +64,8 @@ export function WorldStatusPanel({
   activeRumors,
   enemyCoalitions,
   worldEventLog,
+  delayedConsequences,
+  playerObligations,
   npcs,
   playerLocationId,
   lang,
@@ -157,9 +169,38 @@ export function WorldStatusPanel({
   const coalitionsSorted = useMemo(() => {
     return [...coalitions].sort((a, b) => b.memberNpcIds.length - a.memberNpcIds.length);
   }, [coalitions]);
+  const delayedStats = useMemo(
+    () => delayedConsequenceStats(delayedConsequences),
+    [delayedConsequences],
+  );
+  const obligationStats = useMemo(() => {
+    const list = playerObligations ?? [];
+    if (list.length === 0) return { count: 0, minHours: 0 };
+    let minHours = Number.POSITIVE_INFINITY;
+    for (const o of list) minHours = Math.min(minHours, o.remainingHours);
+    return { count: list.length, minHours };
+  }, [playerObligations]);
 
   return (
     <div className="space-y-6">
+      {(delayedStats.count > 0 || obligationStats.count > 0) && (
+        <div className="space-y-2">
+          {delayedStats.count > 0 && (
+            <div className="rounded-lg border border-cyan-400/20 bg-cyan-500/10 px-3 py-2 text-xs text-cyan-100">
+              {lang === 'ru'
+                ? `Ожидаемые последствия: ${delayedStats.count} · ближайшее через ${delayedStats.minHours} ч., окно до ${delayedStats.maxHours} ч.`
+                : `Incoming consequences: ${delayedStats.count} · first in ${delayedStats.minHours}h, window up to ${delayedStats.maxHours}h.`}
+            </div>
+          )}
+          {obligationStats.count > 0 && (
+            <div className="rounded-lg border border-violet-400/25 bg-violet-500/10 px-3 py-2 text-xs text-violet-100">
+              {lang === 'ru'
+                ? `Обязательства мира: ${obligationStats.count} · ближайшее через ${obligationStats.minHours} ч.`
+                : `World obligations: ${obligationStats.count} · nearest in ${obligationStats.minHours}h.`}
+            </div>
+          )}
+        </div>
+      )}
       <div className="flex flex-wrap gap-2">
         <button
           className={

@@ -16,6 +16,12 @@ import {
   mergeFactionReputation,
 } from '@/domain/social/factionReputationRules';
 import { pushWorldLog } from '@/engine/worldEvents';
+import {
+  generateDialogueFollowupQuest,
+  isDialogueFollowupQuestId,
+  parseDialogueFollowupQuestId,
+  parseDialogueFollowupUnlockPayload,
+} from '@/domain/consequences/generateDialogueFollowupQuest';
 
 export type StoryFlagOp = { key: string; value: unknown };
 
@@ -135,12 +141,29 @@ function applyFactionReputationDelta(
 function makeUnlockedQuestStub(id: string, lang: Language): Quest {
   const title = t('game.log.quest_unlocked_title', lang).replace('{{id}}', id);
   const description = t('game.log.quest_unlocked_desc', lang);
+  const parts = id.split(':');
+  const inferredLocation =
+    parts.length >= 3 && parts[1] && !parts[1].includes(' ')
+      ? parts[1]
+      : 'starting_village';
+  const initialObjective = {
+    id: `obj_unlock_${id}`,
+    description:
+      lang === 'ru'
+        ? `Доберитесь до точки: ${inferredLocation}`
+        : `Reach destination: ${inferredLocation}`,
+    type: 'reach_location' as const,
+    target: inferredLocation,
+    required: 1,
+    current: 0,
+    completed: false,
+  };
   return {
     id,
     type: 'generated',
     title,
     description,
-    objectives: [],
+    objectives: [initialObjective],
     currentObjectiveIndex: 0,
     scenes: [],
     currentSceneIndex: 0,
@@ -356,12 +379,25 @@ export function applyChoiceConsequencesBatch(
           p.storyProgress.activeQuests.some((q) => q.id === qid) ||
           p.storyProgress.completedQuests.includes(qid);
         if (already) break;
-        pushWorldLog(log, t('game.log.quest_unlocked', lang).replace('{{id}}', qid), 'info', 'general');
+        const followupMeta = isDialogueFollowupQuestId(qid) ? parseDialogueFollowupQuestId(qid) : null;
+        const followupPayload = followupMeta
+          ? parseDialogueFollowupUnlockPayload(consequence.value)
+          : null;
+        const questStub = followupMeta
+          ? generateDialogueFollowupQuest({
+              questId: qid,
+              locationId: followupMeta.locationId,
+              npcId: followupPayload?.npcId,
+              tags: followupPayload?.tags,
+              lang,
+            })
+          : makeUnlockedQuestStub(qid, lang);
+        pushWorldLog(log, t('game.log.quest_unlocked', lang).replace('{{id}}', questStub.title), 'info', 'general');
         p = {
           ...p,
           storyProgress: {
             ...p.storyProgress,
-            activeQuests: [...p.storyProgress.activeQuests, makeUnlockedQuestStub(qid, lang)],
+            activeQuests: [...p.storyProgress.activeQuests, questStub],
             worldEventLog: log,
           },
         };

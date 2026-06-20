@@ -1,6 +1,6 @@
 // Inventory Panel
 
-import { Coins, Package, Sword, Shield, Heart } from 'lucide-react';
+import { Coins, Package, Sword, Shield, Heart, Trash2, Hand } from 'lucide-react';
 import type { Inventory, Item, PlayerStats } from '@/types/game';
 
 import type { Language } from '@/i18n/index';
@@ -10,6 +10,10 @@ import { useLanguage } from '@/i18n/LanguageProvider';
 interface InventoryPanelProps {
   inventory: Inventory;
   stats: PlayerStats;
+  /** Quick drop action - remove item from inventory */
+  onDropItem?: (itemId: string) => void;
+  /** Quick offer to nearby NPC */
+  onOfferToNpc?: (itemId: string) => void;
 }
 
 function displayItemLines(item: Item, lang: Language) {
@@ -18,7 +22,7 @@ function displayItemLines(item: Item, lang: Language) {
   return { name: item.name, description: item.description };
 }
 
-export function InventoryPanel({ inventory, stats }: InventoryPanelProps) {
+export function InventoryPanel({ inventory, stats, onDropItem, onOfferToNpc }: InventoryPanelProps) {
   const lang = useLanguage();
   const equippedItems = inventory.items.filter(i => i.equipped);
   const unequippedItems = inventory.items.filter(i => !i.equipped);
@@ -102,7 +106,7 @@ export function InventoryPanel({ inventory, stats }: InventoryPanelProps) {
               return (
                 <div
                   key={item.id}
-                  className="flex items-center gap-3 p-2 bg-slate-900/50 rounded-lg"
+                  className="flex items-center gap-2 p-2 bg-slate-900/50 rounded-lg group"
                 >
                   <Icon className={`w-5 h-5 ${getRarityColor(item.rarity)}`} />
                   <div className="flex-1 min-w-0">
@@ -113,6 +117,28 @@ export function InventoryPanel({ inventory, stats }: InventoryPanelProps) {
                       )}
                     </p>
                   </div>
+                  {(onDropItem || onOfferToNpc) && (
+                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {onOfferToNpc && (
+                        <button
+                          onClick={() => onOfferToNpc(item.id)}
+                          className="p-1.5 hover:bg-emerald-600/30 rounded text-emerald-400"
+                          title="Offer to NPC"
+                        >
+                          <Hand className="w-4 h-4" />
+                        </button>
+                      )}
+                      {onDropItem && (
+                        <button
+                          onClick={() => onDropItem(item.id)}
+                          className="p-1.5 hover:bg-red-600/30 rounded text-red-400"
+                          title="Drop item"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
               );
             })}

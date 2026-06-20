@@ -1,0 +1,101 @@
+{
+  "asset": {
+    "version": "2.0",
+    "generator": "chronos-generate-placeholder-3d"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "chronolith_anchor_lod2",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "chronolith_anchor_lod2"
+    }
+  ],
+  "meshes": [
+    {
+      "name": "chronolith_anchor_lod2_mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 1
+          },
+          "indices": 0,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "name": "chronolith_anchor_lod2_mat",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.4,
+          0.22,
+          0.58,
+          1
+        ],
+        "metallicFactor": 0.05,
+        "roughnessFactor": 0.9
+      }
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5123,
+      "count": 27,
+      "type": "SCALAR",
+      "max": [
+        26
+      ],
+      "min": [
+        0
+      ]
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 27,
+      "type": "VEC3",
+      "min": [
+        0,
+        0,
+        0
+      ],
+      "max": [
+        0.815,
+        0.1785,
+        0
+      ]
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 54,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 56,
+      "byteLength": 324,
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 380,
+      "uri": "data:application/octet-stream;base64,AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAAAAAAAAAAAAAAAAAAAC4HoU9AAAAAAAAAAC4HgU9sp1vPQAAAACamRk+AAAAAAAAAAD2KFw+AAAAAAAAAABI4To+sp1vPQAAAACamZk+AAAAAAAAAABI4bo+AAAAAAAAAABxPao+sp1vPQAAAABmZuY+AAAAAAAAAAAK1wM/AAAAAAAAAAA9Cvc+sp1vPQAAAACamRk/AAAAAAAAAABxPSo/AAAAAAAAAACF6yE/sp1vPQAAAAAAAEA/AAAAAAAAAADXo1A/AAAAAAAAAADsUUg/sp1vPQAAAAAAAAAAj8L1PQAAAAC4HoU9j8L1PQAAAAC4HgU9tMg2PgAAAACamRk+j8L1PQAAAAD2KFw+j8L1PQAAAABI4To+tMg2PgAAAACamZk+j8L1PQAAAABI4bo+j8L1PQAAAABxPao+tMg2PgAAAAA="
+    }
+  ]
+}

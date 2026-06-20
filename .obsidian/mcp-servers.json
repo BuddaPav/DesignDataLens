@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "postman": {
+      "type": "http",
+      "url": "https://mcp.postman.com/minimal",
+      "headers": {
+        "Authorization": "Bearer 581978cf868e642567bf70764f372740f33e683112ebdcae1d005d44ed1177c5"
+      }
+    }
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "asset": {
+    "version": "2.0",
+    "generator": "chronos-generate-aaa-mass-model-pack"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "prop_bulk_gen_0318_lod0",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "prop_bulk_gen_0318_lod0"
+    }
+  ],
+  "meshes": [
+    {
+      "name": "prop_bulk_gen_0318_lod0_mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 1
+          },
+          "indices": 0,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "name": "prop_bulk_gen_0318_lod0_mat",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.26,
+          0.34,
+          0.44,
+          1
+        ],
+        "metallicFactor": 0.08,
+        "roughnessFactor": 0.85
+      }
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5123,
+      "count": 126,
+      "type": "SCALAR",
+      "max": [
+        125
+      ],
+      "min": [
+        0
+      ]
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 126,
+      "type": "VEC3",
+      "min": [
+        0,
+        0,
+        0
+      ],
+      "max": [
+        0.865,
+        0.25993750000000004,
+        0.080375
+      ]
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 252,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 252,
+      "byteLength": 1512,
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 1764,
+      "uri": "data:application/octet-stream;base64,AAABAAIAAwAEAAUABgAHAAgACQAKAAsADAANAA4ADwAQABEAEgATABQAFQAWABcAGAAZABoAGwAcAB0AHgAfACAAIQAiACMAJAAlACYAJwAoACkAKgArACwALQAuAC8AMAAxADIAMwA0ADUANgA3ADgAOQA6ADsAPAA9AD4APwBAAEEAQgBDAEQARQBGAEcASABJAEoASwBMAE0ATgBPAFAAUQBSAFMAVABVAFYAVwBYAFkAWgBbAFwAXQBeAF8AYABhAGIAYwBkAGUAZgBnAGgAaQBqAGsAbABtAG4AbwBwAHEAcgBzAHQAdQB2AHcAeAB5AHoAewB8AH0AAAAAAAAAAAC8dJM8exSuPW8SgztYObQ8uB4FPTeJgT0OLTI9ZmZmPQAAAACPwvU8SOH6PW8Sgzu28/08y6GlPRKDYD2YblI9zcwMPgAAAAAxCCw97FGIPm8SgzuHFlk9YOVAPiPbqT228509FK5HPgAAAAAAAAAA9iicPm8SgztvEgM8RrZzPnWTmD228/08SOF6PgAAAACmm0Q89iisPm8SgzuWQ4s8i2yPPsdLhz1kOx89MzOTPgAAAACmm8Q87FG4Pm8Sgzv0/dQ86SahPjEIbD3ufD89PQrXPgAAAAC8dBM9exQOP28Sgzumm0Q9mG7yPrKdrz3hepQ9pHDtPgAAAACmm0Q94XoUP28SgzvVeGk9ZmYCPwRWnj2mm6Q9AAAAPwAAAACmm8Q7w/UYP28Sgzumm0Q8/KkJP1YOjT26SQw9KVwHPwAAAAC8dJM8H4UbP28SgzsxCKw8DAIPP1CNdz1Eiyw9zcwMPwAAAACPwvU89igcP28SgzuPwvU8mG4SP/T9VD3NzEw9exQ+PwAAAAAxCCw9pHBdP28Sgzv0/VQ9mG5KP5MYpD3RIps9AAAAAK5HYT0AAAAA4XrUPfypcT1CYOU7QmAlPV66AT4hsPI8j8J1PfT9VD2mm0Q84XoUPkJgZT1vEoM8pHC9PTEI7D2amRk9ZmbmPTm0SD2mm8Q8PQo3PocWWT3NzMw8f2oMPqab1D0j2zk9MzNTPvypcT28dBM9H4WrPiUGgT0Sg0A946WDPhBYET78qZE9uB6FPkJgZT2mm0Q9pHC9Po/CdT1CYGU90SKbPsuhBT7ByqE9zcycPocWWT2mm8Q7H4XLPtV4aT1YOTQ8tMiuPgrX8z3wpwY916OwPs3MTD28dJM8j8LVPhsvXT0K16M8jZe+Pn9q3D156SY9SOH6Po/CdT2PwvU8AAAgP28Sgz0xCCw90SILP30/FT4nMYg9FK4HP9V4aT0xCCw9pHAlPyPbeT1g5VA9KVwTPzeJCT7sUZg9AAAQPxsvXT0AAAAAw/UoP2iRbT2mm8Q7/KkZP+Ol+z2LbOc8ZmYWP2DlUD2mm0Q8XI8qP65HYT2PwnU8SgweP1g55D3P9xM9SOEaP6abRD2mm8Q8cT0qP/T9VD2mm8Q8EoMgP83MzD1YOTQ9AAAAAGiR7T28dBM9SOH6PY/C9T1/ajw9y6FFPf7USD4X2Y49XI+CPa5H4T2mm0Q9H4UrPtV46T2uR2E9fT/VPUoMOj7b+Z49j8L1PfT91D2mm8Q7hetRPhsv3T0K1yM89igcPpZDKz4lBgE9zcwsPjm0yD28dJM816NwPmDl0D3jpZs8GQRGPuF6HD6uRyE9zcyMPvyp8T2PwvU8UrjOPiPb+T2e7yc9F9mmPo/CTT5CYIU9ZmamPkJg5T0xCCw9UrjePmiR7T3NzEw9f2q8Ptv5Pj4GgZU99ii8PocW2T0AAAAASOHqPq5H4T0K16M73STOPicxMD72KNw8exTOPs3MzD2mm0Q8MzPzPvT91D1CYGU8MQjcPnNoIT4EVg49KVwPP4/C9T2mm8Q8hesxP7bz/T28dBM9Vg4dPyGwUj7Zznc916MYP9V46T28dBM9ZmY2P/yp8T3sUTg97FEkP23nQz4xCIw9AAAgPxsv3T2mm0Q9w/U4P0Jg5T0bL109/KkpP7geNT72KJw9pHAlP2Dl0D2mm8Q7mpk5P4cW2T28dBM8hxYtPwRWJj60yPY8AAAAALx0Ez68dJM8j8J1PVCNFz68dJM8WDm0PDm0SD7jpRs9cT2KPQ4tMj6PwvU8XI9CPqJFNj4K1yM9Vg7tPawcgj5cj4I9XI8CPsP1KD4xCCw9zcxsPlYOLT45tEg9becrPjVecj4hsJI97FE4Pne+Hz4AAAAAFK6HPgrXIz5vEoM7mplZPhKDYD5g5dA8ZmZmPiuHFj6mm0Q8uB6VPr6fGj70/VQ8sp1/PvCnTj45tAg9AACwPn0/NT6mm8Q8hevxPhBYOT4pXA89SgzKPocWhT4OLXI9"
+    }
+  ]
+}

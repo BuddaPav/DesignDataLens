@@ -1,6 +1,6 @@
 // Chronos: AI Chronicles - Main Application (Enhanced Edition)
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useGameState } from '@/hooks/useGameState';
 import { IntroScreen } from '@/components/screens/IntroScreen';
 import { CharacterCreation } from '@/components/screens/CharacterCreation';
@@ -39,6 +39,7 @@ function App() {
   const [showParticleBurst, setShowParticleBurst] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isMusicEnabled, setIsMusicEnabled] = useState(true);
+  const lastPersistedLevelRef = useRef<number | null>(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptLike | null>(null);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
@@ -114,6 +115,16 @@ function App() {
     };
   }, []);
 
+  // Prewarm heavy 3D chunk before entering gameplay for smoother transition.
+  useEffect(() => {
+    const settings = loadChronosGameSettings();
+    if (!settings.highQualityGraphics) return;
+    const timer = window.setTimeout(() => {
+      void import('@/components/game/WorldViewport');
+    }, 250);
+    return () => window.clearTimeout(timer);
+  }, []);
+
   // Handle loading states
   useEffect(() => {
     if (game.isGenerating) {
@@ -128,14 +139,20 @@ function App() {
   const playerId = game.player?.id;
   const playerLevel = game.player?.character.level;
   useEffect(() => {
-    const p = game.player;
-    if (p && p.character.level > 1) {
-      const lastLevel = localStorage.getItem('chronos_last_level');
-      if (lastLevel && parseInt(lastLevel) < p.character.level) {
+    const level = playerLevel ?? 0;
+    if (level > 1) {
+      const savedRaw = localStorage.getItem('chronos_last_level');
+      const parsed = savedRaw ? Number.parseInt(savedRaw, 10) : NaN;
+      const storedLevel = Number.isFinite(parsed) ? parsed : 0;
+      if (lastPersistedLevelRef.current == null) {
+        lastPersistedLevelRef.current = storedLevel;
+      }
+      const lastLevel = lastPersistedLevelRef.current ?? storedLevel;
+      if (lastLevel > 0 && lastLevel < level) {
         soundManager.play('levelUp');
         setShowParticleBurst(true);
         setTimeout(() => setShowParticleBurst(false), 2000);
-        const levelTitle = t('app.level_up_title', lang).replace('{{n}}', String(p.character.level));
+        const levelTitle = t('app.level_up_title', lang).replace('{{n}}', String(level));
         const levelDesc = t('app.level_up_desc', lang);
         toast.success(levelTitle, {
           description: levelDesc
@@ -146,9 +163,12 @@ function App() {
           body: levelDesc,
         });
       }
-      localStorage.setItem('chronos_last_level', p.character.level.toString());
+      if (lastLevel !== level) {
+        localStorage.setItem('chronos_last_level', level.toString());
+        lastPersistedLevelRef.current = level;
+      }
     }
-  }, [playerId, playerLevel, lang, game.player]);
+  }, [playerId, playerLevel, lang]);
 
   // Handle install prompt
   const handleInstall = async () => {
@@ -204,6 +224,7 @@ function App() {
             saveLoadError={game.saveLoadError}
             onClearSaveLoadError={game.clearSaveLoadError}
             onDeleteSave={import.meta.env.DEV ? game.deleteLocalSave : undefined}
+            getSaveMetadata={game.getSaveMetadata}
           />
         );
       
@@ -248,6 +269,7 @@ function App() {
             saveLoadError={game.saveLoadError}
             onClearSaveLoadError={game.clearSaveLoadError}
             onDeleteSave={import.meta.env.DEV ? game.deleteLocalSave : undefined}
+            getSaveMetadata={game.getSaveMetadata}
           />
         );
     }

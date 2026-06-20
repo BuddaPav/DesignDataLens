@@ -52,6 +52,8 @@ export interface MentalState {
   stress: number;
   happiness: number;
   trauma: number;
+  anxiety: number;
+  trustBaseline: number;
 }
 
 /** Тематика строки журнала — для фильтров UI без regex по тексту. */
@@ -72,6 +74,25 @@ export interface RumorConsequencePending {
   id: string;
   remainingHours: number;
   factionRepDelta: Record<string, number>;
+}
+
+/** Отложенное последствие выбора/диалога: срабатывает через игровые часы. */
+export interface DelayedConsequencePending {
+  id: string;
+  remainingHours: number;
+  source: 'choice' | 'dialogue' | 'world';
+  locationId: string;
+  consequence: Consequence;
+}
+
+/** Обещание/долг/предательство игрока — материализуется в квест и репутацию по времени. */
+export interface PlayerObligationPending {
+  id: string;
+  remainingHours: number;
+  kind: 'promise' | 'debt' | 'betrayal';
+  locationId: string;
+  npcId?: string;
+  traceToken: string;
 }
 
 /** Эмерджентная коалиция NPC-врагов игрока (общий лидер как «узел» угрозы). */
@@ -123,7 +144,12 @@ export interface Character {
   title: string;
   level: number;
   experience: number;
-  
+
+  // Vital stats
+  hp: number;
+  maxHp: number;
+  gold: number;
+
   // Attributes
   attributes: Attributes;
   
@@ -175,17 +201,21 @@ export interface PlayerStats {
   maxMana: number;
   stamina: number;
   maxStamina: number;
-  
+
   // Reputation
   reputation: Map<string, number>; // faction -> value
-  
+
   // Achievements
   achievements: string[];
-  
+
   // Combat
   battlesWon: number;
   battlesLost: number;
   enemiesDefeated: number;
+
+  // Track time and combat state
+  playedTime: number; // milliseconds played
+  inCombat: boolean;
 }
 
 export interface Inventory {
@@ -246,6 +276,44 @@ export interface StoryProgress {
   tradeCaravans?: TradeCaravan[];
   /** Очередь отложенной репутационной реакции на слухи (игровые часы). */
   rumorConsequenceQueue?: RumorConsequencePending[];
+  /** Очередь отложенных последствий (эффект бабочки) для всех систем. */
+  delayedConsequences?: DelayedConsequencePending[];
+  /** Долгосрочные обязательства игрока (обещания, долги, предательства). */
+  playerObligations?: PlayerObligationPending[];
+  /** Soft ending conditions triggered (one-time flags) */
+  triggeredEndings?: string[];
+}
+
+/** Soft ending definition - alternative ending paths based on player choices */
+export interface SoftEnding {
+  id: string;
+  title: {
+    ru: string;
+    en: string;
+  };
+  description: {
+    ru: string;
+    en: string;
+  };
+  /** Conditions to unlock this ending */
+  conditions: {
+    /** Minimum quests completed */
+    minQuestsCompleted?: number;
+    /** Specific quest must be completed */
+    requiredQuestId?: string;
+    /** Minimum faction reputation (factionId → value) */
+    minReputation?: Record<string, number>;
+    /** NPC relationship threshold (npcId → value) */
+    minRelationship?: Record<string, number>;
+    /** Achievements required */
+    requiredAchievements?: string[];
+    /** Choices made (IDs) */
+    requiredChoices?: string[];
+    /** Game hours played minimum */
+    minHoursPlayed?: number;
+  };
+  /** Priority for showing in ending screen (higher = shown first) */
+  priority?: number;
 }
 
 /** Сплетня с часами жизни и охватом локаций. */
@@ -338,6 +406,8 @@ export interface Objective {
   required: number;
   current: number;
   completed: boolean;
+  locationId?: string;
+  text?: Record<string, string>;
 }
 
 export interface Scene {
@@ -585,6 +655,8 @@ export interface Location {
   id: string;
   name: string;
   type: LocationType;
+  /** Biome type for road events and atmosphere (e.g., forest, mountain, desert) */
+  biome?: string;
   description: string;
   atmosphere: Atmosphere;
   connectedLocations: string[];

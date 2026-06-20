@@ -2,20 +2,46 @@
  * Экономический след от караванов: визиты повышают "предложение" в локации на короткое время.
  * Храним значения в `worldState.factionPowers` (Map) как single source of truth, чтобы не плодить новые хранилища.
  */
+import {
+  CHRONOS_MARKET_SUPPLY_DECAY_PER_HOUR,
+  CHRONOS_MARKET_SUPPLY_MAX,
+  CHRONOS_MARKET_SUPPLY_MIN,
+  CHRONOS_MARKET_SUPPLY_VISIT_BOOST,
+  CHRONOS_MARKET_TONE_FLUID_ABOVE,
+  CHRONOS_MARKET_TONE_TIGHT_BELOW,
+} from '@/domain/economy/caravanEconomyConstants';
+
 export type MarketSupplyKey = `market_supply:${string}`;
 
 const SUPPLY_KEY_PREFIX = 'market_supply:' as const;
-const SUPPLY_MIN = 0;
-const SUPPLY_MAX = 100;
-const SUPPLY_VISIT_BOOST = 12;
 
 function clampSupply(v: number): number {
   if (!Number.isFinite(v)) return 0;
-  return Math.max(SUPPLY_MIN, Math.min(SUPPLY_MAX, v));
+  return Math.max(CHRONOS_MARKET_SUPPLY_MIN, Math.min(CHRONOS_MARKET_SUPPLY_MAX, v));
 }
 
 export function marketSupplyKeyForLocation(locationId: string): MarketSupplyKey {
   return `${SUPPLY_KEY_PREFIX}${locationId}`;
+}
+
+export function readMarketSupplyForLocation(
+  factionPowers: Map<string, number> | undefined,
+  locationId: string,
+): number {
+  if (!factionPowers?.size) return 0;
+  const k = marketSupplyKeyForLocation(locationId);
+  const v = factionPowers.get(k);
+  return typeof v === 'number' && Number.isFinite(v) ? clampSupply(v) : 0;
+}
+
+export type MarketTone = 'tight' | 'neutral' | 'fluid';
+
+/** Грубая шкала для подписи в лавке: караваны подняли supply → дешевле золотые цены. */
+export function marketToneFromSupply(supply: number): MarketTone {
+  const s = clampSupply(supply);
+  if (s < CHRONOS_MARKET_TONE_TIGHT_BELOW) return 'tight';
+  if (s > CHRONOS_MARKET_TONE_FLUID_ABOVE) return 'fluid';
+  return 'neutral';
 }
 
 /**
@@ -26,7 +52,7 @@ export function applyMarketSupplyFromCaravanVisits(
   prev: Map<string, number>,
   visitedLocationIds: string[],
   hours: number,
-  decayRatePerHour = 0.985,
+  decayRatePerHour = CHRONOS_MARKET_SUPPLY_DECAY_PER_HOUR,
 ): Map<string, number> {
   const h = Math.max(0, Math.round(hours));
   const decay = Math.pow(decayRatePerHour, h);
@@ -46,7 +72,7 @@ export function applyMarketSupplyFromCaravanVisits(
     for (const locId of unique) {
       const k = marketSupplyKeyForLocation(locId);
       const cur = next.get(k) ?? 0;
-      next.set(k, clampSupply(cur + SUPPLY_VISIT_BOOST));
+      next.set(k, clampSupply(cur + CHRONOS_MARKET_SUPPLY_VISIT_BOOST));
     }
   }
 

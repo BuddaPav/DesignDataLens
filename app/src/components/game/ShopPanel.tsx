@@ -1,11 +1,54 @@
 // Shop Panel — золото + множитель рынка (caravan supply); IAP USD показан как справка.
 
-import { ShoppingBag, Sparkles, Crown, Gem, User, Coins, BookOpen } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { ShoppingBag, Sparkles, Crown, Gem, User, Coins, BookOpen, LineChart, Filter, ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { ShopItem } from '@/types/game';
 import { resolveShopGoldPrice } from '@/domain/economy/shopPurchase';
+import {
+  marketToneFromSupply,
+  priceMultiplierFromMarketSupply,
+  readMarketSupplyForLocation,
+} from '@/domain/economy/caravanEconomy';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { t } from '@/i18n';
+
+function ShopMarketStrip({
+  locationId,
+  factionPowers,
+}: {
+  locationId: string;
+  factionPowers: Map<string, number> | undefined;
+}) {
+  const lang = useLanguage();
+  const supply = readMarketSupplyForLocation(factionPowers, locationId);
+  const mult = priceMultiplierFromMarketSupply(supply);
+  const tone = marketToneFromSupply(supply);
+  const labelKey =
+    tone === 'tight'
+      ? 'game.shop.market_tight'
+      : tone === 'fluid'
+        ? 'game.shop.market_fluid'
+        : 'game.shop.market_neutral';
+  const borderClass =
+    tone === 'tight'
+      ? 'border-amber-600/35'
+      : tone === 'fluid'
+        ? 'border-emerald-600/35'
+        : 'border-slate-700';
+
+  return (
+    <div className={`flex gap-3 p-3 rounded-lg border ${borderClass} bg-slate-950/50`}>
+      <LineChart className="w-5 h-5 text-slate-400 flex-shrink-0 mt-0.5" aria-hidden />
+      <div className="min-w-0 space-y-1">
+        <p className="text-sm text-slate-300 leading-snug">{t(labelKey, lang)}</p>
+        <p className="text-xs text-slate-500">
+          {t('game.shop.market_mult', lang).replace('{{mult}}', mult.toFixed(2))}
+        </p>
+      </div>
+    </div>
+  );
+}
 
 interface ShopPanelProps {
   items: ShopItem[];
@@ -17,6 +60,26 @@ interface ShopPanelProps {
 
 export function ShopPanel({ items, gold, locationId, factionPowers, onPurchase }: ShopPanelProps) {
   const lang = useLanguage();
+  const [filterType, setFilterType] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<'price' | 'name'>('price');
+
+  const itemTypes = useMemo(() => {
+    const types = new Set(items.map(i => i.type));
+    return ['all', ...Array.from(types)] as const;
+  }, [items]);
+
+  const filteredItems = useMemo(() => {
+    let result = filterType === 'all' ? items : items.filter(i => i.type === filterType);
+    if (sortBy === 'price') {
+      result = [...result].sort((a, b) =>
+        resolveShopGoldPrice(a.goldPriceBase, locationId, factionPowers) -
+        resolveShopGoldPrice(b.goldPriceBase, locationId, factionPowers)
+      );
+    } else {
+      result = [...result].sort((a, b) => a.name.localeCompare(b.name));
+    }
+    return result;
+  }, [items, filterType, sortBy, locationId, factionPowers]);
 
   const getItemIcon = (type: string) => {
     switch (type) {
@@ -53,8 +116,37 @@ export function ShopPanel({ items, gold, locationId, factionPowers, onPurchase }
         <span className="font-mono text-lg text-amber-400">{gold}</span>
       </div>
 
+      <ShopMarketStrip locationId={locationId} factionPowers={factionPowers} />
+
+      {/* Filter and sort */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-1 bg-slate-900/50 rounded-lg p-1">
+          <Filter className="w-4 h-4 text-slate-500 ml-2" />
+          {itemTypes.map(type => (
+            <button
+              key={type}
+              onClick={() => setFilterType(type)}
+              className={`px-3 py-1 text-sm rounded-md transition-colors ${
+                filterType === type
+                  ? 'bg-violet-600 text-white'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              {type === 'all' ? t('game.shop.filter_all', lang) : type}
+            </button>
+          ))}
+        </div>
+        <button
+          onClick={() => setSortBy(s => s === 'price' ? 'name' : 'price')}
+          className="flex items-center gap-1 px-3 py-1 bg-slate-900/50 rounded-lg text-slate-400 hover:text-slate-200 text-sm"
+        >
+          <ArrowUpDown className="w-4 h-4" />
+          {sortBy === 'price' ? t('game.shop.sort_price', lang) : t('game.shop.sort_name', lang)}
+        </button>
+      </div>
+
       <div className="space-y-3">
-        {items.map((item) => {
+        {filteredItems.map((item) => {
           const Icon = getItemIcon(item.type);
           const goldPrice = resolveShopGoldPrice(item.goldPriceBase, locationId, factionPowers);
           const canAfford = gold >= goldPrice;

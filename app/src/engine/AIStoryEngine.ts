@@ -26,6 +26,10 @@ import { buildKnowledgeBaseFromPool } from '@/engine/knowledge';
 import { defaultMentalState } from '@/engine/psychology';
 import { getLanguage } from '@/i18n';
 import { getStoryEngineBundle, type StoryTemplate } from '@/engine/storyLocale';
+import { ITEM_TEMPLATE_CATALOG } from '@/domain/inventory/itemCatalog';
+
+const ITEM_TEMPLATE_KEYS = Object.keys(ITEM_TEMPLATE_CATALOG);
+const QUEST_UNLOCK_PREFIXES = ['caravan_supply', 'marsh_route', 'ridge_conflict'] as const;
 
 // ==================== AI STORY ENGINE ====================
 
@@ -360,8 +364,59 @@ export class AIStoryEngine {
         personalityAlignment: this.getPersonalityAlignment(archetype.type)
       });
     }
+
+    const hasFailForward = choices.some(
+      (c) =>
+        c.type === 'strategic' ||
+        c.consequences.some(
+          (x) =>
+            x.type === 'quest_unlock' ||
+            x.type === 'world_event' ||
+            x.type === 'story_flag'
+        )
+    );
+
+    if (!hasFailForward) {
+      choices.push(this.createFailForwardChoice(context));
+    }
     
     return choices;
+  }
+
+  private createFailForwardChoice(context: AIStoryContext): Choice {
+    const lang = getLanguage();
+    const locId = context.currentLocation?.id ?? 'starting_village';
+    const locName = context.currentLocation?.name ?? (lang === 'ru' ? 'текущая зона' : 'the area');
+    const suffix = this.randomInt(100, 999);
+    const text =
+      lang === 'ru'
+        ? `Собрать факты в «${locName}» и двигаться дальше без риска тупика`
+        : `Collect facts in ${locName} and move forward without dead ends`;
+    return {
+      id: `choice_fail_forward_${Date.now()}_${suffix}`,
+      text,
+      type: 'strategic',
+      consequences: [
+        {
+          type: 'world_event',
+          key: 'fail_forward_probe',
+          value: {
+            message:
+              lang === 'ru'
+                ? 'Вы сделали шаг осторожно, но продуктивно: мир дал зацепку вместо тупика.'
+                : 'You moved carefully but productively: the world offered a lead instead of a dead end.',
+            locationReputationDelta: { [locId]: 1 },
+            factionReputationDelta: { academy: 1 },
+          },
+        },
+        {
+          type: 'quest_unlock',
+          key: `caravan_supply:${locId}:${suffix}`,
+          value: 1,
+        },
+      ],
+      personalityAlignment: { honorable: 75, cunning: 60 },
+    };
   }
 
   private generateChoiceText(type: string, context: AIStoryContext): string {
@@ -415,31 +470,37 @@ export class AIStoryEngine {
           });
           break;
         case 'npc_relationship':
-          consequences.push({
-            type: 'npc_relationship',
-            key: 'affected_npc',
-            value: { trust: this.randomInt(-10, 10) },
-            hidden: this.random() > 0.7
-          });
+          {
+            const targetNpcId = this.pickConsequenceNpcId(context);
+            if (targetNpcId) {
+              consequences.push({
+                type: 'npc_relationship',
+                key: targetNpcId,
+                value: { trust: this.randomInt(-10, 10) },
+                hidden: this.random() > 0.7
+              });
+            } else {
+              const langNoNpc = getLanguage();
+              const locNoNpc = context.currentLocation?.id ?? 'starting_village';
+              consequences.push({
+                type: 'world_event',
+                key: 'social_shift_without_target_npc',
+                value: {
+                  message:
+                    langNoNpc === 'ru'
+                      ? 'Ваше решение меняет социальный фон, даже без явного собеседника.'
+                      : 'Your decision shifts the social mood, even without a direct counterpart.',
+                  locationReputationDelta: { [locNoNpc]: this.randomInt(-2, 2) },
+                },
+                hidden: this.random() > 0.7,
+              });
+            }
+          }
           break;
         case 'item_gain':
           consequences.push({
             type: 'item_gain',
-            key: this.randomChoice([
-              'herb',
-              'wild_mushroom',
-              'iron_ore',
-              'torch_bundle',
-              'dried_rations',
-              'ink_vial',
-              'leather_strip',
-              'spice_sachet',
-              'silver_wire',
-              'obsidian_fragment',
-              'travel_biscuits',
-              'guild_badge',
-              'composure_tonic',
-            ]),
+            key: this.randomChoice(ITEM_TEMPLATE_KEYS),
             value: this.randomInt(1, 3),
             hidden: false,
           });
@@ -495,17 +556,28 @@ export class AIStoryEngine {
           break;
         }
         case 'quest_unlock':
-          consequences.push({
-            type: 'quest_unlock',
-            key: `q_${Date.now()}_${this.randomInt(100, 999)}`,
-            value: 1,
-            hidden: false,
-          });
+          {
+            const prefix = this.randomChoice([...QUEST_UNLOCK_PREFIXES]);
+            const suffix = this.randomInt(100, 999);
+            const loc = context.currentLocation?.id ?? 'starting_village';
+            consequences.push({
+              type: 'quest_unlock',
+              key: `${prefix}:${loc}:${suffix}`,
+              value: 1,
+              hidden: false,
+            });
+          }
           break;
       }
     }
     
     return consequences;
+  }
+
+  private pickConsequenceNpcId(context: AIStoryContext): string | null {
+    const ids = context.currentLocation?.npcs?.filter(Boolean) ?? [];
+    if (ids.length === 0) return null;
+    return this.randomChoice(ids);
   }
 
   private getPersonalityAlignment(type: string): Partial<CharacterPersonality> {
@@ -551,14 +623,11 @@ export class AIStoryEngine {
     
     for (let i = 0; i < numObjectives; i++) {
       const objType = this.randomChoice(objectiveTypes);
-      const target =
-        objType === 'defeat_enemy' && eligibleDefeat.length > 0
-          ? this.randomChoice(eligibleDefeat)
-          : `target_${i}`;
+      const target = this.selectObjectiveTarget(objType, context, eligibleDefeat, i);
       
       objectives.push({
         id: `obj_${Date.now()}_${i}`,
-        description: this.generateObjectiveDescription(objType),
+        description: this.generateObjectiveDescription(objType, target, context),
         type: objType,
         target,
         required: 1,
@@ -570,9 +639,52 @@ export class AIStoryEngine {
     return objectives;
   }
 
-  private generateObjectiveDescription(type: Objective['type']): string {
+  private selectObjectiveTarget(
+    type: Objective['type'],
+    context: AIStoryContext,
+    eligibleDefeat: string[],
+    index: number
+  ): string {
+    if (type === 'defeat_enemy' && eligibleDefeat.length > 0) {
+      return this.randomChoice(eligibleDefeat);
+    }
+    if (type === 'collect_item') {
+      return this.randomChoice(ITEM_TEMPLATE_KEYS);
+    }
+    if (type === 'reach_location') {
+      const connected = context.currentLocation?.connectedLocations ?? [];
+      if (connected.length > 0) return this.randomChoice(connected);
+      return context.currentLocation?.id ?? `target_${index}`;
+    }
+    if (type === 'talk_to_npc') {
+      const npcs = context.currentLocation?.npcs ?? [];
+      if (npcs.length > 0) return this.randomChoice(npcs);
+      return `target_${index}`;
+    }
+    if (type === 'solve_puzzle') {
+      const loc = context.currentLocation?.id ?? 'starting_village';
+      return `${loc}:puzzle_${index + 1}`;
+    }
+    return `target_${index}`;
+  }
+
+  private generateObjectiveDescription(type: Objective['type'], target: string, context: AIStoryContext): string {
     const descriptions = getStoryEngineBundle().objectiveDescriptions;
-    return this.randomChoice(descriptions[type] || descriptions.reach_location);
+    const base = this.randomChoice(descriptions[type] || descriptions.reach_location);
+    if (type === 'reach_location') {
+      return `${base} (${target})`;
+    }
+    if (type === 'talk_to_npc') {
+      return `${base} [${target}]`;
+    }
+    if (type === 'collect_item') {
+      return `${base}: ${target}`;
+    }
+    if (type === 'solve_puzzle') {
+      const loc = context.currentLocation?.name ?? target.split(':')[0] ?? 'zone';
+      return `${base} (${loc})`;
+    }
+    return base;
   }
 
   private generateQuestScenes(opening: string, development: string, climax: string, resolution: string, context: AIStoryContext): Scene[] {
