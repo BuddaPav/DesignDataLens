@@ -170,7 +170,7 @@ async function chatOllama(messages: LLMMessage[]): Promise<string | null> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: process.env.OLLAMA_MODEL || 'llama3',
+        model: process.env.OLLAMA_MODEL || 'hermes-model:latest',
         messages: [
           ...(systemMsg ? [{ role: 'system', content: systemMsg.content }] : []),
           ...otherMsgs.map(m => ({ role: m.role, content: m.content }))
@@ -214,14 +214,14 @@ async function chatLmStudio(messages: LLMMessage[]): Promise<string | null> {
   }
 }
 
-// Chain with fallback (provider priority)
+// Chain with fallback (provider priority - LOCAL FIRST since Ollama has hermes-model + afk-agent)
 async function chatWithFallback(messages: LLMMessage[]): Promise<string> {
   const providers = [
+    { name: 'Ollama', fn: chatOllama },
+    { name: 'LMStudio', fn: chatLmStudio },
     { name: 'HF', fn: chatHF },
     { name: 'OpenAI', fn: chatOpenAI },
     { name: 'Anthropic', fn: chatAnthropic },
-    { name: 'Ollama', fn: chatOllama },
-    { name: 'LMStudio', fn: chatLmStudio },
   ];
 
   for (const provider of providers) {

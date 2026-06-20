@@ -23,7 +23,11 @@
       "Bash(npm run build)",
       "Bash(timeout 45 npx tsx ai_support/secondbrain/autonomous.ts)",
       "Bash(npx tsx autonomous.ts)",
-      "Bash(npx tsc --noEmit --skipLibCheck)"
+      "Bash(npx tsc --noEmit --skipLibCheck)",
+      "Bash(taskkill /f /im ollama.exe)",
+      "Bash(start \"\" \"C:/Users/Den/AppData/Local/Programs/Ollama/ollama.exe\")",
+      "Bash(timeout /t 3)",
+      "Bash(curl -s http://localhost:11434/api/tags)"
     ]
   }
 }
