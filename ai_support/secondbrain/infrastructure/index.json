@@ -3988,5 +3988,173 @@
     "path": "src/version.ts",
     "type": "source",
     "timestamp": 1781998576620
+  },
+  {
+    "id": "i1781998606649",
+    "content": "// Feature Flags для AFK Game\r\n// Управлять через URL ?feature=name или config\r\n\r\nexport type FeatureFlag =\r\n  | 'new_npc_dialogue_system'\r\n  | 'advanced_weather'\r\n  | 'future_world_era'\r\n  | 'coalition_hud'\r\n  | 'quest_progress_hud';\r\n\r\nexport const defaultFlags: Record<FeatureFlag, boolean> = {\r\n  new_npc_dialogue_system: false, // в разработке\r\n  advanced_weather: true,\r\n  future_world_era: false,\r\n  coalition_hud: true,\r\n  quest_progress_hud: true\r\n};\r\n\r\nexport function isEnabled(flag: FeatureFlag, customFlags?: Partial<Record<FeatureFlag, boolean>>): boolean {\r\n  const params = new URLSearchParams(window.location.search);\r\n  if (params.has(flag)) {\r\n    return params.get(flag) === 'true';\r\n  }\r\n  return customFlags?.[flag] ?? defaultFlags[flag];\r\n}\r\n\r\nexport function useFeatureFlag(flag: FeatureFlag): boolean {\r\n  return isEnabled(flag);\r\n}",
+    "path": "src/lib/featureFlags.ts",
+    "type": "source",
+    "timestamp": 1781998606649
+  },
+  {
+    "id": "i1781998606651",
+    "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+    "path": "src/lib/utils.ts",
+    "type": "source",
+    "timestamp": 1781998606651
+  },
+  {
+    "id": "i1781998606653",
+    "content": "/** Версия из package.json — подставляется Vite (define) в dev и build. */\r\nexport const APP_VERSION: string = __CHRONOS_VERSION__;\r\n",
+    "path": "src/version.ts",
+    "type": "source",
+    "timestamp": 1781998606653
+  },
+  {
+    "id": "i1781998636678",
+    "content": "// Feature Flags для AFK Game\r\n// Управлять через URL ?feature=name или config\r\n\r\nexport type FeatureFlag =\r\n  | 'new_npc_dialogue_system'\r\n  | 'advanced_weather'\r\n  | 'future_world_era'\r\n  | 'coalition_hud'\r\n  | 'quest_progress_hud';\r\n\r\nexport const defaultFlags: Record<FeatureFlag, boolean> = {\r\n  new_npc_dialogue_system: false, // в разработке\r\n  advanced_weather: true,\r\n  future_world_era: false,\r\n  coalition_hud: true,\r\n  quest_progress_hud: true\r\n};\r\n\r\nexport function isEnabled(flag: FeatureFlag, customFlags?: Partial<Record<FeatureFlag, boolean>>): boolean {\r\n  const params = new URLSearchParams(window.location.search);\r\n  if (params.has(flag)) {\r\n    return params.get(flag) === 'true';\r\n  }\r\n  return customFlags?.[flag] ?? defaultFlags[flag];\r\n}\r\n\r\nexport function useFeatureFlag(flag: FeatureFlag): boolean {\r\n  return isEnabled(flag);\r\n}",
+    "path": "src/lib/featureFlags.ts",
+    "type": "source",
+    "timestamp": 1781998636678
+  },
+  {
+    "id": "i1781998636680",
+    "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+    "path": "src/lib/utils.ts",
+    "type": "source",
+    "timestamp": 1781998636680
+  },
+  {
+    "id": "i1781998636682",
+    "content": "/** Версия из package.json — подставляется Vite (define) в dev и build. */\r\nexport const APP_VERSION: string = __CHRONOS_VERSION__;\r\n",
+    "path": "src/version.ts",
+    "type": "source",
+    "timestamp": 1781998636682
+  },
+  {
+    "id": "i1781998666705",
+    "content": "// Feature Flags для AFK Game\r\n// Управлять через URL ?feature=name или config\r\n\r\nexport type FeatureFlag =\r\n  | 'new_npc_dialogue_system'\r\n  | 'advanced_weather'\r\n  | 'future_world_era'\r\n  | 'coalition_hud'\r\n  | 'quest_progress_hud';\r\n\r\nexport const defaultFlags: Record<FeatureFlag, boolean> = {\r\n  new_npc_dialogue_system: false, // в разработке\r\n  advanced_weather: true,\r\n  future_world_era: false,\r\n  coalition_hud: true,\r\n  quest_progress_hud: true\r\n};\r\n\r\nexport function isEnabled(flag: FeatureFlag, customFlags?: Partial<Record<FeatureFlag, boolean>>): boolean {\r\n  const params = new URLSearchParams(window.location.search);\r\n  if (params.has(flag)) {\r\n    return params.get(flag) === 'true';\r\n  }\r\n  return customFlags?.[flag] ?? defaultFlags[flag];\r\n}\r\n\r\nexport function useFeatureFlag(flag: FeatureFlag): boolean {\r\n  return isEnabled(flag);\r\n}",
+    "path": "src/lib/featureFlags.ts",
+    "type": "source",
+    "timestamp": 1781998666705
+  },
+  {
+    "id": "i1781998666707",
+    "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+    "path": "src/lib/utils.ts",
+    "type": "source",
+    "timestamp": 1781998666707
+  },
+  {
+    "id": "i1781998666709",
+    "content": "/** Версия из package.json — подставляется Vite (define) в dev и build. */\r\nexport const APP_VERSION: string = __CHRONOS_VERSION__;\r\n",
+    "path": "src/version.ts",
+    "type": "source",
+    "timestamp": 1781998666709
+  },
+  {
+    "id": "i1781998696722",
+    "content": "// Feature Flags для AFK Game\r\n// Управлять через URL ?feature=name или config\r\n\r\nexport type FeatureFlag =\r\n  | 'new_npc_dialogue_system'\r\n  | 'advanced_weather'\r\n  | 'future_world_era'\r\n  | 'coalition_hud'\r\n  | 'quest_progress_hud';\r\n\r\nexport const defaultFlags: Record<FeatureFlag, boolean> = {\r\n  new_npc_dialogue_system: false, // в разработке\r\n  advanced_weather: true,\r\n  future_world_era: false,\r\n  coalition_hud: true,\r\n  quest_progress_hud: true\r\n};\r\n\r\nexport function isEnabled(flag: FeatureFlag, customFlags?: Partial<Record<FeatureFlag, boolean>>): boolean {\r\n  const params = new URLSearchParams(window.location.search);\r\n  if (params.has(flag)) {\r\n    return params.get(flag) === 'true';\r\n  }\r\n  return customFlags?.[flag] ?? defaultFlags[flag];\r\n}\r\n\r\nexport function useFeatureFlag(flag: FeatureFlag): boolean {\r\n  return isEnabled(flag);\r\n}",
+    "path": "src/lib/featureFlags.ts",
+    "type": "source",
+    "timestamp": 1781998696722
+  },
+  {
+    "id": "i1781998696724",
+    "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+    "path": "src/lib/utils.ts",
+    "type": "source",
+    "timestamp": 1781998696724
+  },
+  {
+    "id": "i1781998696726",
+    "content": "/** Версия из package.json — подставляется Vite (define) в dev и build. */\r\nexport const APP_VERSION: string = __CHRONOS_VERSION__;\r\n",
+    "path": "src/version.ts",
+    "type": "source",
+    "timestamp": 1781998696726
+  },
+  {
+    "id": "i1781998726740",
+    "content": "// Feature Flags для AFK Game\r\n// Управлять через URL ?feature=name или config\r\n\r\nexport type FeatureFlag =\r\n  | 'new_npc_dialogue_system'\r\n  | 'advanced_weather'\r\n  | 'future_world_era'\r\n  | 'coalition_hud'\r\n  | 'quest_progress_hud';\r\n\r\nexport const defaultFlags: Record<FeatureFlag, boolean> = {\r\n  new_npc_dialogue_system: false, // в разработке\r\n  advanced_weather: true,\r\n  future_world_era: false,\r\n  coalition_hud: true,\r\n  quest_progress_hud: true\r\n};\r\n\r\nexport function isEnabled(flag: FeatureFlag, customFlags?: Partial<Record<FeatureFlag, boolean>>): boolean {\r\n  const params = new URLSearchParams(window.location.search);\r\n  if (params.has(flag)) {\r\n    return params.get(flag) === 'true';\r\n  }\r\n  return customFlags?.[flag] ?? defaultFlags[flag];\r\n}\r\n\r\nexport function useFeatureFlag(flag: FeatureFlag): boolean {\r\n  return isEnabled(flag);\r\n}",
+    "path": "src/lib/featureFlags.ts",
+    "type": "source",
+    "timestamp": 1781998726740
+  },
+  {
+    "id": "i1781998726743",
+    "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+    "path": "src/lib/utils.ts",
+    "type": "source",
+    "timestamp": 1781998726743
+  },
+  {
+    "id": "i1781998726746",
+    "content": "/** Версия из package.json — подставляется Vite (define) в dev и build. */\r\nexport const APP_VERSION: string = __CHRONOS_VERSION__;\r\n",
+    "path": "src/version.ts",
+    "type": "source",
+    "timestamp": 1781998726746
+  },
+  {
+    "id": "i1781998756759",
+    "content": "// Feature Flags для AFK Game\r\n// Управлять через URL ?feature=name или config\r\n\r\nexport type FeatureFlag =\r\n  | 'new_npc_dialogue_system'\r\n  | 'advanced_weather'\r\n  | 'future_world_era'\r\n  | 'coalition_hud'\r\n  | 'quest_progress_hud';\r\n\r\nexport const defaultFlags: Record<FeatureFlag, boolean> = {\r\n  new_npc_dialogue_system: false, // в разработке\r\n  advanced_weather: true,\r\n  future_world_era: false,\r\n  coalition_hud: true,\r\n  quest_progress_hud: true\r\n};\r\n\r\nexport function isEnabled(flag: FeatureFlag, customFlags?: Partial<Record<FeatureFlag, boolean>>): boolean {\r\n  const params = new URLSearchParams(window.location.search);\r\n  if (params.has(flag)) {\r\n    return params.get(flag) === 'true';\r\n  }\r\n  return customFlags?.[flag] ?? defaultFlags[flag];\r\n}\r\n\r\nexport function useFeatureFlag(flag: FeatureFlag): boolean {\r\n  return isEnabled(flag);\r\n}",
+    "path": "src/lib/featureFlags.ts",
+    "type": "source",
+    "timestamp": 1781998756759
+  },
+  {
+    "id": "i1781998756760",
+    "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+    "path": "src/lib/utils.ts",
+    "type": "source",
+    "timestamp": 1781998756760
+  },
+  {
+    "id": "i1781998756762",
+    "content": "/** Версия из package.json — подставляется Vite (define) в dev и build. */\r\nexport const APP_VERSION: string = __CHRONOS_VERSION__;\r\n",
+    "path": "src/version.ts",
+    "type": "source",
+    "timestamp": 1781998756762
+  },
+  {
+    "id": "i1781998786781",
+    "content": "// Feature Flags для AFK Game\r\n// Управлять через URL ?feature=name или config\r\n\r\nexport type FeatureFlag =\r\n  | 'new_npc_dialogue_system'\r\n  | 'advanced_weather'\r\n  | 'future_world_era'\r\n  | 'coalition_hud'\r\n  | 'quest_progress_hud';\r\n\r\nexport const defaultFlags: Record<FeatureFlag, boolean> = {\r\n  new_npc_dialogue_system: false, // в разработке\r\n  advanced_weather: true,\r\n  future_world_era: false,\r\n  coalition_hud: true,\r\n  quest_progress_hud: true\r\n};\r\n\r\nexport function isEnabled(flag: FeatureFlag, customFlags?: Partial<Record<FeatureFlag, boolean>>): boolean {\r\n  const params = new URLSearchParams(window.location.search);\r\n  if (params.has(flag)) {\r\n    return params.get(flag) === 'true';\r\n  }\r\n  return customFlags?.[flag] ?? defaultFlags[flag];\r\n}\r\n\r\nexport function useFeatureFlag(flag: FeatureFlag): boolean {\r\n  return isEnabled(flag);\r\n}",
+    "path": "src/lib/featureFlags.ts",
+    "type": "source",
+    "timestamp": 1781998786781
+  },
+  {
+    "id": "i1781998786784",
+    "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+    "path": "src/lib/utils.ts",
+    "type": "source",
+    "timestamp": 1781998786784
+  },
+  {
+    "id": "i1781998786786",
+    "content": "/** Версия из package.json — подставляется Vite (define) в dev и build. */\r\nexport const APP_VERSION: string = __CHRONOS_VERSION__;\r\n",
+    "path": "src/version.ts",
+    "type": "source",
+    "timestamp": 1781998786786
+  },
+  {
+    "id": "i1781998816813",
+    "content": "// Feature Flags для AFK Game\r\n// Управлять через URL ?feature=name или config\r\n\r\nexport type FeatureFlag =\r\n  | 'new_npc_dialogue_system'\r\n  | 'advanced_weather'\r\n  | 'future_world_era'\r\n  | 'coalition_hud'\r\n  | 'quest_progress_hud';\r\n\r\nexport const defaultFlags: Record<FeatureFlag, boolean> = {\r\n  new_npc_dialogue_system: false, // в разработке\r\n  advanced_weather: true,\r\n  future_world_era: false,\r\n  coalition_hud: true,\r\n  quest_progress_hud: true\r\n};\r\n\r\nexport function isEnabled(flag: FeatureFlag, customFlags?: Partial<Record<FeatureFlag, boolean>>): boolean {\r\n  const params = new URLSearchParams(window.location.search);\r\n  if (params.has(flag)) {\r\n    return params.get(flag) === 'true';\r\n  }\r\n  return customFlags?.[flag] ?? defaultFlags[flag];\r\n}\r\n\r\nexport function useFeatureFlag(flag: FeatureFlag): boolean {\r\n  return isEnabled(flag);\r\n}",
+    "path": "src/lib/featureFlags.ts",
+    "type": "source",
+    "timestamp": 1781998816813
+  },
+  {
+    "id": "i1781998816814",
+    "content": "import { clsx, type ClassValue } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs))\n}\n",
+    "path": "src/lib/utils.ts",
+    "type": "source",
+    "timestamp": 1781998816814
+  },
+  {
+    "id": "i1781998816818",
+    "content": "/** Версия из package.json — подставляется Vite (define) в dev и build. */\r\nexport const APP_VERSION: string = __CHRONOS_VERSION__;\r\n",
+    "path": "src/version.ts",
+    "type": "source",
+    "timestamp": 1781998816818
   }
 ]
