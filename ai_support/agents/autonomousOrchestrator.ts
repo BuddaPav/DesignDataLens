@@ -25,7 +25,7 @@ const config: OrchestratorConfig = {
   maxRetries: 3,
   intervalMs: 30000,
   agents: ['codeBuilder', 'npcArchitect', 'worldBuilder', 'economyDesigner', 'uiCraftsman', 'documentationGenerator', 'securityAuditor'],
-  providers: ['hf', 'openai', 'anthropic'],
+  providers: ['hf', 'openai', 'anthropic', 'ollama', 'lmstudio'],
   notifyOnComplete: true,
 };
 
@@ -160,12 +160,68 @@ async function chatAnthropic(messages: LLMMessage[]): Promise<string | null> {
   }
 }
 
+// Ollama Provider (localhost:11434)
+async function chatOllama(messages: LLMMessage[]): Promise<string | null> {
+  const systemMsg = messages.find(m => m.role === 'system');
+  const otherMsgs = messages.filter(m => m.role !== 'system');
+
+  try {
+    const response = await fetch('http://localhost:11434/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: process.env.OLLAMA_MODEL || 'llama3',
+        messages: [
+          ...(systemMsg ? [{ role: 'system', content: systemMsg.content }] : []),
+          ...otherMsgs.map(m => ({ role: m.role, content: m.content }))
+        ],
+        stream: false
+      }),
+    });
+
+    if (!response.ok) return null;
+    const data = await response.json() as any;
+    return data.message?.content || null;
+  } catch {
+    return null;
+  }
+}
+
+// LM Studio Provider (localhost:1234)
+async function chatLmStudio(messages: LLMMessage[]): Promise<string | null> {
+  const systemMsg = messages.find(m => m.role === 'system');
+  const otherMsgs = messages.filter(m => m.role !== 'system');
+
+  try {
+    const response = await fetch('http://localhost:1234/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'local-model',
+        messages: [
+          ...(systemMsg ? [{ role: 'system', content: systemMsg.content }] : []),
+          ...otherMsgs.map(m => ({ role: m.role, content: m.content }))
+        ],
+        temperature: 0.7
+      }),
+    });
+
+    if (!response.ok) return null;
+    const data = await response.json() as any;
+    return data.choices?.[0]?.message?.content || null;
+  } catch {
+    return null;
+  }
+}
+
 // Chain with fallback (provider priority)
 async function chatWithFallback(messages: LLMMessage[]): Promise<string> {
   const providers = [
     { name: 'HF', fn: chatHF },
     { name: 'OpenAI', fn: chatOpenAI },
     { name: 'Anthropic', fn: chatAnthropic },
+    { name: 'Ollama', fn: chatOllama },
+    { name: 'LMStudio', fn: chatLmStudio },
   ];
 
   for (const provider of providers) {
