@@ -2674,3 +2674,25 @@ src/components/game/OnboardingHint.tsx: // OnboardingHint — Contextual hints f
 [2026-06-21T06:46:49.442Z] [build] Using existing dist (age: 41s)
 [2026-06-21T06:46:49.442Z] [orchestrator] Build: PASS (1ms)
 [2026-06-21T06:46:49.443Z] [orchestrator] Health: OK
+[2026-06-21T06:47:05.363Z] Build skipped (debug mode)
+[2026-06-21T06:47:09.735Z] [git] Committed: Orchestrator cycle 1: 1 tasks
+[2026-06-21T06:47:09.736Z] [orchestrator] Cycle complete
+[2026-06-21T06:47:10.116Z] Build skipped (debug mode)
+[2026-06-21T06:47:35.412Z] Build skipped (debug mode)
+[2026-06-21T06:47:40.162Z] Build skipped (debug mode)
+[2026-06-21T06:47:40.693Z] [orchestrator] Starting full autonomous orchestrator...
+[2026-06-21T06:47:40.693Z] [orchestrator] Cycle 1 started
+[2026-06-21T06:47:40.695Z] [orchestrator] Loaded 84 tasks
+[2026-06-21T06:47:40.695Z] [orchestrator] Agents: codeBuilder, npcArchitect, worldBuilder, economyDesigner, uiCraftsman, documentationGenerator, securityAuditor
+[2026-06-21T06:47:40.696Z] [orchestrator] LLM providers: nvidia, hf, openai, anthropic, ollama, lmstudio
+[2026-06-21T06:47:40.696Z] [orchestrator] Processing: Динамическое снижение постобработки при падении FPS. (codeBuilder)
+[2026-06-21T06:47:40.697Z] [codeBuilder] Analyzing: Динамическое снижение постобработки при падении FPS.
+[2026-06-21T06:47:40.697Z] [codeBuilder] Found 0 relevant files
+[2026-06-21T06:47:52.165Z] [LLM] Ollama succeeded
+[2026-06-21T06:47:52.165Z] [codeBuilder] Analysis: Для динамического снижения постобработки при падении FPS в React с использованием TypeScript, можно 
+[2026-06-21T06:47:52.168Z] [orchestrator] Marked done: Динамическое снижение постобработки при падении FPS.
+[2026-06-21T06:47:52.169Z] [orchestrator] codeBuilder completed
+[2026-06-21T06:47:52.169Z] [build] Starting npm run build...
+[2026-06-21T06:47:52.170Z] [build] Using existing dist (age: 43s)
+[2026-06-21T06:47:52.170Z] [orchestrator] Build: PASS (1ms)
+[2026-06-21T06:47:52.171Z] [orchestrator] Health: OK
