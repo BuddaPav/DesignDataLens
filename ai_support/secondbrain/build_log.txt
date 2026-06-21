@@ -2651,3 +2651,26 @@ src/components/game/OnboardingHint.tsx: // OnboardingHint — Contextual hints f
 [2026-06-21T06:45:37.457Z] [build] Using existing dist (age: 4s)
 [2026-06-21T06:45:37.458Z] [orchestrator] Build: PASS (1ms)
 [2026-06-21T06:45:37.458Z] [orchestrator] Health: OK
+[2026-06-21T06:45:39.985Z] Build skipped (debug mode)
+[2026-06-21T06:46:05.282Z] Build skipped (debug mode)
+[2026-06-21T06:46:08.915Z] [git] Committed: Orchestrator cycle 1: 1 tasks
+[2026-06-21T06:46:08.916Z] [orchestrator] Cycle complete
+[2026-06-21T06:46:10.026Z] Build skipped (debug mode)
+[2026-06-21T06:46:35.317Z] Build skipped (debug mode)
+[2026-06-21T06:46:39.847Z] [orchestrator] Starting full autonomous orchestrator...
+[2026-06-21T06:46:39.848Z] [orchestrator] Cycle 1 started
+[2026-06-21T06:46:39.849Z] [orchestrator] Loaded 85 tasks
+[2026-06-21T06:46:39.850Z] [orchestrator] Agents: codeBuilder, npcArchitect, worldBuilder, economyDesigner, uiCraftsman, documentationGenerator, securityAuditor
+[2026-06-21T06:46:39.850Z] [orchestrator] LLM providers: nvidia, hf, openai, anthropic, ollama, lmstudio
+[2026-06-21T06:46:39.851Z] [orchestrator] Processing: Бюджет кадра для R3F: статья в телеметрии и предупреждение при стабильном <50 FPS. (codeBuilder)
+[2026-06-21T06:46:39.851Z] [codeBuilder] Analyzing: Бюджет кадра для R3F: статья в телеметрии и предупреждение при стабильном <50 FPS.
+[2026-06-21T06:46:39.851Z] [codeBuilder] Found 0 relevant files
+[2026-06-21T06:46:40.071Z] Build skipped (debug mode)
+[2026-06-21T06:46:49.437Z] [LLM] Ollama succeeded
+[2026-06-21T06:46:49.438Z] [codeBuilder] Analysis: Для мониторинга производительности и отображения бюджета фреймов с использованием React и Three.js (
+[2026-06-21T06:46:49.440Z] [orchestrator] Marked done: Бюджет кадра для R3F: статья в телеметрии и предупреждение при стабильном <50 FPS.
+[2026-06-21T06:46:49.440Z] [orchestrator] codeBuilder completed
+[2026-06-21T06:46:49.441Z] [build] Starting npm run build...
+[2026-06-21T06:46:49.442Z] [build] Using existing dist (age: 41s)
+[2026-06-21T06:46:49.442Z] [orchestrator] Build: PASS (1ms)
+[2026-06-21T06:46:49.443Z] [orchestrator] Health: OK
