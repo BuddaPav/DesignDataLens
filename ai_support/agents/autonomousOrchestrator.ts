@@ -160,6 +160,41 @@ async function chatAnthropic(messages: LLMMessage[]): Promise<string | null> {
   }
 }
 
+// Yandex AI Provider
+async function chatYandex(messages: LLMMessage[]): Promise<string | null> {
+  const apiKey = process.env.YANDEX_API_KEY;
+  if (!apiKey) return null;
+
+  const systemMsg = messages.find(m => m.role === 'system');
+  const recentMsgs = messages.filter(m => m.role !== 'system').slice(-6);
+
+  const chatLogs = [
+    { role: 'system', text: systemMsg?.content },
+    ...recentMsgs.map(m => ({ role: m.role, text: m.content }))
+  ];
+
+  try {
+    const response = await fetch('https://llm.api.cloud.yandex.net/v1/clusters/embeddings', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Api-Key ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        modelUri: 'gpt://b1/gemini-2.0-flash-exp',
+        generationConfig: { maxTokens: 512, temperature: 0.7 },
+        messages: chatLogs
+      }),
+    });
+
+    if (!response.ok) return null;
+    const data = await response.json() as any;
+    return data.result?.alternatives?.[0]?.message?.text || null;
+  } catch {
+    return null;
+  }
+}
+
 // Ollama Provider (localhost:11434)
 async function chatOllama(messages: LLMMessage[]): Promise<string | null> {
   const systemMsg = messages.find(m => m.role === 'system');
@@ -297,6 +332,7 @@ async function chatWithFallback(messages: LLMMessage[]): Promise<string> {
     { name: 'NvidiaDeepseek', fn: chatNvidiaDeepseek },
     { name: 'Ollama', fn: chatOllama },
     { name: 'LMStudio', fn: chatLmStudio },
+    { name: 'Yandex', fn: chatYandex },
     { name: 'HF', fn: chatHF },
     { name: 'OpenAI', fn: chatOpenAI },
     { name: 'Anthropic', fn: chatAnthropic },
