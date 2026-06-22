@@ -1,30 +1,6 @@
 {
   "learnings": [
     {
-      "pattern": "pre-write validation prevents duplicate imports",
-      "success": true,
-      "task": "validation.setup",
-      "timestamp": "2026-06-22T12:00:00Z"
-    },
-    {
-      "pattern": "Добавить тестовую локацию desert",
-      "success": true,
-      "task": "worldBuilder",
-      "timestamp": "2026-06-22T15:40:12.397Z"
-    },
-    {
-      "pattern": "Добавить тестовую локацию desert",
-      "success": true,
-      "task": "worldBuilder",
-      "timestamp": "2026-06-22T15:41:10.848Z"
-    },
-    {
-      "pattern": "Добавить тестовую локацию desert",
-      "success": true,
-      "task": "worldBuilder",
-      "timestamp": "2026-06-22T15:43:06.512Z"
-    },
-    {
       "pattern": "Добавить тестовую локацию desert",
       "success": false,
       "task": "worldBuilder",
@@ -299,7 +275,31 @@
       "success": false,
       "task": "worldBuilder",
       "timestamp": "2026-06-22T16:31:02.403Z"
+    },
+    {
+      "pattern": "Добавить тестовую локацию desert",
+      "success": false,
+      "task": "worldBuilder",
+      "timestamp": "2026-06-22T16:32:17.543Z"
+    },
+    {
+      "pattern": "Добавить тестовую локацию desert",
+      "success": false,
+      "task": "worldBuilder",
+      "timestamp": "2026-06-22T16:32:17.546Z"
+    },
+    {
+      "pattern": "Добавить тестовую локацию desert",
+      "success": false,
+      "task": "worldBuilder",
+      "timestamp": "2026-06-22T16:32:38.179Z"
+    },
+    {
+      "pattern": "Добавить тестовую локацию desert",
+      "success": false,
+      "task": "worldBuilder",
+      "timestamp": "2026-06-22T16:32:38.181Z"
     }
   ],
-  "lastUpdated": "2026-06-22T16:31:02.403Z"
+  "lastUpdated": "2026-06-22T16:32:38.181Z"
 }
