@@ -1,10 +1,10 @@
 // ai_support/index.ts — Main entry: initialize all systems.
 
-import { initStorage, addProjectChunk, searchProject, queryByTag, isReady as storageReady, getStats } from './storage';
-import { initAgents, getSkill, runAgent, listSkills, searchProject as agentSearch } from './agents';
-import { registerSkill } from './agents/index';
-import { skill as coderSkill } from './skills/coder';
-import { skill as searchSkill } from './skills/search';
+import { initStorage, addProjectChunk, searchProject, queryByTag, isReady as storageReady, getStats } from './storage.js';
+import { initAgents, getSkill, runAgent, listSkills, searchProject as agentSearch } from './agents/index.js';
+import { registerSkill } from './agents/index.js';
+import { skill as coderSkill } from './skills/coder.js';
+import { skill as searchSkill } from './skills/search.js';
 
 let initialized = false;
 
@@ -35,6 +35,6 @@ export async function initAISupport(): Promise<boolean> {
 export { addProjectChunk, searchProject, queryByTag, runAgent, listSkills, storageReady, getStats };
 
 // Also export agents components
-export { getSkill } from './agents/index';
-export { chat } from './llm';
-export type { AgentContext, AgentResult, AgentSkill } from './agents/index';
+export { getSkill } from './agents/index.js';
+export { chat } from './llm.js';
+export type { AgentContext, AgentResult, AgentSkill } from './agents/index.js';

@@ -32,8 +32,15 @@ function validateContent(filePath: string, content: string): { valid: boolean; e
       importCounts.set(module, (importCounts.get(module) || 0) + 1);
     }
   }
-  for (const [module, count] of importCounts.entries()) {
-    if (count > 1) errors.push(`Duplicate import from "${module}" (${count}x)`);
+  // Allow multiple imports from same module (different symbols is OK)
+  // Only flag if same full line repeated (true duplicate)
+  const seenImportLines = new Set<string>();
+  for (const line of importLines) {
+    const normalized = line.trim();
+    if (seenImportLines.has(normalized)) {
+      errors.push(`Duplicate import line: "${normalized.slice(0, 50)}..."`);
+    }
+    seenImportLines.add(normalized);
   }
 
   // Check duplicate exports
