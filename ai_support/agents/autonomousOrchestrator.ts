@@ -520,7 +520,14 @@ function saveTaskState(): void {
 
 // Export functions for CLI
 export function getTrustScore(): number {
-  return trustScore;
+  const trustPath = path.join(SECOND_BRAIN_DIR, 'cognitive/trust.json');
+  if (!fs.existsSync(trustPath)) return 1;
+  try {
+    const trust = JSON.parse(fs.readFileSync(trustPath, 'utf-8'));
+    return trust.score || 1;
+  } catch {
+    return 1;
+  }
 }
 
 export function getTaskStates(): Map<string, TaskState> {
