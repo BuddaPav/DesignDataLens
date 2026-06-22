@@ -107,6 +107,34 @@ if (fs.existsSync(envPath)) {
   log('[orchestrator] Loaded env from:', envPath);
 }
 
+// === P0-8: Rate limiting for API calls ===
+const RATE_LIMIT_STATE = {
+  anthropic: { calls: 0, resetTime: 0 },
+  openai: { calls: 0, resetTime: 0 },
+  ollama: { calls: 0, resetTime: 0 }
+};
+const ANTHROPIC_LIMIT = 50; // per minute
+const OPENAI_LIMIT = 60;
+
+function checkRateLimit(provider: string): boolean {
+  const now = Date.now();
+  const state = RATE_LIMIT_STATE[provider as keyof typeof RATE_LIMIT_STATE];
+  if (!state) return true;
+
+  if (now > state.resetTime) {
+    state.calls = 0;
+    state.resetTime = now + 60000; // Reset every minute
+  }
+
+  const limit = provider === 'anthropic' ? ANTHROPIC_LIMIT : provider === 'openai' ? OPENAI_LIMIT : 1000;
+  return state.calls < limit;
+}
+
+function recordAPICall(provider: string): void {
+  const state = RATE_LIMIT_STATE[provider as keyof typeof RATE_LIMIT_STATE];
+  if (state) state.calls++;
+}
+
 const PROJECT_ROOT = 'c:/Users/Den/Downloads/AFK Game';
 const APP_DIR = `${PROJECT_ROOT}/app`;
 const DOCS_DIR = `${PROJECT_ROOT}/docs`;
@@ -194,6 +222,10 @@ async function chatAnthropic(messages: LLMMessage[]): Promise<string | null> {
   const otherMsgs = messages.filter(m => m.role !== 'system');
 
   try {
+    // === P0-7: Timeout for LLM calls (30 sec) ===
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
+
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -207,12 +239,17 @@ async function chatAnthropic(messages: LLMMessage[]): Promise<string | null> {
         messages: otherMsgs.map(m => ({ role: m.role, content: m.content })),
         max_tokens: 1024
       }),
+      signal: controller.signal as any
     });
 
+    clearTimeout(timeoutId);
     if (!response.ok) return null;
     const data = await response.json() as any;
     return data.content?.[0]?.text || null;
-  } catch {
+  } catch (e: any) {
+    if (e.name === 'AbortError') {
+      log('[chatAnthropic] Timeout after 30s');
+    }
     return null;
   }
 }
@@ -576,16 +613,36 @@ function safeWriteCode(targetFile: string, newCode: string, taskDesc: string): b
     return true;
   } catch (e: any) {
     const errStr = e.message || e.stdout || e.stderr || '';
-    if (errStr.includes('error TS')) {
+    if (errStr.includes('error TS') || errStr.includes('Duplicate')) {
       log(`[safeWrite] BUILD FAILED - rolling back: ${path.basename(targetFile)}`);
-      // Restore from backup
-      const backup = fs.readFileSync(backupFile, 'utf-8');
-      fs.writeFileSync(targetFile, backup);
-      fs.unlinkSync(backupFile);
+
+      // === P0-3: Auto-restore from Git if backup corrupted ===
+      let restored = false;
+      try {
+        if (fs.existsSync(backupFile)) {
+          const backup = fs.readFileSync(backupFile, 'utf-8');
+          if (backup.length > 10) {
+            fs.writeFileSync(targetFile, backup);
+            restored = true;
+          }
+        }
+        if (!restored) {
+          // Fallback: git restore
+          execSync(`git checkout HEAD -- ${targetFile}`, { cwd: PROJECT_ROOT });
+          restored = true;
+        }
+      } catch (restoreErr) {
+        log(`[safeWrite] Restore failed, using git checkout: ${restoreErr}`);
+        try {
+          execSync(`git checkout HEAD -- ${path.basename(targetFile)}`, { cwd: PROJECT_ROOT });
+        } catch {}
+      }
+
+      try { fs.unlinkSync(backupFile); } catch {}
       return false;
     }
     // Unknown error - still write
-    fs.unlinkSync(backupFile);
+    try { fs.unlinkSync(backupFile); } catch {}
     return true;
   }
 }
