@@ -103,7 +103,7 @@ DONE: Регулярный `npm audit` и политика по известны
 
 ## DevEx и CI (79–88)
 
-79. Матрица CI: Node 20 + 22 для gate.
+DONE: Матрица CI: Node 20 + 22 для gate.
 80. Кэш Playwright браузера и зависимостей в CI (если подключён).
 81. Скрипт `npm run diagnose` — версии node, ОС, GPU string в Electron.
 82. Pre-commit опционально: lint-staged только для затронутых файлов.
