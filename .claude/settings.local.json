@@ -32,7 +32,8 @@
       "Bash(node agents/autonomousOrchestrator.ts)",
       "Bash(npm list tsx)",
       "Bash(cd c:/Users/Den/Downloads/AFK Game/ai_support)",
-      "Bash(npx tsx agents/autonomousOrchestrator.ts)"
+      "Bash(npx tsx agents/autonomousOrchestrator.ts)",
+      "Bash(cd c:/Users/Den/Downloads/AFK Game)"
     ]
   }
 }
