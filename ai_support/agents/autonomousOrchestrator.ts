@@ -748,32 +748,15 @@ function shouldRetry(task: AgentTask): boolean {
 function getNextTask(tasks: AgentTask[]): AgentTask | null {
   // Filter out already done tasks (check both task.done and taskStates)
   const pending = tasks.filter(t => {
-    if (t.done) {
-      log(`[getNextTask] ${t.id} filtered: t.done=true`);
-      return false;
-    }
+    if (t.done) return false;
     const state = taskStates.get(t.id);
-    if (state && state.status === 'done') {
-      log(`[getNextTask] ${t.id} filtered: state.done=true`);
-      return false;
-    }
-    return true;
+    return !state || state.status !== 'done';
   });
 
-  log(`[getNextTask] After state filter: ${pending.length} tasks`);
-  if (pending.length === 0) {
-    log(`[getNextTask] All task IDs: ${tasks.map(t => t.id).join(', ')}`);
-    log(`[getNextTask] All taskStates: ${[...taskStates.keys()].join(', ')}`);
-    return null;
-  }
-
   const retryTasks = pending.filter(t => shouldRetry(t));
-  log(`[getNextTask] Retry tasks: ${retryTasks.length}`);
   if (retryTasks.length > 0) return retryTasks[0];
 
-  const sorted = pending.sort((a, b) => b.priority - a.priority);
-  log(`[getNextTask] Top task: ${sorted[0]?.description?.slice(0, 30)} priority=${sorted[0]?.priority}`);
-  return sorted[0];
+  return pending.sort((a, b) => b.priority - a.priority)[0];
 }
 
 // ==================== ANALYSIS CACHE (31-33) ====================
@@ -1679,10 +1662,8 @@ export async function runOrchestrator(): Promise<void> {
   log(`[orchestrator] LLM providers: ${config.providers.join(', ')}`);
 
   // Run next task
-  const pendingTasks = taskQueue.filter(t => !t.done);
-  log(`[orchestrator] Pending tasks: ${pendingTasks.length} of ${taskQueue.length}`);
   if (taskQueue.length > 0) {
-    const task = getNextTask(pendingTasks);
+    const task = getNextTask(taskQueue.filter(t => !t.done));
     if (task) {
       log(`[orchestrator] Processing: ${task.description} (${task.agent})`);
 
