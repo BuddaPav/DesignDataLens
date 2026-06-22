@@ -1068,7 +1068,7 @@ function loadTasksFromDocs(): AgentTask[] {
   }
 
   // STAGES_001-050.md
-  const stages1Path = path.join(DOCS_DIR, '../mvp/STAGES_001-050.md');
+  const stages1Path = path.join(PROJECT_ROOT, 'docs/mvp/STAGES_001-050.md');
   if (fs.existsSync(stages1Path)) {
     const content = fs.readFileSync(stages1Path, 'utf-8');
     for (const line of content.split('\n')) {
@@ -1084,7 +1084,7 @@ function loadTasksFromDocs(): AgentTask[] {
   }
 
   // STAGES_051-100.md
-  const stages2Path = path.join(DOCS_DIR, '../mvp/STAGES_051-100.md');
+  const stages2Path = path.join(PROJECT_ROOT, 'docs/mvp/STAGES_051-100.md');
   if (fs.existsSync(stages2Path)) {
     const content = fs.readFileSync(stages2Path, 'utf-8');
     for (const line of content.split('\n')) {
