@@ -174,7 +174,7 @@ async function chatYandex(messages: LLMMessage[]): Promise<string | null> {
   ];
 
   try {
-    const response = await fetch('https://llm.api.cloud.yandex.net/v1/clusters/embeddings', {
+    const response = await fetch('https://llm.api.cloud.yandex.net/v1/chats', {
       method: 'POST',
       headers: {
         'Authorization': `Api-Key ${apiKey}`,
