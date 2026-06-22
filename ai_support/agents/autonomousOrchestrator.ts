@@ -1659,8 +1659,10 @@ export async function runOrchestrator(): Promise<void> {
   log(`[orchestrator] LLM providers: ${config.providers.join(', ')}`);
 
   // Run next task
+  const pendingTasks = taskQueue.filter(t => !t.done);
+  log(`[orchestrator] Pending tasks: ${pendingTasks.length} of ${taskQueue.length}`);
   if (taskQueue.length > 0) {
-    const task = getNextTask(taskQueue.filter(t => !t.done));
+    const task = getNextTask(pendingTasks);
     if (task) {
       log(`[orchestrator] Processing: ${task.description} (${task.agent})`);
 
