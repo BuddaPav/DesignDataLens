@@ -601,6 +601,46 @@ function recordRecovery(task: AgentTask, error: string, fix: string): void {
   fs.writeFileSync(recoveriesPath, JSON.stringify(recoveries, null, 2));
 }
 
+// Verify second brain integrity - check all files exist and valid
+function verifySecondBrain(): { valid: boolean; errors: string[] } {
+  const errors: string[] = [];
+  const requiredFiles = [
+    'cognitive/learnings.json',
+    'cognitive/recoveries.json',
+    'cognitive/trust.json',
+    'metrics.json',
+    'task_state.json'
+  ];
+
+  for (const file of requiredFiles) {
+    const filePath = path.join(AI_SUPPORT_DIR, file);
+    if (!fs.existsSync(filePath)) {
+      errors.push(`Missing: ${file}`);
+    } else {
+      try {
+        JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+      } catch {
+        errors.push(`Invalid JSON: ${file}`);
+      }
+    }
+  }
+
+  return { valid: errors.length === 0, errors };
+}
+
+// Learn from recovery patterns - extract useful patterns from recoveries.json
+function learnFromRecovery(): string[] {
+  const recoveriesPath = path.join(AI_SUPPORT_DIR, 'cognitive/recoveries.json');
+  if (!fs.existsSync(recoveriesPath)) return [];
+
+  try {
+    const data = JSON.parse(fs.readFileSync(recoveriesPath, 'utf-8'));
+    return data.recoveries?.slice(-10).map((r: any) => r.fix) || [];
+  } catch {
+    return [];
+  }
+}
+
 function markTaskDone(task: AgentTask): void {
   // Update state
   taskStates.set(task.id, {
@@ -1533,9 +1573,11 @@ export async function runOrchestrator(): Promise<void> {
           log(`[orchestrator] ${task.agent} completed`);
         } else {
           log(`[orchestrator] ${task.agent} failed: ${result.error}`);
+          recordRecovery(task, result.error || 'Task failed with ok=false', 'Agent returned failure');
         }
       } catch (e: any) {
         log(`[orchestrator] ${task.agent} error: ${e.message}`);
+        recordRecovery(task, e.message, 'Exception caught in task processing');
       }
     }
   } else {
