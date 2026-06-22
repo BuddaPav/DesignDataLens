@@ -131,7 +131,19 @@
       "success": false,
       "task": "worldBuilder",
       "timestamp": "2026-06-22T16:12:50.284Z"
+    },
+    {
+      "pattern": "Добавить тестовую локацию desert",
+      "success": false,
+      "task": "worldBuilder",
+      "timestamp": "2026-06-22T16:14:15.702Z"
+    },
+    {
+      "pattern": "Добавить тестовую локацию desert",
+      "success": false,
+      "task": "worldBuilder",
+      "timestamp": "2026-06-22T16:14:15.704Z"
     }
   ],
-  "lastUpdated": "2026-06-22T16:12:50.284Z"
+  "lastUpdated": "2026-06-22T16:14:15.704Z"
 }

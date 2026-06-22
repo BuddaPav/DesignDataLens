@@ -1,8 +1,8 @@
 {
-  "hallucinations": 18,
+  "hallucinations": 20,
   "verifiedSnippets": 3,
-  "totalGenerations": 21,
-  "score": 0.1428571428571429,
+  "totalGenerations": 23,
+  "score": 0.13043478260869568,
   "agents": {
     "economyDesigner": {
       "success": 0,
@@ -22,8 +22,8 @@
     },
     "worldBuilder": {
       "success": 3,
-      "fail": 18
+      "fail": 20
     }
   },
-  "lastUpdated": "2026-06-22T16:12:50.285Z"
+  "lastUpdated": "2026-06-22T16:14:15.705Z"
 }
