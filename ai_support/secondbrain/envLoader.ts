@@ -2,15 +2,12 @@
 import fs from 'fs';
 import path from 'path';
 
-const ENV_FILE = path.join(__dirname, '.env.api');
+const ENV_FILE = 'C:\\Users\\Den\\Downloads\\AFK Game\\ai_support\\secondbrain\\.env.api';
 
-export function loadEnvFile(): void {
-  if (!fs.existsSync(ENV_FILE)) {
-    console.log('[env] No .env.api file found');
-    return;
-  }
+function loadEnvContent(filePath: string): void {
+  if (!fs.existsSync(filePath)) return;
 
-  const content = fs.readFileSync(ENV_FILE, 'utf-8');
+  const content = fs.readFileSync(filePath, 'utf-8');
   const lines = content.split('\n');
 
   for (const line of lines) {
@@ -28,7 +25,10 @@ export function loadEnvFile(): void {
       process.env[key] = value;
     }
   }
+}
 
+export function loadEnvFile(): void {
+  loadEnvContent(ENV_FILE);
   console.log('[env] Loaded API keys from .env.api');
 }
 
