@@ -2,39 +2,39 @@
 
 ```typescript
 ```typescript
-interface PlayerContent {
-  id: string;
-  type: 'text' | 'image' | 'video';
-  content: string;
+import { useRef } from 'react';
+import { useFrame, useThree } from '@react-three/fiber';
+
+interface PlayerCreatedContentProps {
+  contentId: string;
 }
 
-class ContentManager {
-  private static instance: ContentManager | null = null;
+const PlayerCreatedContent: React.FC<PlayerCreatedContentProps> = ({ contentId }) => {
+  const meshRef = useRef<THREE.Mesh | null>(null);
+  const { scene } = useThree();
 
-  private constructor() {}
-
-  public static getInstance(): ContentManager {
-    if (!ContentManager.instance) {
-      ContentManager.instance = new ContentManager();
+  useFrame(() => {
+    if (meshRef.current) {
+      // Update the mesh based on player input or other logic
+      meshRef.current.rotation.x += 0.01;
+      meshRef.current.rotation.y += 0.01;
     }
-    return ContentManager.instance;
-  }
+  });
 
-  public createContent(playerId: string, type: PlayerContent['type'], content: string): PlayerContent {
-    const id = this.generateUniqueId();
-    return { id, type, content };
-  }
+  return (
+    <mesh ref={meshRef} position={[0, 0, 0]}>
+      {/* Content created by the player */}
+      {/* Example: */}
+      <boxGeometry args={[1, 1, 1]} />
+      <meshStandardMaterial color="red" />
+    </mesh>
+  );
+};
 
-  private generateUniqueId(): string {
-    return Math.random().toString(36).substr(2, 9);
-  }
-}
-
-// Пример использования
-const contentManager = ContentManager.getInstance();
-const newContent = contentManager.createContent('player123', 'text', 'Hello, world!');
-console.log(newContent); // { id: ..., type: 'text', content: 'Hello, world!' }
-```
+export default PlayerCreatedContent;
 ```
 
-Generated: 2026-06-22T08:12:00.463Z
+After writing this code, run `npm run build` to ensure there are no TypeScript errors.
+```
+
+Generated: 2026-06-22T12:10:33.665Z

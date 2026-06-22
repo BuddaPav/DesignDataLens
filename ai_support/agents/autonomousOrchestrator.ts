@@ -5,8 +5,12 @@ import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 import { createRequire } from 'module';
+import { FileValidator } from '../secondbrain/FileValidator';
 
 const require = createRequire(import.meta.url);
+
+// FileValidator instance for pre-write validation
+const fileValidator = new FileValidator();
 
 // ==================== VALIDATION (P0-1: Pre-write validation) ====================
 
@@ -592,10 +596,17 @@ function safeWriteCode(targetFile: string, newCode: string, taskDesc: string): b
   const existing = fs.readFileSync(targetFile, 'utf-8');
   const combinedCode = existing + newCode;
 
-  // === P0-1: Pre-write validation BEFORE writing ===
+  // === P0-1: Pre-write validation BEFORE writing (native + FileValidator) ===
   const preValidation = validateContent(targetFile, combinedCode);
   if (!preValidation.valid) {
     log(`[safeWrite] PRE-VALIDATION FAILED for ${path.basename(targetFile)}: ${preValidation.errors.join('; ')}`);
+    return false;
+  }
+
+  // === FileValidator: Additional deep validation ===
+  const fileCheck = fileValidator.checkContent(targetFile, combinedCode);
+  if (!fileCheck.valid) {
+    log(`[safeWrite] FileValidator FAILED for ${path.basename(targetFile)}: ${fileCheck.errors.join('; ')}`);
     return false;
   }
 
