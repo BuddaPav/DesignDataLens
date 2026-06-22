@@ -105,7 +105,7 @@ DONE: Регулярный `npm audit` и политика по известны
 
 DONE: Матрица CI: Node 20 + 22 для gate.
 80. Кэш Playwright браузера и зависимостей в CI (если подключён).
-81. Скрипт `npm run diagnose` — версии node, ОС, GPU string в Electron.
+DONE: Скрипт `npm run diagnose` — версии node, ОС, GPU string в Electron.
 82. Pre-commit опционально: lint-staged только для затронутых файлов.
 83. Шаблон PR с чеклистом perf/a11y/tests.
 84. Автогенерация `deps` графа при merge в main (по расписанию).
