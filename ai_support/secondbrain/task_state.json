@@ -292,5 +292,12 @@
     "attempts": 2,
     "lastRun": 1782109528259,
     "result": "completed"
+  },
+  "task_2": {
+    "taskId": "task_2",
+    "status": "done",
+    "attempts": 2,
+    "lastRun": 1782109589746,
+    "result": "completed"
   }
 }

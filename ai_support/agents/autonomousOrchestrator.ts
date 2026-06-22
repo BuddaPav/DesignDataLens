@@ -649,27 +649,36 @@ ${context.slice(0, 3000)}
   return { ok: codeWritten, output: llmResult };
 }
 
-// npcArchitect
+// npcArchitect - РЕАЛЬНО пишет в NPCSystem.ts
 async function runNpcArchitect(task: AgentTask): Promise<AgentResult> {
-  log(`[npcArchitect] Analyzing NPC task: ${task.description}`);
+  log(`[npcArchitect] REAL WORK: ${task.description}`);
 
-  const files = quickFindFiles('npc') || ['src/engine/NPCSystem.ts', 'src/types/game.ts'];
+  const files = ['src/engine/NPCSystem.ts', 'src/types/game.ts'];
   const context = await readFilesContext(files);
 
   const llmResult = await chatWithFallback([
-    { role: 'system', content: 'Ты - эксперт по NPC для RPG. Дай рекомендации по реализации задачи. Будь краток.' },
-    { role: 'user', content: `Задача: ${task.description}\n\nКонтекст: ${context.slice(0, 1500)}` }
+    { role: 'system', content: 'Ты - эксперт по NPC для RPG. Напиши TypeScript код для NPC системы. Формат: код между ```typescript и ```' },
+    { role: 'user', content: `Задача: ${task.description}\n\nКонтекст: ${context.slice(0, 2000)}\n\nНапиши реализацию.` }
   ]);
 
-  log(`[npcArchitect] Analysis: ${llmResult.slice(0, 200)}`);
+  log(`[npcArchitect] Generated: ${llmResult.slice(0, 150)}`);
 
-  // Save analysis to separate file (not in TS!)
-  const npcFile = path.join(PROJECT_ROOT, 'ai_support/secondbrain/npc_analyses.md');
-  const analysis = `\n\n## ${task.description}\n${new Date().toISOString()}\n\n${llmResult}`;
-  fs.appendFileSync(npcFile, analysis);
+  // РЕАЛЬНАЯ запись в NPCSystem.ts
+  const codeMatch = llmResult.match(/```typescript([\s\S]*?)```/);
+  if (codeMatch) {
+    const code = codeMatch[1].trim();
+    const npcFile = path.join(APP_DIR, 'src/engine/NPCSystem.ts');
+
+    if (fs.existsSync(npcFile)) {
+      const existing = fs.readFileSync(npcFile, 'utf-8');
+      const newCode = `\n\n// === Task: ${task.description} ===\n${code}`;
+      fs.writeFileSync(npcFile, existing + newCode);
+      log(`[npcArchitect] WRITTEN to NPCSystem.ts`);
+    }
+  }
 
   markTaskDone(task);
-  return { ok: true, output: llmResult.slice(0, 200) };
+  return { ok: true, output: llmResult };
 }
 
 // worldBuilder
@@ -976,14 +985,54 @@ function loadTasksFromDocs(): AgentTask[] {
 
 function guessAgentForTask(desc: string): string {
   const d = desc.toLowerCase();
-  if (d.includes('build') || d.includes('typescript') || d.includes('error') || d.includes('fix')) return 'codeBuilder';
-  if (d.includes('npc') || d.includes('dialog') || d.includes('character')) return 'npcArchitect';
-  if (d.includes('world') || d.includes('location') || d.includes('map')) return 'worldBuilder';
-  if ((d.includes('test') && !d.includes('template')) || d.includes('coverage')) return 'codeBuilder';
-  if (d.includes('econom') || d.includes('trade') || d.includes('price')) return 'economyDesigner';
-  if (d.includes('ui') || d.includes('interface') || d.includes('accessibility')) return 'uiCraftsman';
-  if (d.includes('doc') || d.includes('readme') || d.includes('changelog')) return 'documentationGenerator';
-  if (d.includes('security') || d.includes('secret') || d.includes('vuln')) return 'securityAuditor';
+
+  // NPC/персонажи/квесты → npcArchitect
+  if (d.includes('npc') || d.includes('dialog') || d.includes('character') ||
+      d.includes('персонаж') || d.includes('диалог') || d.includes('торговец') ||
+      d.includes('quest') || d.includes('квест') || d.includes('merchant')) {
+    return 'npcArchitect';
+  }
+
+  // World/мир/локация → worldBuilder
+  if (d.includes('world') || d.includes('location') || d.includes('map') ||
+      d.includes('мир') || d.includes('локац') || d.includes('карта') ||
+      d.includes('биом') || d.includes('biome') || d.includes('регион')) {
+    return 'worldBuilder';
+  }
+
+  // Economy/торговля/цены → economyDesigner
+  if (d.includes('econom') || d.includes('trade') || d.includes('price') ||
+      d.includes('экономик') || d.includes('торговл') || d.includes('цен') ||
+      d.includes('shop') || d.includes('магазин') || d.includes('баланс')) {
+    return 'economyDesigner';
+  }
+
+  // UI/интерфейс → uiCraftsman
+  if (d.includes('ui') || d.includes('interface') || d.includes('accessibility') ||
+      d.includes('интерфейс') || d.includes('panel') || d.includes('screen') ||
+      d.includes('экран') || d.includes('a11y') || d.includes('guild') ||
+      d.includes('party')) {
+    return 'uiCraftsman';
+  }
+
+  // Docs → documentationGenerator
+  if (d.includes('doc') || d.includes('readme') || d.includes('changelog') ||
+      d.includes('документ')) {
+    return 'documentationGenerator';
+  }
+
+  // Security → securityAuditor
+  if (d.includes('security') || d.includes('secret') || d.includes('vuln') ||
+      d.includes('безопасност')) {
+    return 'securityAuditor';
+  }
+
+  // Build/fix → codeBuilder
+  if (d.includes('build') || d.includes('typescript') || d.includes('error') ||
+      d.includes('fix') || d.includes('test') || d.includes('coverage')) {
+    return 'codeBuilder';
+  }
+
   return 'codeBuilder';
 }
 
