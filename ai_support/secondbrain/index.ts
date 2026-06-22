@@ -6,7 +6,6 @@ export * from './autonomous';
 export * from './gameFactory';
 
 import { init as initOrchestrator } from './orchestrator';
-import { init as initAutonomous } from './autonomous';
 
 export async function initSecondBrain(mode: 'full' | 'memory' | 'autonomous' = 'full'): Promise<void> {
   console.log('[secondbrain] Initializing in', mode, 'mode');
@@ -16,7 +15,7 @@ export async function initSecondBrain(mode: 'full' | 'memory' | 'autonomous' = '
   }
   
   if (mode === 'full' || mode === 'autonomous') {
-    await initAutonomous();
+    await import('./autonomous');
   }
   
   console.log('[secondbrain] Ready');
