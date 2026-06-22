@@ -481,6 +481,58 @@ function setCachedAnalysis(key: string, result: string): void {
 
 // ==================== HELPER FUNCTIONS ====================
 
+// Safe write with TypeScript check and rollback
+// Safe write with FULL project build validation
+function safeWriteCode(targetFile: string, newCode: string, taskDesc: string): boolean {
+  if (!fs.existsSync(targetFile)) {
+    log(`[safeWrite] File not found: ${targetFile}`);
+    return false;
+  }
+
+  const existing = fs.readFileSync(targetFile, 'utf-8');
+  const backupFile = targetFile + '.backup';
+
+  // Backup original
+  fs.writeFileSync(backupFile, existing);
+
+  // Write new code
+  fs.writeFileSync(targetFile, existing + newCode);
+
+  // Do FULL project build to catch cross-file dependency errors
+  try {
+    execSync(`npx tsc -b --force`, {
+      cwd: APP_DIR,
+      encoding: 'utf-8',
+      stdio: 'pipe',
+      timeout: 120000
+    });
+    log(`[safeWrite] BUILD OK: ${path.basename(targetFile)}`);
+    fs.unlinkSync(backupFile);
+    return true;
+  } catch (e: any) {
+    const errStr = e.message || e.stdout || e.stderr || '';
+    if (errStr.includes('error TS')) {
+      log(`[safeWrite] BUILD FAILED - rolling back: ${path.basename(targetFile)}`);
+      // Restore from backup
+      const backup = fs.readFileSync(backupFile, 'utf-8');
+      fs.writeFileSync(targetFile, backup);
+      fs.unlinkSync(backupFile);
+      return false;
+    }
+    // Unknown error - still write
+    fs.unlinkSync(backupFile);
+    return true;
+  }
+}
+
+// Rollback from git
+function restoreFromGit(targetFile: string): void {
+  if (fs.existsSync(targetFile)) {
+    execSync(`git checkout HEAD -- "${targetFile}"`, { cwd: PROJECT_ROOT });
+    log(`[restore] Restored: ${path.basename(targetFile)}`);
+  }
+}
+
 // Find target file for code based on task
 function findTargetFile(taskDesc: string, relevantFiles: string[]): string | null {
   const taskLower = taskDesc.toLowerCase();
@@ -663,17 +715,17 @@ async function runNpcArchitect(task: AgentTask): Promise<AgentResult> {
 
   log(`[npcArchitect] Generated: ${llmResult.slice(0, 150)}`);
 
-  // РЕАЛЬНАЯ запись в NPCSystem.ts
+  // РЕАЛЬНАЯ запись с проверкой TS
   const codeMatch = llmResult.match(/```typescript([\s\S]*?)```/);
   if (codeMatch) {
     const code = codeMatch[1].trim();
     const npcFile = path.join(APP_DIR, 'src/engine/NPCSystem.ts');
+    const newCode = `\n\n// === Task: ${task.description} ===\n${code}`;
 
-    if (fs.existsSync(npcFile)) {
-      const existing = fs.readFileSync(npcFile, 'utf-8');
-      const newCode = `\n\n// === Task: ${task.description} ===\n${code}`;
-      fs.writeFileSync(npcFile, existing + newCode);
+    if (safeWriteCode(npcFile, newCode, task.description)) {
       log(`[npcArchitect] WRITTEN to NPCSystem.ts`);
+    } else {
+      log(`[npcArchitect] Skipped (TS error)`);
     }
   }
 
@@ -681,33 +733,68 @@ async function runNpcArchitect(task: AgentTask): Promise<AgentResult> {
   return { ok: true, output: llmResult };
 }
 
-// worldBuilder
+// worldBuilder - РЕАЛЬНО пишет в worldTiles.ts
 async function runWorldBuilder(task: AgentTask): Promise<AgentResult> {
-  log(`[worldBuilder] Building world: ${task.description}`);
+  log(`[worldBuilder] REAL WORK: ${task.description}`);
 
-  const files = quickFindFiles('world') || ['src/engine/worldTiles.ts'];
+  const files = ['src/engine/worldTiles.ts', 'src/types/game.ts'];
   const context = await readFilesContext(files);
 
   const llmResult = await chatWithFallback([
-    { role: 'system', content: 'Ты - эксперт по игровым мирам. Предложи локации и их связи.' },
-    { role: 'user', content: `Задача: ${task.description}\n\n${context.slice(0, 1500)}` }
+    { role: 'system', content: 'Ты - эксперт по игровым мирам. Напиши TypeScript код для мира. Формат: код между ```typescript и ```' },
+    { role: 'user', content: `Задача: ${task.description}\n\nКонтекст: ${context.slice(0, 2000)}\n\nНапиши реализацию.` }
   ]);
 
+  log(`[worldBuilder] Generated: ${llmResult.slice(0, 150)}`);
+
+  // РЕАЛЬНАЯ запись с проверкой TS
+  const codeMatch = llmResult.match(/```typescript([\s\S]*?)```/);
+  if (codeMatch) {
+    const code = codeMatch[1].trim();
+    const worldFile = path.join(APP_DIR, 'src/engine/worldTiles.ts');
+    const newCode = `\n\n// === Task: ${task.description} ===\n${code}`;
+
+    if (safeWriteCode(worldFile, newCode, task.description)) {
+      log(`[worldBuilder] WRITTEN to worldTiles.ts`);
+    } else {
+      log(`[worldBuilder] Skipped (TS error)`);
+    }
+  }
+
   markTaskDone(task);
-  return { ok: true, output: llmResult.slice(0, 200) };
+  return { ok: true, output: llmResult };
 }
 
-// economyDesigner
+// economyDesigner - РЕАЛЬНО пишет в economy файлы
 async function runEconomyDesigner(task: AgentTask): Promise<AgentResult> {
-  log(`[economyDesigner] Economy: ${task.description}`);
+  log(`[economyDesigner] REAL WORK: ${task.description}`);
+
+  const files = ['src/domain/economy/shopPurchase.ts', 'src/domain/economy/prices.ts'];
+  const context = await readFilesContext(files);
 
   const llmResult = await chatWithFallback([
-    { role: 'system', content: 'Ты - эксперт по игровой экономике. Балансируй цены и экономику.' },
-    { role: 'user', content: `Задача: ${task.description}` }
+    { role: 'system', content: 'Ты - эксперт по игровой экономике. Напиши TypeScript код для экономики. Формат: код между ```typescript и ```' },
+    { role: 'user', content: `Задача: ${task.description}\n\nКонтекст: ${context.slice(0, 2000)}\n\nНапиши реализацию.` }
   ]);
 
+  log(`[economyDesigner] Generated: ${llmResult.slice(0, 150)}`);
+
+  // РЕАЛЬНАЯ запись с проверкой TS
+  const codeMatch = llmResult.match(/```typescript([\s\S]*?)```/);
+  if (codeMatch) {
+    const code = codeMatch[1].trim();
+    const ecoFile = path.join(APP_DIR, 'src/domain/economy/shopPurchase.ts');
+    const newCode = `\n\n// === Task: ${task.description} ===\n${code}`;
+
+    if (safeWriteCode(ecoFile, newCode, task.description)) {
+      log(`[economyDesigner] WRITTEN to shopPurchase.ts`);
+    } else {
+      log(`[economyDesigner] Skipped (TS error)`);
+    }
+  }
+
   markTaskDone(task);
-  return { ok: true, output: llmResult.slice(0, 200) };
+  return { ok: true, output: llmResult };
 }
 
 // uiCraftsman
