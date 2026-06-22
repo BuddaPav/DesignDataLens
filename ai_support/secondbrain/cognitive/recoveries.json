@@ -4,12 +4,6 @@
       "task": "Добавить тестовую локацию desert",
       "error": "safeWriteCode returned false",
       "fix": "Build/validation failed in worldBuilder",
-      "timestamp": "2026-06-22T15:40:12.395Z"
-    },
-    {
-      "task": "Добавить тестовую локацию desert",
-      "error": "safeWriteCode returned false",
-      "fix": "Build/validation failed in worldBuilder",
       "timestamp": "2026-06-22T15:41:10.846Z"
     },
     {
@@ -293,7 +287,19 @@
       "error": "Build/validation failed",
       "fix": "Agent returned failure",
       "timestamp": "2026-06-22T16:15:44.153Z"
+    },
+    {
+      "task": "Добавить тестовую локацию desert",
+      "error": "safeWriteCode returned false",
+      "fix": "Build/validation failed in worldBuilder",
+      "timestamp": "2026-06-22T16:16:49.823Z"
+    },
+    {
+      "task": "Добавить тестовую локацию desert",
+      "error": "Build/validation failed",
+      "fix": "Agent returned failure",
+      "timestamp": "2026-06-22T16:16:49.828Z"
     }
   ],
-  "lastUpdated": "2026-06-22T16:15:44.153Z"
+  "lastUpdated": "2026-06-22T16:16:49.828Z"
 }
