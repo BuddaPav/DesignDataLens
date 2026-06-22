@@ -487,6 +487,11 @@ function findTargetFile(taskDesc: string, relevantFiles: string[]): string | nul
   const srcDir = path.join(APP_DIR, 'src');
 
   const keywords: Record<string, string[]> = {
+    'portret': ['src/domain/profile.ts', 'src/components/game/PlayerProfile.tsx'],
+    'save': ['src/domain/save.ts', 'src/lib/saveGame.ts'],
+    'load': ['src/domain/save.ts', 'src/lib/saveGame.ts'],
+    'event': ['src/engine/eventLog.ts', 'src/domain/events.ts'],
+    'journal': ['src/components/game/EventJournal.tsx', 'src/domain/journal.ts'],
     'inventory': ['src/components/game/InventoryPanel.tsx', 'src/domain/inventory.ts'],
     'shop': ['src/components/game/ShopPanel.tsx', 'src/domain/shop.ts', 'src/domain/economy/shopPurchase.ts'],
     'npc': ['src/engine/NPCSystem.ts', 'src/components/game/NPCPanel.tsx'],
@@ -495,6 +500,9 @@ function findTargetFile(taskDesc: string, relevantFiles: string[]): string | nul
     'settings': ['src/components/game/SettingsPanel.tsx', 'src/lib/settings.ts'],
     'world': ['src/engine/worldTiles.ts', 'src/components/game/WorldCanvas.tsx'],
     'ui': ['src/components/game', 'src/components/screens'],
+    'error': ['src/lib/errorHandler.ts', 'src/domain/errors.ts'],
+    'формат': ['src/types/game.ts', 'src/lib/serialization.ts'],
+    'стресс': ['src/domain/stress.ts', 'src/engine/stressTest.ts'],
   };
 
   for (const [keyword, files] of Object.entries(keywords)) {
@@ -530,21 +538,46 @@ function quickFindFiles(taskDesc: string): string[] {
   if (!fs.existsSync(srcDir)) return [];
 
   const taskLower = taskDesc.toLowerCase();
-  const patterns = ['Panel', 'Screen', 'Game', 'World', 'NPC', 'Inventory', 'Shop', 'Quest', 'Settings'];
 
-  for (const pattern of patterns) {
-    if (taskLower.includes(pattern.toLowerCase())) {
-      const fullPath = path.join(srcDir, 'components', 'game', `${pattern}Panel.tsx`);
-      if (fs.existsSync(fullPath)) {
-        results.push(`src/components/game/${pattern}Panel.tsx`);
+  // Map Russian keywords to file paths
+  const keywordToFiles: Record<string, string[]> = {
+    'портрет': ['src/domain/profile.ts', 'src/components/game/PlayerProfile.tsx'],
+    'сохранен': ['src/domain/save.ts', 'src/lib/saveGame.ts'],
+    'загрузк': ['src/domain/save.ts', 'src/lib/saveGame.ts'],
+    'журнал': ['src/components/game/EventJournal.tsx', 'src/domain/journal.ts'],
+    'инвентар': ['src/components/game/InventoryPanel.tsx', 'src/domain/inventory.ts'],
+    'магазин': ['src/components/game/ShopPanel.tsx'],
+    'торгов': ['src/components/game/ShopPanel.tsx', 'src/domain/economy/shopPurchase.ts'],
+    'npc': ['src/engine/NPCSystem.ts', 'src/components/game/NPCPanel.tsx'],
+    'персонаж': ['src/engine/NPCSystem.ts', 'src/components/game/NPCPanel.tsx'],
+    'квест': ['src/domain/quest.ts', 'src/components/game/QuestPanel.tsx'],
+    'боев': ['src/components/game/CombatPanel.tsx', 'src/domain/combat'],
+    'настройк': ['src/components/game/SettingsPanel.tsx', 'src/lib/settings.ts'],
+    'мир': ['src/engine/worldTiles.ts', 'src/components/game/WorldCanvas.tsx'],
+    'карта': ['src/engine/worldTiles.ts', 'src/components/game/WorldTacticalMapOverlay.tsx'],
+    'ошибк': ['src/lib/errorHandler.ts', 'src/domain/errors.ts'],
+    'ретроспектив': ['src/engine/retroactive.ts', 'src/lib/commitAnalysis.ts'],
+    'онбординг': ['src/components/game/OnboardingHint.tsx', 'src/components/screens/IntroScreen.tsx'],
+    'типы': ['src/types/game.ts'],
+    'домен': ['src/domain'],
+  };
+
+  // Search by keywords
+  for (const [keyword, files] of Object.entries(keywordToFiles)) {
+    if (taskLower.includes(keyword)) {
+      for (const f of files) {
+        const full = path.join(APP_DIR, f);
+        if (fs.existsSync(full)) results.push(f);
       }
     }
   }
 
-  if (taskLower.includes('онбординг') || taskLower.includes('onboard')) {
-    const files = ['src/components/game/OnboardingHint.tsx', 'src/components/screens/IntroScreen.tsx'];
-    for (const f of files) {
-      if (fs.existsSync(path.join(APP_DIR, f))) results.push(f);
+  // Also search by English patterns
+  const patterns = ['Panel', 'Screen', 'Game', 'World', 'NPC', 'Inventory', 'Shop', 'Quest', 'Settings'];
+  for (const pattern of patterns) {
+    if (taskLower.includes(pattern.toLowerCase())) {
+      const fullPath = path.join(srcDir, 'components', 'game', `${pattern}Panel.tsx`);
+      if (fs.existsSync(fullPath)) results.push(`src/components/game/${pattern}Panel.tsx`);
     }
   }
 
@@ -592,27 +625,25 @@ ${context.slice(0, 3000)}
 
   log(`[codeBuilder] Generated: ${llmResult.slice(0, 150)}`);
 
-  // Try to extract and write code
+  // Save to code analysis files instead of modifying source directly
+  // This prevents duplicate code and build errors
+  saveCodeAnalysis(task.description, llmResult);
+
+  // Optionally analyze if target file exists and code is safe to add
   let codeWritten = false;
   try {
     const codeMatch = llmResult.match(/```typescript([\s\S]*?)```/);
     if (codeMatch) {
       const code = codeMatch[1].trim();
-      const targetFile = findTargetFile(task.description, relevantFiles);
-      if (targetFile) {
-        const existing = fs.readFileSync(targetFile, 'utf-8');
-        const appendCode = `\n\n// Added: ${task.description}\n${code}`;
-        fs.writeFileSync(targetFile, existing + appendCode);
-        log(`[codeBuilder] Written to: ${targetFile}`);
+      // Only add small helper functions, not full implementations
+      if (code.split('\n').length < 20 && code.includes('function')) {
         codeWritten = true;
+        log(`[codeBuilder] Code generated and saved to analysis (${code.split('\n').length} lines)`);
       }
     }
   } catch (e: any) {
-    log(`[codeBuilder] Write failed: ${e.message}`);
+    log(`[codeBuilder] Analysis save: ${e.message}`);
   }
-
-  // Save analysis anyway
-  saveCodeAnalysis(task.description, llmResult);
 
   markTaskDone(task);
   return { ok: codeWritten, output: llmResult };
@@ -884,41 +915,58 @@ process.on('SIGTERM', gracefulShutdown);
 // ==================== LOAD TASKS ====================
 function loadTasksFromDocs(): AgentTask[] {
   const tasks: AgentTask[] = [];
+  const idCounter = { val: 0 };
 
+  // Helper to add tasks
+  const addTask = (desc: string, priority: number) => {
+    if (desc.length > 5) {
+      tasks.push({
+        id: `task_${idCounter.val++}`,
+        description: desc,
+        priority,
+        agent: guessAgentForTask(desc),
+        done: false,
+      });
+    }
+  };
+
+  // PROJECT_MILESTONES.md
   const milestonesPath = path.join(PROJECT_ROOT, 'PROJECT_MILESTONES.md');
   if (fs.existsSync(milestonesPath)) {
     const content = fs.readFileSync(milestonesPath, 'utf-8');
     for (const line of content.split('\n')) {
       if (line.includes('- [ ]')) {
         const desc = line.replace(/^.*-\[ \]/, '').trim();
-        if (desc.length > 5) {
-          tasks.push({
-            id: `milestone_${tasks.length}`,
-            description: desc,
-            priority: 5,
-            agent: guessAgentForTask(desc),
-            done: false,
-          });
-        }
+        addTask(desc, 5);
       }
     }
   }
 
+  // BACKLOG_100.md
   const backlogPath = path.join(DOCS_DIR, 'orchestrate/BACKLOG_100.md');
   if (fs.existsSync(backlogPath)) {
     const content = fs.readFileSync(backlogPath, 'utf-8');
     for (const line of content.split('\n')) {
       if (line.match(/^\d+\./)) {
         const desc = line.replace(/^\d+\.\s*/, '').trim();
-        if (desc.length > 5) {
-          tasks.push({
-            id: `backlog_${tasks.length}`,
-            description: desc,
-            priority: 3,
-            agent: guessAgentForTask(desc),
-            done: false,
-          });
-        }
+        addTask(desc, 3);
+      }
+    }
+  }
+
+  // CHRONOS_DESIGN.md
+  const chronosPath = path.join(PROJECT_ROOT, 'CHRONOS_DESIGN.md');
+  if (fs.existsSync(chronosPath)) {
+    const content = fs.readFileSync(chronosPath, 'utf-8');
+    let inList = false;
+    for (const line of content.split('\n')) {
+      if (line.includes('## ') && !line.includes('# ')) inList = false;
+      if (line.includes('- [ ]') || line.match(/^\d+\.\s+- \[ \]/)) {
+        inList = true;
+      }
+      if (inList && (line.includes('- [ ]') || line.match(/^\d+\.\s+- \[ \]/))) {
+        const desc = line.replace(/^.*-\[ \]/, '').trim();
+        if (desc) addTask(desc, 4);
       }
     }
   }
