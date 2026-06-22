@@ -1131,8 +1131,13 @@ async function runWorldBuilder(task: AgentTask): Promise<AgentResult> {
   const context = await readFilesContext(files);
 
   const llmResult = await chatWithFallback([
-    { role: 'system', content: `Ты - эксперт по игровым мирам. Напиши TypeScript код для мира.\n${sbContext}\nФормат: код между \`\`\`typescript и \`\`\`` },
-    { role: 'user', content: `Задача: ${task.description}\n\nКонтекст: ${context.slice(0, 2000)}\n\nНапиши реализацию.` }
+    { role: 'system', content: `Ты - эксперт по игровым мирам. Напиши TypeScript код для мира.
+ВАЖНО:
+- НЕ определяй константы WORLD_SIZE, CHUNK_SIZE, TILE_PX, BiomeKind - они уже есть
+- НЕ добавляй duplicate imports/exports - проверка отклонит
+${sbContext}
+Формат: код между \`\`\`typescript и \`\`\`` },
+    { role: 'user', content: `Задача: ${task.description}\n\nКонтекст: ${context.slice(0, 2000)}\n\nНапиши реализацию БЕЗ дубликатов.` }
   ]);
 
   log(`[worldBuilder] Generated: ${llmResult.slice(0, 150)}`);
@@ -1177,12 +1182,13 @@ async function runEconomyDesigner(task: AgentTask): Promise<AgentResult> {
   const llmResult = await chatWithFallback([
     { role: 'system', content: `Ты - Economy Designer для Chronos AI Chronicles.
 ${getProjectContext()}
+
+ВАЖНО:
+- НЕ добавляй duplicate imports/exports - проверка отклонит
+- Используй ТОЛЬКО существующие типы и функции
 ${sbContext}
-КРИТИЧЕСКИ:
-1. Используй ТОЛЬКО существующие типы и функции
-2. После написания запусти npm run build
-3. Формат: код между \`\`\`typescript и \`\`\`` },
-    { role: 'user', content: `Задача: ${task.description}\n\nКонтекст: ${context.slice(0, 2000)}\n\nНапиши реализацию.` }
+Формат: код между \`\`\`typescript и \`\`\`` },
+    { role: 'user', content: `Задача: ${task.description}\n\nКонтекст: ${context.slice(0, 2000)}\n\nНапиши реализацию БЕЗ дубликатов.` }
   ]);
 
   log(`[economyDesigner] Generated: ${llmResult.slice(0, 150)}`);
