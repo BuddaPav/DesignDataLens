@@ -641,6 +641,64 @@ function learnFromRecovery(): string[] {
   }
 }
 
+// Load relevant learnings for a task (keyword search)
+function loadRelevantLearnings(task: AgentTask): { pattern: string; success: boolean }[] {
+  const learningsPath = path.join(AI_SUPPORT_DIR, 'cognitive/learnings.json');
+  if (!fs.existsSync(learningsPath)) return [];
+
+  try {
+    const data = JSON.parse(fs.readFileSync(learningsPath, 'utf-8'));
+    const keywords = task.description.toLowerCase().split(/\s+/).filter(k => k.length > 2);
+
+    return data.learnings
+      .filter((l: any) => keywords.some((k: string) => l.pattern.toLowerCase().includes(k)))
+      .slice(-5)
+      .map((l: any) => ({ pattern: l.pattern, success: l.success }));
+  } catch {
+    return [];
+  }
+}
+
+// Load relevant recoveries for a task
+function loadRelevantRecoveries(task: AgentTask): string[] {
+  const recoveriesPath = path.join(AI_SUPPORT_DIR, 'cognitive/recoveries.json');
+  if (!fs.existsSync(recoveriesPath)) return [];
+
+  try {
+    const data = JSON.parse(fs.readFileSync(recoveriesPath, 'utf-8'));
+    const keywords = task.description.toLowerCase().split(/\s+/).filter(k => k.length > 2);
+
+    return data.recoveries
+      .filter((r: any) => keywords.some((k: string) => r.task.toLowerCase().includes(k) || r.fix.toLowerCase().includes(k)))
+      .slice(-5)
+      .map((r: any) => r.fix);
+  } catch {
+    return [];
+  }
+}
+
+// Build context string for agent prompt
+function buildContextForAgent(task: AgentTask): string {
+  const learnings = loadRelevantLearnings(task);
+  const recoveries = loadRelevantRecoveries(task);
+
+  if (learnings.length === 0 && recoveries.length === 0) return '';
+
+  const lines: string[] = ['// Previous patterns from Second Brain:'];
+
+  if (learnings.length > 0) {
+    lines.push('// Learnings:');
+    learnings.forEach(l => lines.push(`// - ${l.pattern.slice(0, 80)} (${l.success ? 'success' : 'failed'})`));
+  }
+
+  if (recoveries.length > 0) {
+    lines.push('// Fixes that worked:');
+    recoveries.forEach(f => lines.push(`// - ${f.slice(0, 80)}`));
+  }
+
+  return lines.join('\n');
+}
+
 function markTaskDone(task: AgentTask): void {
   // Update state
   taskStates.set(task.id, {
