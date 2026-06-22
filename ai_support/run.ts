@@ -4,6 +4,7 @@
 import process from 'process';
 import fs from 'fs';
 import path from 'path';
+import { runCodeBuilder, runBuildCheck, runTests, tryGitCommit, runOrchestrator, runNpcArchitect, runWorldBuilder, runEconomyDesigner, runUiCraftsman, runDocumentationGenerator, runSecurityAuditor, runAgent, getTrustScore, getTaskStates } from './agents/autonomousOrchestrator.ts';
 
 const BUILD_LOG = './build_log.txt';
 const PROJECT_ROOT = './app/src';
@@ -26,14 +27,23 @@ async function main() {
     console.log(`
 ai_support CLI — мультиагентная система для AFK Game
 
-Команды:
+Команды агентов:
+  agent <type> <desc>   — запустить агента с задачей
+  build [force]         — проверить сборку
+  test                  — запустить тесты
+  commit <msg>         — сборка + git commit
+  orchestrator         — запустить оркестратор
+  status               — состояние системы
+
+Утилиты:
   search <pattern>      — найти файлы по паттерну
-  analyze <file>        — анализировать файл (баги, статы)
-  task <description>    — выполнить задачу (если скилл найден)
+  analyze <file>        — анализировать файл
   memory                — показать статистику памяти
   skills                — список доступных скиллов
   index                 — проиндексировать проект
   help                  — эта справка
+
+Доступные агенты: codeBuilder, npcArchitect, worldBuilder, economyDesigner, uiCraftsman, documentationGenerator, securityAuditor
     `.trim());
     return;
   }
@@ -70,6 +80,69 @@ ai_support CLI — мультиагентная система для AFK Game
 
     const result = await ai.runAgent('coder', { file: path.join(PROJECT_ROOT, file) });
     console.log('Analysis:', JSON.stringify(result, null, 2));
+    return;
+  }
+
+  // === Agent commands ===
+  if (cmd === 'agent') {
+    const [agentType, ...descArr] = args.slice(1);
+    const description = descArr.join(' ');
+    if (!agentType || !description) {
+      console.log('Usage: agent <type> <description>');
+      console.log('Types: codeBuilder, npcArchitect, worldBuilder, economyDesigner, uiCraftsman, documentationGenerator, securityAuditor');
+      return;
+    }
+    console.log(`Running agent: ${agentType}`);
+    console.log(`Task: ${description}`);
+    const task = { id: 'cli-' + Date.now(), description, agent: agentType, priority: 5 };
+    const result = await runAgent(agentType, task);
+    console.log(result.ok ? '✓ Success' : '✗ Failed:', result.error || result.output?.slice(0, 200));
+    return;
+  }
+
+  if (cmd === 'build') {
+    const force = args[1] === 'force';
+    console.log(force ? 'Building (forced)...' : 'Building...');
+    const result = await runBuildCheck(force);
+    console.log(result.ok ? '✓ Build OK' : '✗ Build failed:', result.output?.slice(0, 100));
+    return;
+  }
+
+  if (cmd === 'test') {
+    console.log('Running tests...');
+    const result = await runTests();
+    console.log(result.ok ? '✓ Tests passed' : '✗ Tests failed:', result.output);
+    return;
+  }
+
+  if (cmd === 'commit') {
+    const message = args.slice(1).join(' ');
+    if (!message) { console.log('Usage: commit <message>'); return; }
+    console.log('Building before commit...');
+    const buildResult = await runBuildCheck(true);
+    if (!buildResult.ok) {
+      console.log('✗ Build failed, aborting commit');
+      return;
+    }
+    console.log('Git commit...');
+    const ok = await tryGitCommit(message);
+    console.log(ok ? '✓ Committed' : '✗ Commit failed');
+    return;
+  }
+
+  if (cmd === 'orchestrator') {
+    console.log('Starting orchestrator...');
+    await runOrchestrator();
+    console.log('Orchestrator finished');
+    return;
+  }
+
+  if (cmd === 'status') {
+    const trust = getTrustScore();
+    const states = getTaskStates();
+    console.log('=== System Status ===');
+    console.log('Trust score:', (trust * 100).toFixed(1) + '%');
+    console.log('Active tasks:', states.size);
     return;
   }
 

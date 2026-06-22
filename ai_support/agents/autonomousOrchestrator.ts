@@ -518,6 +518,15 @@ function saveTaskState(): void {
   fs.writeFileSync(STATE_FILE, JSON.stringify(obj, null, 2));
 }
 
+// Export functions for CLI
+export function getTrustScore(): number {
+  return trustScore;
+}
+
+export function getTaskStates(): Map<string, TaskState> {
+  return taskStates;
+}
+
 // Second Brain: Record learning after task completion
 function recordLearning(task: AgentTask, success: boolean): void {
   const learningsPath = path.join(SECOND_BRAIN_DIR, 'cognitive/learnings.json');
