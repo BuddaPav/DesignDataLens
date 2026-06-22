@@ -451,9 +451,17 @@ function shouldRetry(task: AgentTask): boolean {
 }
 
 function getNextTask(tasks: AgentTask[]): AgentTask | null {
-  const retryTasks = tasks.filter(t => shouldRetry(t));
+  // Filter out already done tasks (check both task.done and taskStates)
+  const pending = tasks.filter(t => {
+    if (t.done) return false;
+    const state = taskStates.get(t.id);
+    return !state || state.status !== 'done';
+  });
+
+  const retryTasks = pending.filter(t => shouldRetry(t));
   if (retryTasks.length > 0) return retryTasks[0];
-  return tasks.sort((a, b) => b.priority - a.priority)[0];
+
+  return pending.sort((a, b) => b.priority - a.priority)[0];
 }
 
 // ==================== ANALYSIS CACHE (31-33) ====================
@@ -541,23 +549,22 @@ export async function runCodeBuilder(task: AgentTask): Promise<AgentResult> {
 
 // npcArchitect
 async function runNpcArchitect(task: AgentTask): Promise<AgentResult> {
-  log(`[npcArchitect] Creating NPC: ${task.description}`);
+  log(`[npcArchitect] Analyzing NPC task: ${task.description}`);
 
   const files = quickFindFiles('npc') || ['src/engine/NPCSystem.ts', 'src/types/game.ts'];
   const context = await readFilesContext(files);
 
   const llmResult = await chatWithFallback([
-    { role: 'system', content: 'Ты - эксперт по NPC для RPG. Создай JSON персонажа с name, role, psychology, goals, fears.' },
-    { role: 'user', content: `Задача: ${task.description}\n\n${context.slice(0, 1500)}` }
+    { role: 'system', content: 'Ты - эксперт по NPC для RPG. Дай рекомендации по реализации задачи. Будь краток.' },
+    { role: 'user', content: `Задача: ${task.description}\n\nКонтекст: ${context.slice(0, 1500)}` }
   ]);
 
-  // Save to NPC system
-  const npcFile = path.join(APP_DIR, 'src/engine/NPCSystem.ts');
-  const appendCode = `\n\n// Added by npcArchitect: ${new Date().toISOString()}\n// ${llmResult.slice(0, 500)}`;
+  log(`[npcArchitect] Analysis: ${llmResult.slice(0, 200)}`);
 
-  if (fs.existsSync(npcFile)) {
-    fs.appendFileSync(npcFile, appendCode);
-  }
+  // Save analysis to separate file (not in TS!)
+  const npcFile = path.join(PROJECT_ROOT, 'ai_support/secondbrain/npc_analyses.md');
+  const analysis = `\n\n## ${task.description}\n${new Date().toISOString()}\n\n${llmResult}`;
+  fs.appendFileSync(npcFile, analysis);
 
   markTaskDone(task);
   return { ok: true, output: llmResult.slice(0, 200) };
