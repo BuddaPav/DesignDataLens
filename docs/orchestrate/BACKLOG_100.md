@@ -107,9 +107,9 @@ DONE: Матрица CI: Node 20 + 22 для gate.
 80. Кэш Playwright браузера и зависимостей в CI (если подключён).
 DONE: Скрипт `npm run diagnose` — версии node, ОС, GPU string в Electron.
 82. Pre-commit опционально: lint-staged только для затронутых файлов.
-83. Шаблон PR с чеклистом perf/a11y/tests.
+DONE: Шаблон PR с чеклистом perf/a11y/tests.
 84. Автогенерация `deps` графа при merge в main (по расписанию).
-85. Bundle analyzer в отчёт артефакта раз в спринт.
+DONE: Bundle analyzer в отчёт артефакта раз в спринт.
 86. Strict TS для тестов постепенно (tsconfig.vitest.json путь).
 87. Единый формат ошибок из domain слоя в UI.
 88. Документ «как откатить релиз» и номер версии в SW.

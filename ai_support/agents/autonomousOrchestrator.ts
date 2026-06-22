@@ -931,7 +931,7 @@ function guessAgentForTask(desc: string): string {
   if (d.includes('build') || d.includes('typescript') || d.includes('error') || d.includes('fix')) return 'codeBuilder';
   if (d.includes('npc') || d.includes('dialog') || d.includes('character')) return 'npcArchitect';
   if (d.includes('world') || d.includes('location') || d.includes('map')) return 'worldBuilder';
-  if (d.includes('test') || d.includes('coverage')) return 'testRunner';
+  if ((d.includes('test') && !d.includes('template')) || d.includes('coverage')) return 'codeBuilder';
   if (d.includes('econom') || d.includes('trade') || d.includes('price')) return 'economyDesigner';
   if (d.includes('ui') || d.includes('interface') || d.includes('accessibility')) return 'uiCraftsman';
   if (d.includes('doc') || d.includes('readme') || d.includes('changelog')) return 'documentationGenerator';
