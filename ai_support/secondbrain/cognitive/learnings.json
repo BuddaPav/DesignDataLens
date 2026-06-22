@@ -4,12 +4,6 @@
       "pattern": "[STAGE 016] Минимальный «контентный» проход: N сцен подряд без мягких блокеров (чеклист QA).",
       "success": true,
       "task": "economyDesigner",
-      "timestamp": "2026-06-22T18:35:52.772Z"
-    },
-    {
-      "pattern": "[STAGE 016] Минимальный «контентный» проход: N сцен подряд без мягких блокеров (чеклист QA).",
-      "success": true,
-      "task": "economyDesigner",
       "timestamp": "2026-06-22T18:37:02.967Z"
     },
     {
@@ -299,7 +293,13 @@
       "success": true,
       "task": "economyDesigner",
       "timestamp": "2026-06-22T19:37:00.139Z"
+    },
+    {
+      "pattern": "[STAGE 016] Минимальный «контентный» проход: N сцен подряд без мягких блокеров (чеклист QA).",
+      "success": true,
+      "task": "economyDesigner",
+      "timestamp": "2026-06-22T19:38:08.782Z"
     }
   ],
-  "lastUpdated": "2026-06-22T19:37:00.139Z"
+  "lastUpdated": "2026-06-22T19:38:08.782Z"
 }
