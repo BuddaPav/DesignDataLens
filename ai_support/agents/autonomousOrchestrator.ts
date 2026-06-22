@@ -1010,6 +1010,7 @@ ${getProjectContext()}
       log(`[npcArchitect] WRITTEN to NPCSystem.ts`);
     } else {
       log(`[npcArchitect] Skipped (TS error)`);
+      recordRecovery(task, 'safeWriteCode returned false', 'Build/validation failed in npcArchitect');
     }
   }
 
@@ -1087,6 +1088,7 @@ ${getProjectContext()}
       log(`[economyDesigner] WRITTEN to shopPurchase.ts`);
     } else {
       log(`[economyDesigner] Skipped (TS error)`);
+      recordRecovery(task, 'safeWriteCode returned false', 'Build/validation failed in economyDesigner');
     }
   }
 
