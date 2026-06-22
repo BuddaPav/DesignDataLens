@@ -1,0 +1,31 @@
+{
+  "version": "2.0",
+  "user_context": {
+    "language": "ru",
+    "communication_style": "direct",
+    "tone": "brief_business",
+    "project": "AFK Game",
+    "stack": ["React", "Three.js", "R3F", "TypeScript", "Node.js"],
+    "preferences": {
+      "typescript": "strict",
+      "no_any": true,
+      "feature_flags": true,
+      "tests_for_gameplay": true,
+      "no_todo_without_ticket": true,
+      "modularity": true
+    },
+    "user_commands": {
+      "continue": "продолжай",
+      "make": "сделай то-то",
+      "short_form": true
+    },
+    "motivation": "autonomous_agents"
+  },
+  "learned": {
+    "success_patterns": [],
+    "error_recoveries": [],
+    "user_commands": {}
+  },
+  "shortTerm": [],
+  "longTerm": []
+}

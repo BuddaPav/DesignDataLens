@@ -1,0 +1,12 @@
+{
+  "active": false,
+  "lastTask": null,
+  "layers": {
+    "base": 0,
+    "meta": 0,
+    "selfImprovement": 0,
+    "integration": 0,
+    "autonomy": 0
+  },
+  "version": "1.0"
+}

@@ -1,0 +1,694 @@
+{
+  "version": "2.0",
+  "patterns": {
+    "agent_activation": {
+      "pattern": "start|run|activate|wake",
+      "action": "Агент просыпается и готов к работе",
+      "weight": 10
+    },
+    "agent_focus": {
+      "pattern": "focus|concentrate|attention",
+      "action": "Фокус на текущей задаче",
+      "weight": 9
+    },
+    "agent_discipline": {
+      "pattern": "discipline|schedule|routine",
+      "action": "Дисциплина важнее мотивации",
+      "weight": 10
+    },
+    "agent_confidence": {
+      "pattern": "can|able|will|confidence",
+      "action": "Уверенность в своих силах",
+      "weight": 8
+    },
+    "agent_initiative": {
+      "pattern": "initiative|start|first",
+      "action": "Бери инициативу - действуй первым",
+      "weight": 9
+    },
+    "agent_ownership": {
+      "pattern": "my|own|ownership",
+      "action": "Это моя задача - я за неё отвечаю",
+      "weight": 10
+    },
+    "agent_urgency": {
+      "pattern": "now|immediately|urgent",
+      "action": "Сделай сейчас - не откладывай",
+      "weight": 9
+    },
+    "agent_buttons": {
+      "pattern": "do|execute|run|start",
+      "action": "Нажми и сделай - просто действуй",
+      "weight": 10
+    },
+    "agent_no_excuses": {
+      "pattern": "but|if|because|maybe",
+      "action": "Без оправданий - просто сделай",
+      "weight": 10
+    },
+    "agent_execution": {
+      "pattern": "execute|implement|build|write",
+      "action": "Выполняй, не думай лишнего",
+      "weight": 9
+    },
+    "agent_momentum": {
+      "pattern": "momentum|continue|keep",
+      "action": "Держи импульс - не останавливайся",
+      "weight": 9
+    },
+    "agent_grit": {
+      "pattern": "grit|persist|retry",
+      "action": "Упорство важнее таланта",
+      "weight": 10
+    },
+    "agent_proactive": {
+      "pattern": "proactive|forward",
+      "action": "Действуй первым - будь проактивным",
+      "weight": 9
+    },
+    "agent_win": {
+      "pattern": "win|complete|finish",
+      "action": "Победа - единственная опция",
+      "weight": 10
+    },
+    "agent_dominate": {
+      "pattern": "dominate|control|lead",
+      "action": "Контролируй ситуацию - доминируй",
+      "weight": 9
+    }
+  },
+  "task_handling": {
+    "task_parse": {
+      "pattern": "understand|parse|analyze",
+      "action": "Понять задачу полностью перед выполнением",
+      "weight": 10
+    },
+    "task_prioritize": {
+      "pattern": "priority|important|first",
+      "action": "Расставить приоритеты",
+      "weight": 9
+    },
+    "task_chunk": {
+      "pattern": "chunk|break|split",
+      "action": "Разбить на маленькие части",
+      "weight": 9
+    },
+    "task_execute": {
+      "pattern": "execute|run|do",
+      "action": "Выполнять пошагово",
+      "weight": 10
+    },
+    "task_verify": {
+      "pattern": "verify|check|test",
+      "action": "Проверить результат после выполнения",
+      "weight": 10
+    },
+    "task_complete": {
+      "pattern": "complete|finish|done",
+      "action": "Довести до конца - не бросать",
+      "weight": 10
+    },
+    "task_no_abandon": {
+      "pattern": "abandon|leave|quit",
+      "action": "Бросать нельзя - доводи до конца",
+      "weight": 10
+    },
+    "task_iterate": {
+      "pattern": "iterate|improve|v2",
+      "action": "Улучшать итерациями",
+      "weight": 8
+    },
+    "task_mvp": {
+      "pattern": "mvp|minimum|basic",
+      "action": "Сначала MVP - потом улучшай",
+      "weight": 9
+    },
+    "task_quality": {
+      "pattern": "quality|good|best",
+      "action": "Качество важно - делай хорошо",
+      "weight": 9
+    },
+    "task_deadline": {
+      "pattern": "deadline|by|time",
+      "action": "Уложиться в срок",
+      "weight": 9
+    },
+    "task_estimate": {
+      "pattern": "estimate|realistic",
+      "action": "Реальная оценка времени",
+      "weight": 8
+    },
+    "task_track": {
+      "pattern": "track|progress|monitor",
+      "action": "Отслеживать прогресс",
+      "weight": 8
+    },
+    "task_optimize": {
+      "pattern": "optimize|faster|better",
+      "action": "Оптимизировать процесс",
+      "weight": 8
+    },
+    "task_deliver": {
+      "pattern": "deliver|ship|result",
+      "action": "Доставить результат - это главное",
+      "weight": 10
+    }
+  },
+  "code_quality": {
+    "code_compile": {
+      "pattern": "compile|build|tsc",
+      "action": "Код должен компилироваться без ошибок",
+      "weight": 10
+    },
+    "code_typecheck": {
+      "pattern": "typescript|type|ts",
+      "action": "TypeScript без ошибок -Strict",
+      "weight": 10
+    },
+    "code_no_any": {
+      "pattern": "any|type",
+      "action": "Избегай any - используй типы",
+      "weight": 9
+    },
+    "code_patterns": {
+      "pattern": "pattern|design",
+      "action": "Используй проверенные паттерны",
+      "weight": 8
+    },
+    "code_reuse": {
+      "pattern": "reuse| DRY",
+      "action": "Переиспользуй код - не дублируй",
+      "weight": 8
+    },
+    "code_clean": {
+      "pattern": "clean|refactor",
+      "action": "Чистый код - легко читать",
+      "weight": 9
+    },
+    "code_simple": {
+      "pattern": "simple|complex",
+      "action": "Простота важнее хитрости",
+      "weight": 9
+    },
+    "code_testable": {
+      "pattern": "test|spec",
+      "action": "Пиши тестируемый код",
+      "weight": 8
+    },
+    "code_docs": {
+      "pattern": "doc|comment",
+      "action": "Документируй сложные места",
+      "weight": 7
+    },
+    "code_lint": {
+      "pattern": "lint|eslint",
+      "action": "Линтинг должен проходить",
+      "weight": 8
+    },
+    "code_format": {
+      "pattern": "format|prettier",
+      "action": "Форматирование по правилам",
+      "weight": 7
+    },
+    "code_review": {
+      "pattern": "review| self",
+      "action": "Самопроверка перед коммитом",
+      "weight": 8
+    },
+    "code_naming": {
+      "pattern": "name|naming",
+      "action": "Понятные имена - половина успеха",
+      "weight": 9
+    },
+    "code_modular": {
+      "pattern": "modul |export",
+      "action": "Модульность - разделяй на части",
+      "weight": 8
+    },
+    "code_safe": {
+      "pattern": "safe|secure",
+      "action": "Безопасность важна",
+      "weight": 10
+    }
+  },
+  "llm_prompt": {
+    "prompt_clear": {
+      "pattern": "clear|explicit",
+      "action": "Чёткий промпт - чёткий ответ",
+      "weight": 10
+    },
+    "prompt_context": {
+      "pattern": "context|background",
+      "action": "Дай контекст LLM",
+      "weight": 9
+    },
+    "prompt_format": {
+      "pattern": "format|```",
+      "action": "Укажи формат ответа",
+      "weight": 9
+    },
+    "prompt_iterate": {
+      "pattern": "iterate|refine",
+      "action": "Улучшай промпт итерациями",
+      "weight": 8
+    },
+    "prompt_examples": {
+      "pattern": "example|like",
+      "action": "Примеры в промпте помогают",
+      "weight": 9
+    },
+    "prompt_constraints": {
+      "pattern": "limit|only|must",
+      "action": "Укажи ограничения",
+      "weight": 8
+    },
+    "prompt_role": {
+      "pattern": "role|expert",
+      "action": "Дай LLM роль эксперта",
+      "weight": 9
+    },
+    "prompt_output": {
+      "pattern": "output|return",
+      "action": "Укажи формат вывода",
+      "weight": 8
+    },
+    "prompt_parse": {
+      "pattern": "parse|extract",
+      "action": "Парси ответ LLM регулярками",
+      "weight": 9
+    },
+    "prompt_retry": {
+      "pattern": "retry|again",
+      "action": "Переделай если результат плохой",
+      "weight": 9
+    },
+    "prompt_refine": {
+      "pattern": "refine|clarify",
+      "action": "Уточняй и улучшай",
+      "weight": 8
+    },
+    "prompt_few_shot": {
+      "pattern": "few-shot|examples",
+      "action": "Few-shot примеры - золото",
+      "weight": 9
+    },
+    "prompt_chain": {
+      "pattern": "think|chain|step",
+      "action": "Chain of thought улучшает качество",
+      "weight": 8
+    },
+    "prompt_structured": {
+      "pattern": "structured|json",
+      "action": "Структурированный ответ легче парсить",
+      "weight": 9
+    },
+    "prompt_validate": {
+      "pattern": "valid|check",
+      "action": "Валидируй результат LLM",
+      "weight": 10
+    }
+  },
+  "error_recovery": {
+    "error_detect": {
+      "pattern": "error| fail",
+      "action": "Обнаружить ошибку быстро",
+      "weight": 10
+    },
+    "error_isolate": {
+      "pattern": "isolate| minimal",
+      "action": "Изолируй проблему",
+      "weight": 9
+    },
+    "error_fix_first": {
+      "pattern": "fix|before",
+      "action": "Сначала исправь ошибку",
+      "weight": 10
+    },
+    "error_no_panic": {
+      "pattern": "panic|stress",
+      "action": "Без паники - дыши",
+      "weight": 9
+    },
+    "error_analyze": {
+      "pattern": "analyze| why",
+      "action": "Анализируй причину ошибки",
+      "weight": 10
+    },
+    "error_rollback": {
+      "pattern": "rollback| revert",
+      "action": "Откати изменения если нужно",
+      "weight": 10
+    },
+    "error_git": {
+      "pattern": "git|checkout",
+      "action": "Git спасёт - используй",
+      "weight": 9
+    },
+    "error_retry": {
+      "pattern": "retry|again",
+      "action": "Попробовать снова",
+      "weight": 9
+    },
+    "error_different": {
+      "pattern": "different|other",
+      "action": "Попробуй другой подход",
+      "weight": 8
+    },
+    "error_search": {
+      "pattern": "search|look",
+      "action": "Поискать решение в инете",
+      "weight": 8
+    },
+    "error_docs": {
+      "pattern": "docs| readme",
+      "action": "Читай документацию",
+      "weight": 9
+    },
+    "error_debug": {
+      "pattern": "debug|log",
+      "action": "Отлаживай - добавь логи",
+      "weight": 8
+    },
+    "error_explain": {
+      "pattern": "explain|understand",
+      "action": "Объясни ошибку себе",
+      "weight": 8
+    },
+    "error_learn": {
+      "pattern": "learn| remember",
+      "action": "Запомни ошибку чтоб не повторять",
+      "weight": 9
+    },
+    "error_ignore": {
+      "pattern": "ignore|skip",
+      "action": "Иногда можно игнорировать",
+      "weight": 7
+    }
+  },
+  "orchestration": {
+    "orchestrator_start": {
+      "pattern": "start|begin",
+      "action": "Запустить цикл оркестратора",
+      "weight": 10
+    },
+    "orchestrator_distribute": {
+      "pattern": "distribute|assign",
+      "action": "Распределить задачи по агентам",
+      "weight": 9
+    },
+    "orchestrator_track": {
+      "pattern": "track|state",
+      "action": "Отслеживать состояние задач",
+      "weight": 9
+    },
+    "orchestrator_retry": {
+      "pattern": "retry|attempt",
+      "action": "Повторить при ошибке",
+      "weight": 9
+    },
+    "orchestrator_progress": {
+      "pattern": "progress|done",
+      "action": "Показать прогресс выполнения",
+      "weight": 8
+    },
+    "orchestrator_health": {
+      "pattern": "health| OK",
+      "action": "Проверить здоровье системы",
+      "weight": 9
+    },
+    "orchestrator_build": {
+      "pattern": "build| compile",
+      "action": "Запустить билд после задач",
+      "weight": 10
+    },
+    "orchestrator_test": {
+      "pattern": "test| spec",
+      "action": "Запустить тесты",
+      "weight": 9
+    },
+    "orchestrator_commit": {
+      "pattern": "commit|git",
+      "action": "Записать изменения в git",
+      "weight": 8
+    },
+    "orchestrator_notify": {
+      "pattern": "notify|telegram",
+      "action": "Уведомить о завершении",
+      "weight": 7
+    },
+    "orchestrator_loop": {
+      "pattern": "loop|cycle",
+      "action": "Работать циклами",
+      "weight": 9
+    },
+    "orchestrator_parallel": {
+      "pattern": "parallel|async",
+      "action": "Параллельные задачи где можно",
+      "weight": 8
+    },
+    "orchestrator_queue": {
+      "pattern": "queue| pending",
+      "action": "Очередь задач обязательна",
+      "weight": 9
+    },
+    "orchestrator_priority": {
+      "pattern": "priority|sort",
+      "action": "Приоритизация задач",
+      "weight": 9
+    },
+    "orchestrator_complete": {
+      "pattern": "complete|finish",
+      "action": "Завершить цикл - сохранить состояние",
+      "weight": 10
+    }
+  },
+  "memory_learning": {
+    "memory_store": {
+      "pattern": "store|save",
+      "action": "Сохрани важное в память",
+      "weight": 10
+    },
+    "memory_recall": {
+      "pattern": "recall|remember",
+      "action": "Вспомни прошлый опыт",
+      "weight": 9
+    },
+    "memory_patterns": {
+      "pattern": "pattern| repeat",
+      "action": "Запомни паттерны успеха",
+      "weight": 9
+    },
+    "memory_learn": {
+      "pattern": "learn|from",
+      "action": "Извлеки урок из опыта",
+      "weight": 10
+    },
+    "memory_no_repeat": {
+      "pattern": "repeat|again",
+      "action": "Не повторяй старые ошибки",
+      "weight": 10
+    },
+    "memory_success": {
+      "pattern": "success|win",
+      "action": "Запомни что работает",
+      "weight": 9
+    },
+    "memory_fail": {
+      "pattern": "fail|error",
+      "action": "Запомни что не работает",
+      "weight": 9
+    },
+    "memory_context": {
+      "pattern": "context|before",
+      "action": "Контекст важен для решений",
+      "weight": 8
+    },
+    "memory_state": {
+      "pattern": "state|snapshot",
+      "action": "Запоминай состояние системы",
+      "weight": 9
+    },
+    "memory_short": {
+      "pattern": "short| recent",
+      "action": "Короткая память для итераций",
+      "weight": 8
+    },
+    "memory_long": {
+      "pattern": "long| archive",
+      "action": "Долгая память для паттернов",
+      "weight": 8
+    },
+    "memory_index": {
+      "pattern": "index|search",
+      "action": "Индексируй для быстрого поиска",
+      "weight": 8
+    },
+    "memory_search": {
+      "pattern": "search|find",
+      "action": "Умей искать в памяти",
+      "weight": 9
+    },
+    "memory_forget": {
+      "pattern": "forget|garbage",
+      "action": "Забыть лишнее - освободить место",
+      "weight": 7
+    },
+    "memory_grow": {
+      "pattern": "grow|improve",
+      "action": "Расти через накопленный опыт",
+      "weight": 9
+    },
+    "memory_apply": {
+      "pattern": "apply|use",
+      "action": "Применяй уроки в работе",
+      "weight": 10
+    }
+  },
+  "project_dominance": {
+    "project_structure": {
+      "pattern": "structure|folder",
+      "action": "Знай структуру проекта",
+      "weight": 10
+    },
+    "project_dependencies": {
+      "pattern": "dep|import",
+      "action": "Знай зависимости проекта",
+      "weight": 9
+    },
+    "project_config": {
+      "pattern": "config| tsconfig",
+      "action": "Знай конфигурацию",
+      "weight": 9
+    },
+    "project_build_system": {
+      "pattern": "build| webpack",
+      "action": "Знай систему сборки",
+      "weight": 9
+    },
+    "project_testing": {
+      "pattern": "test|vitest",
+      "action": "Знай систему тестирования",
+      "weight": 9
+    },
+    "project_deployment": {
+      "pattern": "deploy|vercel",
+      "action": "Знай деплой процесс",
+      "weight": 8
+    },
+    "project_ci": {
+      "pattern": "ci|github",
+      "action": "Знай CI/CD пайплайн",
+      "weight": 8
+    },
+    "project_docs": {
+      "pattern": "docs|readme",
+      "action": "Документация важна",
+      "weight": 8
+    },
+    "project_versioning": {
+      "pattern": "version|semver",
+      "action": "Версионирование по правилам",
+      "weight": 8
+    },
+    "project_release": {
+      "pattern": "release|publish",
+      "action": "Релиз - это формальность",
+      "weight": 8
+    }
+  },
+  "user_context": {
+    "user_language_ru": {
+      "pattern": "продолжай|сделай|добавь|исправь",
+      "action": "Пользователь говорит на русском - отвечай кратко",
+      "weight": 10
+    },
+    "user_direct_style": {
+      "pattern": "продолжай|сделай|выполни",
+      "action": "Директивный стиль - делай без лишних слов",
+      "weight": 10
+    },
+    "user_short_form": {
+      "pattern": "[а-яА-ЯёЁ]{1,30}",
+      "action": "Короткие команды - минимум объяснений",
+      "weight": 9
+    },
+    "user_autonomy": {
+      "pattern": "автоном|самостоят|без участия",
+      "action": "Пользователь хочет автономные агенты",
+      "weight": 10
+    },
+    "user_build_first": {
+      "pattern": "билд|сборка|build|compile",
+      "action": "После изменений - всегда билд",
+      "weight": 10
+    },
+    "user_typescript_strict": {
+      "pattern": "typescript|strict|no any",
+      "action": "TypeScript strict - без any",
+      "weight": 10
+    },
+    "user_execute_now": {
+      "pattern": "сейчас|немедленно|now|immediately",
+      "action": "Срочно - делай сейчас",
+      "weight": 9
+    },
+    "user_no_excuses": {
+      "pattern": "без оправданий|просто сделай",
+      "action": "Без оправданий - делай",
+      "weight": 10
+    },
+    "user_min_talk": {
+      "pattern": "код|file|изменить",
+      "action": "Минимум слов - maximum кода",
+      "weight": 9
+    },
+    "user_project_afk": {
+      "pattern": "afk|npc|игра|game",
+      "action": "Это проект AFK Game - знай контекст",
+      "weight": 10
+    }
+  },
+  "rules": {
+    "no_todo_without_execution": {
+      "description": "Не создавай задачи без выполнения",
+      "priority": 10
+    },
+    "no_documentation_in_code": {
+      "description": "Код не для документации - пиши анализы в files",
+      "priority": 10
+    },
+    "always_build_after_code": {
+      "description": "Всегда билдишь после изменения кода",
+      "priority": 10
+    },
+    "agents_must_write_code": {
+      "description": "Агенты должны писать код в файлы",
+      "priority": 10
+    },
+    "safe_write_with_rollback": {
+      "description": "Безопасная запись с откатом при ошибке",
+      "priority": 10
+    },
+    "small_functions_only": {
+      "description": "Только маленькие функции - не новые типы",
+      "priority": 10
+    },
+    "use_existing_patterns": {
+      "description": "Используй существующие паттерны",
+      "priority": 9
+    },
+    "context_before_llm": {
+      "description": "Давай контекст LLM перед генерацией",
+      "priority": 9
+    },
+    "parse_llm_output": {
+      "description": "Всегда парси вывод LLM",
+      "priority": 9
+    },
+    "memory_on_success_fail": {
+      "description": "Записывай в память успехи и ошибки",
+      "priority": 9
+    }
+  },
+  "learned": {}
+}
