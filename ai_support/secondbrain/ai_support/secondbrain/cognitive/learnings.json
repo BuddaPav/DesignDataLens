@@ -1,0 +1,10 @@
+[
+  {
+    "id": "lrn1782127291335",
+    "errorType": "file_corruption",
+    "recoveryMethod": "git_restore",
+    "successRate": 1,
+    "attempts": 2,
+    "lastUsed": 1782127359820
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "rec1782127291334",
+    "file": "app/src",
+    "errorType": "file_corruption",
+    "recoveryMethod": "git_restore",
+    "success": true,
+    "timestamp": 1782127291334
+  },
+  {
+    "id": "rec1782127359820",
+    "file": "app/src",
+    "errorType": "file_corruption",
+    "recoveryMethod": "git_restore",
+    "success": true,
+    "timestamp": 1782127359820
+  }
+]
