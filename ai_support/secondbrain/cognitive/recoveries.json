@@ -1,4 +1,11 @@
 {
-  "recoveries": [],
-  "lastUpdated": ""
+  "recoveries": [
+    {
+      "task": "Добавить тестовую локацию desert",
+      "error": "safeWriteCode returned false",
+      "fix": "Build/validation failed in worldBuilder",
+      "timestamp": "2026-06-22T15:40:12.395Z"
+    }
+  ],
+  "lastUpdated": "2026-06-22T15:40:12.395Z"
 }

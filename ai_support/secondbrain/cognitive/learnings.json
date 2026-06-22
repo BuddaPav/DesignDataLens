@@ -5,7 +5,13 @@
       "success": true,
       "task": "validation.setup",
       "timestamp": "2026-06-22T12:00:00Z"
+    },
+    {
+      "pattern": "Добавить тестовую локацию desert",
+      "success": true,
+      "task": "worldBuilder",
+      "timestamp": "2026-06-22T15:40:12.397Z"
     }
   ],
-  "lastUpdated": "2026-06-22T12:00:00Z"
+  "lastUpdated": "2026-06-22T15:40:12.397Z"
 }

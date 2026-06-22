@@ -1,13 +1,29 @@
 {
   "hallucinations": 0,
-  "verifiedSnippets": 0,
-  "totalGenerations": 0,
+  "verifiedSnippets": 1,
+  "totalGenerations": 1,
   "score": 1,
   "agents": {
-    "economyDesigner": { "success": 0, "fail": 0 },
-    "npc-architect": { "success": 0, "fail": 0 },
-    "world-builder": { "success": 0, "fail": 0 },
-    "ui-craftsman": { "success": 0, "fail": 0 }
+    "economyDesigner": {
+      "success": 0,
+      "fail": 0
+    },
+    "npc-architect": {
+      "success": 0,
+      "fail": 0
+    },
+    "world-builder": {
+      "success": 0,
+      "fail": 0
+    },
+    "ui-craftsman": {
+      "success": 0,
+      "fail": 0
+    },
+    "worldBuilder": {
+      "success": 1,
+      "fail": 0
+    }
   },
-  "lastUpdated": ""
+  "lastUpdated": "2026-06-22T15:40:12.398Z"
 }

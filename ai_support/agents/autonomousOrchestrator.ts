@@ -1480,12 +1480,13 @@ process.on('SIGTERM', gracefulShutdown);
 function loadTasksFromDocs(): AgentTask[] {
   const tasks: AgentTask[] = [];
   const idCounter = { val: 0 };
+  const runId = Date.now() % 1000000; // Unique per run
 
   // Helper to add tasks - reads from task.txt first
   const addTask = (desc: string, priority: number) => {
     if (desc.length > 5) {
       tasks.push({
-        id: `task_${idCounter.val++}`,
+        id: `task_${runId}_${idCounter.val++}`,
         description: desc,
         priority,
         agent: guessAgentForTask(desc),
@@ -1508,7 +1509,7 @@ function loadTasksFromDocs(): AgentTask[] {
   const addLegacyTask = (desc: string, priority: number) => {
     if (desc.length > 5) {
       tasks.push({
-        id: `task_${idCounter.val++}`,
+        id: `task_${runId}_${idCounter.val++}`,
         description: desc,
         priority,
         agent: guessAgentForTask(desc),
