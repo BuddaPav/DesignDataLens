@@ -1,14 +1,14 @@
 import fs from 'fs';
 import path from 'path';
 
-import { chat, getLLMConfig } from '../llm';
+import { chat, getLLMConfig } from '../llm.ts';
 import {
   addADR,
   addTodo,
   init,
   recordDecision,
   setFeatureFlag,
-} from './orchestrator';
+} from './orchestrator.ts';
 
 type BlueprintStatus = 'llm' | 'deterministic';
 

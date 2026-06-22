@@ -1,8 +1,8 @@
 // Second Brain CLI - Command interface
 // Usage: ts-node cli.ts <command> [args]
 
-import * as secondBrain from './orchestrator';
-import { generateGameBlueprint } from './gameFactory';
+import * as secondBrain from './orchestrator.ts';
+import { generateGameBlueprint } from './gameFactory.ts';
 
 const commands: Record<string, Function> = {
   // Cognitive commands
