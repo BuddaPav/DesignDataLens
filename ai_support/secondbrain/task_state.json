@@ -229,5 +229,12 @@
     "attempts": 3,
     "lastRun": 1782143989695,
     "result": "failed"
+  },
+  "task_119502_0": {
+    "taskId": "task_119502_0",
+    "status": "failed",
+    "attempts": 3,
+    "lastRun": 1782144133261,
+    "result": "failed"
   }
 }
