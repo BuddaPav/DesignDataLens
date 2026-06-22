@@ -849,6 +849,10 @@ ${context.slice(0, 3000)}
 async function runNpcArchitect(task: AgentTask): Promise<AgentResult> {
   log(`[npcArchitect] REAL WORK: ${task.description}`);
 
+  // === Skill binding ===
+  const boundSkills = getSkillsForAgent('npc-architect');
+  log(`[npcArchitect] Skills: ${boundSkills.join(', ')}`);
+
   const files = ['src/engine/NPCSystem.ts', 'src/types/game.ts'];
   const context = await readFilesContext(files);
 
@@ -887,6 +891,10 @@ ${getProjectContext()}
 // worldBuilder - РЕАЛЬНО пишет в worldTiles.ts
 async function runWorldBuilder(task: AgentTask): Promise<AgentResult> {
   log(`[worldBuilder] REAL WORK: ${task.description}`);
+
+  // === Skill binding ===
+  const boundSkills = getSkillsForAgent('world-builder');
+  log(`[worldBuilder] Skills: ${boundSkills.join(', ')}`);
 
   const files = ['src/engine/worldTiles.ts', 'src/types/game.ts'];
   const context = await readFilesContext(files);
@@ -960,6 +968,10 @@ ${getProjectContext()}
 // uiCraftsman
 async function runUiCraftsman(task: AgentTask): Promise<AgentResult> {
   log(`[uiCraftsman] UI: ${task.description}`);
+
+  // === Skill binding ===
+  const boundSkills = getSkillsForAgent('ui-craftsman');
+  log(`[uiCraftsman] Skills: ${boundSkills.join(', ')}`);
 
   const files = quickFindFiles('panel');
   const context = await readFilesContext(files);
