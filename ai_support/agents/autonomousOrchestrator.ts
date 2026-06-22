@@ -144,7 +144,8 @@ const PROJECT_ROOT = 'c:/Users/Den/Downloads/AFK Game';
 const APP_DIR = `${PROJECT_ROOT}/app`;
 const DOCS_DIR = `${PROJECT_ROOT}/docs`;
 const BUILD_LOG = `${PROJECT_ROOT}/ai_support/secondbrain/build_log.txt`;
-const AI_SUPPORT_DIR = `${PROJECT_ROOT}/ai_support/secondbrain`;
+const AI_SUPPORT_DIR = `${PROJECT_ROOT}/ai_support`;
+const SECOND_BRAIN_DIR = `${PROJECT_ROOT}/ai_support/secondbrain`;
 
 export interface AgentTask {
   id: string;
@@ -519,7 +520,7 @@ function saveTaskState(): void {
 
 // Second Brain: Record learning after task completion
 function recordLearning(task: AgentTask, success: boolean): void {
-  const learningsPath = path.join(AI_SUPPORT_DIR, 'cognitive/learnings.json');
+  const learningsPath = path.join(SECOND_BRAIN_DIR, 'cognitive/learnings.json');
   let learnings = { learnings: [] as { pattern: string; success: boolean; task: string; timestamp: string }[], lastUpdated: '' };
   if (fs.existsSync(learningsPath)) {
     try { learnings = JSON.parse(fs.readFileSync(learningsPath, 'utf-8')); } catch {}
@@ -543,7 +544,7 @@ function recordLearning(task: AgentTask, success: boolean): void {
 
 // Update trust metrics
 function updateTrust(task: AgentTask, success: boolean): void {
-  const trustPath = path.join(AI_SUPPORT_DIR, 'cognitive/trust.json');
+  const trustPath = path.join(SECOND_BRAIN_DIR, 'cognitive/trust.json');
   // Extended trust with per-agent metrics
   let trust: any = { hallucinations: 0, verifiedSnippets: 0, totalGenerations: 0, score: 1, agents: {}, lastUpdated: '' };
   if (fs.existsSync(trustPath)) {
@@ -579,7 +580,7 @@ function updateTrust(task: AgentTask, success: boolean): void {
 
 // Record recovery pattern (for errors and how we fixed them)
 function recordRecovery(task: AgentTask, error: string, fix: string): void {
-  const recoveriesPath = path.join(AI_SUPPORT_DIR, 'cognitive/recoveries.json');
+  const recoveriesPath = path.join(SECOND_BRAIN_DIR, 'cognitive/recoveries.json');
   let recoveries = { recoveries: [] as { task: string; error: string; fix: string; timestamp: string }[], lastUpdated: '' };
   if (fs.existsSync(recoveriesPath)) {
     try { recoveries = JSON.parse(fs.readFileSync(recoveriesPath, 'utf-8')); } catch {}
@@ -630,7 +631,7 @@ function verifySecondBrain(): { valid: boolean; errors: string[] } {
 
 // Learn from recovery patterns - extract useful patterns from recoveries.json
 function learnFromRecovery(): string[] {
-  const recoveriesPath = path.join(AI_SUPPORT_DIR, 'cognitive/recoveries.json');
+  const recoveriesPath = path.join(SECOND_BRAIN_DIR, 'cognitive/recoveries.json');
   if (!fs.existsSync(recoveriesPath)) return [];
 
   try {
@@ -643,7 +644,7 @@ function learnFromRecovery(): string[] {
 
 // Load relevant learnings for a task (keyword search)
 function loadRelevantLearnings(task: AgentTask): { pattern: string; success: boolean }[] {
-  const learningsPath = path.join(AI_SUPPORT_DIR, 'cognitive/learnings.json');
+  const learningsPath = path.join(SECOND_BRAIN_DIR, 'cognitive/learnings.json');
   if (!fs.existsSync(learningsPath)) return [];
 
   try {
@@ -661,7 +662,7 @@ function loadRelevantLearnings(task: AgentTask): { pattern: string; success: boo
 
 // Load relevant recoveries for a task
 function loadRelevantRecoveries(task: AgentTask): string[] {
-  const recoveriesPath = path.join(AI_SUPPORT_DIR, 'cognitive/recoveries.json');
+  const recoveriesPath = path.join(SECOND_BRAIN_DIR, 'cognitive/recoveries.json');
   if (!fs.existsSync(recoveriesPath)) return [];
 
   try {
