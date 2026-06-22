@@ -2,51 +2,62 @@
 
 ```typescript
 ```typescript
-import { useState, useEffect } from 'react';
-import { GameData } from './types';
+import { GameSave, User } from '@/types/game';
+import { saveToLocalStorage, loadFromLocalStorage } from '@/utils/localStorage';
 
-const useCloudSave = (initialState: GameData): [GameData, (data: GameData) => void] => {
-  const [gameData, setGameData] = useState<GameData>(initialState);
+const CLOUD_SAVE_KEY = 'chronos_cloud_save';
+
+export function saveCloudGame(user: User, gameSave: GameSave): void {
+  const cloudSave = {
+    userId: user.id,
+    saveData: gameSave
+  };
+  saveToLocalStorage(CLOUD_SAVE_KEY, cloudSave);
+}
+
+export function loadCloudGame(user: User): GameSave | null {
+  const cloudSave = loadFromLocalStorage<GameSave>(CLOUD_SAVE_KEY);
+  if (cloudSave && cloudSave.userId === user.id) {
+    return cloudSave.saveData;
+  }
+  return null;
+}
+```
+
+```typescript
+import { useEffect } from 'react';
+import { useUser } from '@/context/UserContext';
+import { saveCloudGame, loadCloudGame } from '@/engine/save';
+
+interface Props {
+  gameSave: GameSave;
+}
+
+export const CloudSaveProvider: React.FC<Props> = ({ gameSave }) => {
+  const { user } = useUser();
 
   useEffect(() => {
-    // Fetch data from cloud
-    const fetchFromCloud = async () => {
-      try {
-        const response = await fetch('/api/save');
-        if (response.ok) {
-          const savedData: GameData = await response.json();
-          setGameData(savedData);
-        }
-      } catch (error) {
-        console.error('Failed to load game data from cloud:', error);
-      }
-    };
-
-    fetchFromCloud();
-  }, []);
+    if (user) {
+      saveCloudGame(user, gameSave);
+    }
+  }, [gameSave, user]);
 
   useEffect(() => {
-    // Save data to cloud
-    const saveToCloud = async () => {
-      try {
-        await fetch('/api/save', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(gameData),
-        });
-      } catch (error) {
-        console.error('Failed to save game data to cloud:', error);
+    if (user) {
+      const savedGame = loadCloudGame(user);
+      if (savedGame) {
+        // Handle loading the game state
       }
-    };
+    }
+  }, [user]);
 
-    saveToCloud();
-  }, [gameData]);
-
-  return [gameData, setGameData];
+  return null;
 };
-
-export default useCloudSave;
-```
 ```
 
-Generated: 2026-06-22T08:11:10.136Z
+Этот код реализует сохранение и загрузку игры в облако для текущего пользователя. Используется локальное хранилище для демонстрации, но можно легко заменить его на реальное облакочное решение (например, Firebase Storage).
+
+После написания кода запустите `npm run build` для проверки.
+```
+
+Generated: 2026-06-22T12:05:59.049Z
