@@ -125,7 +125,7 @@ export class ContextAgent extends Agent {
     this.tokenCount += estimatedTokens;
 
     // Check for cognitive cooldown (vector 17)
-    const cooldown = this.checkCooldown();
+    const _cooldown = this.checkCooldown();
 
     const intent: ClassifiedIntent = {
       complexity,
@@ -259,6 +259,7 @@ export class ContextAgent extends Agent {
 
     let score = 1;
 
+    if (lines > 50) score++;
     if (words > 100) score++;
     if (hasInterfaces || hasClasses) score++;
     if (hasAsync || hasDatabase) score++;

@@ -8,6 +8,7 @@
 import { EventBus, EventFactory } from './eventBus';
 import { DEFAULT_BRAIN_CONFIG } from './config';
 import type { BrainConfig } from './config';
+// Type imports for future use
 import type { Agent, AgentResult } from './agents/base';
 import { ContextAgent } from './agents/contextAgent';
 import type { ClassifiedIntent } from './agents/contextAgent';

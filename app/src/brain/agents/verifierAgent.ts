@@ -161,7 +161,8 @@ export class VerifierAgent extends Agent {
   /**
    * Handle verification pass
    */
-  private handlePass(event: BrainEvent): AgentResult<boolean> {
+  private handlePass(_event: BrainEvent): AgentResult<boolean> {
+    void _event;
     this.passedChecks++;
 
     return {
@@ -182,7 +183,7 @@ export class VerifierAgent extends Agent {
    * Handle verification fail
    */
   private handleFail(event: BrainEvent): AgentResult<boolean> {
-    const payload = event.payload as { check?: VerificationCheck; error?: string };
+    const _payload = event.payload as { check?: VerificationCheck; error?: string };
     this.failedChecks++;
 
     return {
@@ -266,7 +267,7 @@ export class VerifierAgent extends Agent {
   private runCheck(
     check: VerificationCheck,
     artifact: unknown,
-    type: string
+    _type: string
   ): VerificationResult['checks'][0] {
     switch (check) {
       case 'syntax':

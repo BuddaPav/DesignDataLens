@@ -103,7 +103,8 @@ export class GeneratorAgent extends Agent {
    */
   private handleGenerate(event: BrainEvent): AgentResult<GenerationResponse> {
     const payload = event.payload as GenerationRequest;
-    const { prompt, model, temperature, maxTokens } = payload;
+    const prompt = payload.prompt;
+    const model = payload.model;
 
     // Check cache
     const cacheKey = this.getCacheKey(prompt, model);

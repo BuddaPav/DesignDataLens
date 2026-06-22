@@ -338,7 +338,7 @@ export class MemoryAgent extends Agent {
     const staleThreshold = this.config.memory.staleAfterDays * 24 * 60 * 60 * 1000;
     const now = Date.now();
 
-    for (const [id, entry] of this.entries) {
+    for (const [_id, entry] of this.entries) {
       const age = now - entry.metadata.timestamp;
       if (age > staleThreshold) {
         entry.metadata.stale = true;

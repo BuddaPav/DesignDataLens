@@ -1330,6 +1330,7 @@ function WorldContent(props: WorldContentProps) {
   } = usePlayerControls(initialSettings);
 
   // Sync camera mode between hook and local state
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const newMode = hookCameraMode === 'first' ? 0 : 1;
     if (cameraMode !== newMode) {
