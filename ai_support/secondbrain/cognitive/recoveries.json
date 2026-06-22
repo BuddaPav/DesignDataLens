@@ -4,18 +4,6 @@
       "task": "Добавить тестовую локацию desert",
       "error": "Build/validation failed",
       "fix": "Agent returned failure",
-      "timestamp": "2026-06-22T16:14:15.706Z"
-    },
-    {
-      "task": "Добавить тестовую локацию desert",
-      "error": "safeWriteCode returned false",
-      "fix": "Build/validation failed in worldBuilder",
-      "timestamp": "2026-06-22T16:15:44.147Z"
-    },
-    {
-      "task": "Добавить тестовую локацию desert",
-      "error": "Build/validation failed",
-      "fix": "Agent returned failure",
       "timestamp": "2026-06-22T16:15:44.153Z"
     },
     {
@@ -299,7 +287,19 @@
       "error": "Task failed with ok=false",
       "fix": "Agent returned failure",
       "timestamp": "2026-06-22T16:43:58.944Z"
+    },
+    {
+      "task": "[STAGE 016] Минимальный «контентный» проход: N сцен подряд без мягких блокеров (чеклист QA).",
+      "error": "safeWriteCode returned false",
+      "fix": "Build/validation failed in economyDesigner",
+      "timestamp": "2026-06-22T16:45:11.119Z"
+    },
+    {
+      "task": "[STAGE 016] Минимальный «контентный» проход: N сцен подряд без мягких блокеров (чеклист QA).",
+      "error": "safeWriteCode returned false",
+      "fix": "Build/validation failed in economyDesigner",
+      "timestamp": "2026-06-22T16:46:05.806Z"
     }
   ],
-  "lastUpdated": "2026-06-22T16:43:58.944Z"
+  "lastUpdated": "2026-06-22T16:46:05.806Z"
 }
