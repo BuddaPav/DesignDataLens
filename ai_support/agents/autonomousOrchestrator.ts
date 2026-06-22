@@ -1047,6 +1047,7 @@ async function runWorldBuilder(task: AgentTask): Promise<AgentResult> {
       log(`[worldBuilder] WRITTEN to worldTiles.ts`);
     } else {
       log(`[worldBuilder] Skipped (TS error)`);
+      recordRecovery(task, 'safeWriteCode returned false', 'Build/validation failed in worldBuilder');
     }
   }
 
