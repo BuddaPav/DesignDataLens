@@ -480,6 +480,50 @@ function setCachedAnalysis(key: string, result: string): void {
 }
 
 // ==================== HELPER FUNCTIONS ====================
+
+// Find target file for code based on task
+function findTargetFile(taskDesc: string, relevantFiles: string[]): string | null {
+  const taskLower = taskDesc.toLowerCase();
+  const srcDir = path.join(APP_DIR, 'src');
+
+  const keywords: Record<string, string[]> = {
+    'inventory': ['src/components/game/InventoryPanel.tsx', 'src/domain/inventory.ts'],
+    'shop': ['src/components/game/ShopPanel.tsx', 'src/domain/shop.ts', 'src/domain/economy/shopPurchase.ts'],
+    'npc': ['src/engine/NPCSystem.ts', 'src/components/game/NPCPanel.tsx'],
+    'quest': ['src/domain/quest.ts', 'src/components/game/QuestPanel.tsx'],
+    'combat': ['src/domain/combat', 'src/components/game/CombatPanel.tsx'],
+    'settings': ['src/components/game/SettingsPanel.tsx', 'src/lib/settings.ts'],
+    'world': ['src/engine/worldTiles.ts', 'src/components/game/WorldCanvas.tsx'],
+    'ui': ['src/components/game', 'src/components/screens'],
+  };
+
+  for (const [keyword, files] of Object.entries(keywords)) {
+    if (taskLower.includes(keyword)) {
+      for (const f of files) {
+        const full = path.join(APP_DIR, f);
+        if (fs.existsSync(full)) return full;
+      }
+    }
+  }
+
+  if (relevantFiles.length > 0) {
+    return path.join(APP_DIR, relevantFiles[0]);
+  }
+
+  return path.join(srcDir, 'components/game/WorldStatusPanel.tsx');
+}
+
+// Save code analysis to file
+function saveCodeAnalysis(taskDesc: string, code: string): void {
+  const dir = path.join(PROJECT_ROOT, 'ai_support/secondbrain/code_analyses');
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+
+  const filename = `${taskDesc.slice(0, 50).replace(/[^a-zA-Z0-9]/g, '_')}.md`;
+  const filepath = path.join(dir, filename);
+  const content = `# ${taskDesc}\n\n\`\`\`typescript\n${code}\n\`\`\`\n\nGenerated: ${new Date().toISOString()}`;
+  fs.writeFileSync(filepath, content);
+}
+
 function quickFindFiles(taskDesc: string): string[] {
   const srcDir = path.join(APP_DIR, 'src');
   const results: string[] = [];
@@ -521,31 +565,57 @@ async function readFilesContext(files: string[]): Promise<string> {
 
 // ==================== ALL AGENTS (5-10) ====================
 
-// codeBuilder
+// codeBuilder - generates actual code
 export async function runCodeBuilder(task: AgentTask): Promise<AgentResult> {
-  log(`[codeBuilder] Analyzing: ${task.description}`);
+  log(`[codeBuilder] Building: ${task.description}`);
 
   const relevantFiles = quickFindFiles(task.description);
   log(`[codeBuilder] Found ${relevantFiles.length} relevant files`);
 
-  // Get LLM analysis
-  const cacheKey = `code:${task.description.slice(0, 50)}`;
-  let llmResult = getCachedAnalysis(cacheKey);
+  const context = await readFilesContext(relevantFiles.slice(0, 3));
 
-  if (!llmResult) {
-    llmResult = await chatWithFallback([
-      { role: 'system', content: 'Ты - эксперт по TypeScript/React. Будь краток. Предложи реализацию.' },
-      { role: 'user', content: `Задача: ${task.description}\n\nФайлы: ${relevantFiles.join(', ')}` }
-    ]);
-    setCachedAnalysis(cacheKey, llmResult);
+  // Get LLM to generate actual code
+  const llmResult = await chatWithFallback([
+    { role: 'system', content: `Ты - эксперт по TypeScript/React для игрового проекта.
+Правила:
+1. Пиши ТОЛЬКО код, без объяснений
+2. Используй существующие типы и функции из контекста
+3. Если нужно добавить новую функцию - пиши её полностью
+4. Формат ответа: код между \`\`\`typescript и \`\`\`` },
+    { role: 'user', content: `Задача: ${task.description}
+
+Контекст проекта:
+${context.slice(0, 3000)}
+
+Напиши реализацию.` }
+  ]);
+
+  log(`[codeBuilder] Generated: ${llmResult.slice(0, 150)}`);
+
+  // Try to extract and write code
+  let codeWritten = false;
+  try {
+    const codeMatch = llmResult.match(/```typescript([\s\S]*?)```/);
+    if (codeMatch) {
+      const code = codeMatch[1].trim();
+      const targetFile = findTargetFile(task.description, relevantFiles);
+      if (targetFile) {
+        const existing = fs.readFileSync(targetFile, 'utf-8');
+        const appendCode = `\n\n// Added: ${task.description}\n${code}`;
+        fs.writeFileSync(targetFile, existing + appendCode);
+        log(`[codeBuilder] Written to: ${targetFile}`);
+        codeWritten = true;
+      }
+    }
+  } catch (e: any) {
+    log(`[codeBuilder] Write failed: ${e.message}`);
   }
 
-  log(`[codeBuilder] Analysis: ${llmResult.slice(0, 100)}`);
+  // Save analysis anyway
+  saveCodeAnalysis(task.description, llmResult);
 
-  // Mark task done
   markTaskDone(task);
-
-  return { ok: true, output: llmResult };
+  return { ok: codeWritten, output: llmResult };
 }
 
 // npcArchitect
