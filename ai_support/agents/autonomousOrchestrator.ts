@@ -557,6 +557,30 @@ function updateTrust(task: AgentTask, success: boolean): void {
   fs.writeFileSync(trustPath, JSON.stringify(trust, null, 2));
 }
 
+// Record recovery pattern (for errors and how we fixed them)
+function recordRecovery(task: AgentTask, error: string, fix: string): void {
+  const recoveriesPath = path.join(AI_SUPPORT_DIR, 'cognitive/recoveries.json');
+  let recoveries = { recoveries: [] as { task: string; error: string; fix: string; timestamp: string }[], lastUpdated: '' };
+  if (fs.existsSync(recoveriesPath)) {
+    try { recoveries = JSON.parse(fs.readFileSync(recoveriesPath, 'utf-8')); } catch {}
+  }
+
+  recoveries.recoveries.push({
+    task: task.description.slice(0, 100),
+    error: error.slice(0, 200),
+    fix: fix.slice(0, 200),
+    timestamp: new Date().toISOString()
+  });
+
+  // Keep only last 50 recoveries
+  if (recoveries.recoveries.length > 50) {
+    recoveries.recoveries = recoveries.recoveries.slice(-50);
+  }
+  recoveries.lastUpdated = new Date().toISOString();
+
+  fs.writeFileSync(recoveriesPath, JSON.stringify(recoveries, null, 2));
+}
+
 function markTaskDone(task: AgentTask): void {
   // Update state
   taskStates.set(task.id, {
