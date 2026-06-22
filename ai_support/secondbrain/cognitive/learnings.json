@@ -4,24 +4,6 @@
       "pattern": "Добавить тестовую локацию desert",
       "success": false,
       "task": "worldBuilder",
-      "timestamp": "2026-06-22T16:12:50.280Z"
-    },
-    {
-      "pattern": "Добавить тестовую локацию desert",
-      "success": false,
-      "task": "worldBuilder",
-      "timestamp": "2026-06-22T16:12:50.284Z"
-    },
-    {
-      "pattern": "Добавить тестовую локацию desert",
-      "success": false,
-      "task": "worldBuilder",
-      "timestamp": "2026-06-22T16:14:15.702Z"
-    },
-    {
-      "pattern": "Добавить тестовую локацию desert",
-      "success": false,
-      "task": "worldBuilder",
       "timestamp": "2026-06-22T16:14:15.704Z"
     },
     {
@@ -299,7 +281,25 @@
       "success": false,
       "task": "worldBuilder",
       "timestamp": "2026-06-22T16:41:24.042Z"
+    },
+    {
+      "pattern": "Добавить тестовую локацию desert",
+      "success": false,
+      "task": "worldBuilder",
+      "timestamp": "2026-06-22T16:43:51.033Z"
+    },
+    {
+      "pattern": "Добавить тестовую локацию desert",
+      "success": false,
+      "task": "worldBuilder",
+      "timestamp": "2026-06-22T16:43:51.035Z"
+    },
+    {
+      "pattern": "# Tasks - one per line\n# Оркестратор остановлен для отладки",
+      "success": false,
+      "task": "codeBuilder",
+      "timestamp": "2026-06-22T16:43:58.941Z"
     }
   ],
-  "lastUpdated": "2026-06-22T16:41:24.042Z"
+  "lastUpdated": "2026-06-22T16:43:58.941Z"
 }
