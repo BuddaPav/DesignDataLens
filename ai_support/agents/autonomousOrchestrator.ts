@@ -1319,6 +1319,9 @@ export async function runOrchestrator(): Promise<void> {
 }
 
 async function runAgent(agent: string, task: AgentTask): Promise<AgentResult> {
+  const model = selectModelForTask(agent);
+  log(`[orchestrator] ${agent} using model: ${model}`);
+
   switch (agent) {
     case 'codeBuilder': return runCodeBuilder(task);
     case 'npcArchitect': return runNpcArchitect(task);
