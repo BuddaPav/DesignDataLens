@@ -5,8 +5,8 @@ import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 import { createRequire } from 'module';
-import { FileValidator } from '../secondbrain/FileValidator';
-import { getSkillsForAgent } from '../../.cursor/agents/core/skills-registry';
+import { FileValidator } from '../secondbrain/FileValidator.js';
+import { getSkillsForAgent } from '../../.cursor/agents/core/skills-registry.js';
 
 const require = createRequire(import.meta.url);
 
@@ -1040,12 +1040,17 @@ async function runNpcArchitect(task: AgentTask): Promise<AgentResult> {
   const boundSkills = getSkillsForAgent('npc-architect');
   log(`[npcArchitect] Skills: ${boundSkills.join(', ')}`);
 
+  // === Second Brain context ===
+  const sbContext = buildContextForAgent(task);
+  log(`[npcArchitect] SecondBrain: ${sbContext ? 'patterns found' : 'no patterns'}`);
+
   const files = ['src/engine/NPCSystem.ts', 'src/types/game.ts'];
   const context = await readFilesContext(files);
 
   const llmResult = await chatWithFallback([
     { role: 'system', content: `Ты - NPC Architect для Chronos AI Chronicles.
 ${getProjectContext()}
+${sbContext}
 КРИТИЧЕСКИ:
 1. НЕ трогай существующие типы и интерфейсы
 2. Используй ТОЛЬКО импорты из @/types/game
@@ -1084,11 +1089,15 @@ async function runWorldBuilder(task: AgentTask): Promise<AgentResult> {
   const boundSkills = getSkillsForAgent('world-builder');
   log(`[worldBuilder] Skills: ${boundSkills.join(', ')}`);
 
+  // === Second Brain context ===
+  const sbContext = buildContextForAgent(task);
+  log(`[worldBuilder] SecondBrain: ${sbContext ? 'patterns found' : 'no patterns'}`);
+
   const files = ['src/engine/worldTiles.ts', 'src/types/game.ts'];
   const context = await readFilesContext(files);
 
   const llmResult = await chatWithFallback([
-    { role: 'system', content: 'Ты - эксперт по игровым мирам. Напиши TypeScript код для мира. Формат: код между ```typescript и ```' },
+    { role: 'system', content: `Ты - эксперт по игровым мирам. Напиши TypeScript код для мира.\n${sbContext}\nФормат: код между \`\`\`typescript и \`\`\`` },
     { role: 'user', content: `Задача: ${task.description}\n\nКонтекст: ${context.slice(0, 2000)}\n\nНапиши реализацию.` }
   ]);
 
@@ -1121,12 +1130,17 @@ async function runEconomyDesigner(task: AgentTask): Promise<AgentResult> {
   const boundSkills = getSkillsForAgent('economyDesigner');
   log(`[economyDesigner] Skills: ${boundSkills.join(', ')}`);
 
+  // === Second Brain context ===
+  const sbContext = buildContextForAgent(task);
+  log(`[economyDesigner] SecondBrain: ${sbContext ? 'patterns found' : 'no patterns'}`);
+
   const files = ['src/domain/economy/shopPurchase.ts', 'src/domain/economy/prices.ts'];
   const context = await readFilesContext(files);
 
   const llmResult = await chatWithFallback([
     { role: 'system', content: `Ты - Economy Designer для Chronos AI Chronicles.
 ${getProjectContext()}
+${sbContext}
 КРИТИЧЕСКИ:
 1. Используй ТОЛЬКО существующие типы и функции
 2. После написания запусти npm run build
@@ -1163,11 +1177,15 @@ async function runUiCraftsman(task: AgentTask): Promise<AgentResult> {
   const boundSkills = getSkillsForAgent('ui-craftsman');
   log(`[uiCraftsman] Skills: ${boundSkills.join(', ')}`);
 
+  // === Second Brain context ===
+  const sbContext = buildContextForAgent(task);
+  log(`[uiCraftsman] SecondBrain: ${sbContext ? 'patterns found' : 'no patterns'}`);
+
   const files = quickFindFiles('panel');
   const context = await readFilesContext(files);
 
   const llmResult = await chatWithFallback([
-    { role: 'system', content: 'Ты - UI эксперт. Предложи улучшения интерфейса.' },
+    { role: 'system', content: `Ты - UI эксперт. Предложи улучшения интерфейса.\n${sbContext}` },
     { role: 'user', content: `Задача: ${task.description}\n\n${context.slice(0, 1000)}` }
   ]);
 

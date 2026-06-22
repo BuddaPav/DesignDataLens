@@ -28,7 +28,8 @@
       "Bash(start \"\" \"C:/Users/Den/AppData/Local/Programs/Ollama/ollama.exe\")",
       "Bash(timeout /t 3)",
       "Bash(curl -s http://localhost:11434/api/tags)",
-      "Bash(npx tsc -b --force)"
+      "Bash(npx tsc -b --force)",
+      "Bash(node agents/autonomousOrchestrator.ts)"
     ]
   }
 }
