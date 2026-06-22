@@ -1130,14 +1130,16 @@ async function runWorldBuilder(task: AgentTask): Promise<AgentResult> {
 
     if (safeWriteCode(worldFile, newCode, task.description)) {
       log(`[worldBuilder] WRITTEN to worldTiles.ts`);
+      markTaskDone(task);
+      return { ok: true, output: llmResult };
     } else {
       log(`[worldBuilder] Skipped (TS error)`);
       recordRecovery(task, 'safeWriteCode returned false', 'Build/validation failed in worldBuilder');
+      return { ok: false, output: llmResult, error: 'Build/validation failed' };
     }
   }
 
-  markTaskDone(task);
-  return { ok: true, output: llmResult };
+  return { ok: false, output: llmResult, error: 'No code generated' };
 }
 
 // economyDesigner - РЕАЛЬНО пишет в economy файлы
