@@ -1,11 +1,11 @@
 {
   "hallucinations": 69,
-  "verifiedSnippets": 59,
-  "totalGenerations": 128,
-  "score": 0.4609375,
+  "verifiedSnippets": 60,
+  "totalGenerations": 129,
+  "score": 0.4651162790697675,
   "agents": {
     "economyDesigner": {
-      "success": 56,
+      "success": 57,
       "fail": 0
     },
     "npc-architect": {
@@ -29,5 +29,5 @@
       "fail": 1
     }
   },
-  "lastUpdated": "2026-06-22T18:34:28.517Z"
+  "lastUpdated": "2026-06-22T18:35:52.773Z"
 }
