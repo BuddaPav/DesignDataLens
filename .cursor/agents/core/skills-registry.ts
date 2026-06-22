@@ -1,5 +1,6 @@
 /**
- * Skills Registry - 118 Skills for AFK Game
+ * Skills Registry - 118+ Skills for AFK Game
+ * Includes skill binding system for agents
  */
 
 interface Skill {
@@ -43,3 +44,23 @@ class SkillsRegistry {
 }
 
 export const skillsRegistry = new SkillsRegistry()
+
+// Skill Binding System - maps agents to their required skills
+export type AgentSkillBinding = {
+  agent: string
+  skills: string[]
+  description: string
+}
+
+export const AGENT_SKILL_BINDINGS: AgentSkillBinding[] = [
+  { agent: 'economyDesigner', skills: ['economy-balancer','item-generator','price-calculator','trade-route-manager','caravan-simulator','market-analytics'], description: 'Economy generation' },
+  { agent: 'npc-architect', skills: ['npc-generator','dialogue-builder','personality-model','gossip-propagator','memory-archiver','relationship-calculator'], description: 'NPC creation' },
+  { agent: 'world-builder', skills: ['world-generator','biome-creator','poi-manager','weather-system','day-night-cycle','landmark-placer'], description: 'World generation' },
+  { agent: 'ui-craftsman', skills: ['panel-constructor','menu-builder','tooltip-generator','notification-manager','hud-builder','accessibility-checker'], description: 'UI validation' },
+  { agent: 'code-validator', skills: ['code-validator','duplicate-fixer','import-normalizer','dependency-analyzer'], description: 'Code validation' },
+]
+
+export function getSkillsForAgent(agentName: string): string[] {
+  const binding = AGENT_SKILL_BINDINGS.find(b => b.agent === agentName)
+  return binding?.skills ?? []
+}
