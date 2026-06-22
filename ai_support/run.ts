@@ -4,7 +4,6 @@
 import process from 'process';
 import fs from 'fs';
 import path from 'path';
-import { runCodeBuilder, runBuildCheck, runTests, tryGitCommit, runOrchestrator, runNpcArchitect, runWorldBuilder, runEconomyDesigner, runUiCraftsman, runDocumentationGenerator, runSecurityAuditor, runAgent, getTrustScore, getTaskStates } from './agents/autonomousOrchestrator.ts';
 
 const BUILD_LOG = './build_log.txt';
 const PROJECT_ROOT = './app/src';
@@ -83,8 +82,9 @@ ai_support CLI — мультиагентная система для AFK Game
     return;
   }
 
-  // === Agent commands ===
+  // === Agent commands (lazy import) ===
   if (cmd === 'agent') {
+    const { runAgent } = await import('./agents/autonomousOrchestrator.ts');
     const [agentType, ...descArr] = args.slice(1);
     const description = descArr.join(' ');
     if (!agentType || !description) {
@@ -101,6 +101,7 @@ ai_support CLI — мультиагентная система для AFK Game
   }
 
   if (cmd === 'build') {
+    const { runBuildCheck } = await import('./agents/autonomousOrchestrator.ts');
     const force = args[1] === 'force';
     console.log(force ? 'Building (forced)...' : 'Building...');
     const result = await runBuildCheck(force);
@@ -109,6 +110,7 @@ ai_support CLI — мультиагентная система для AFK Game
   }
 
   if (cmd === 'test') {
+    const { runTests } = await import('./agents/autonomousOrchestrator.ts');
     console.log('Running tests...');
     const result = await runTests();
     console.log(result.ok ? '✓ Tests passed' : '✗ Tests failed:', result.output);
@@ -138,6 +140,7 @@ ai_support CLI — мультиагентная система для AFK Game
   }
 
   if (cmd === 'status') {
+    const { getTrustScore, getTaskStates } = await import('./agents/autonomousOrchestrator.ts');
     const trust = getTrustScore();
     const states = getTaskStates();
     console.log('=== System Status ===');
