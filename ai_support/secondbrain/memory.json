@@ -24,7 +24,27 @@
   "learned": {
     "success_patterns": [],
     "error_recoveries": [],
-    "user_commands": {}
+    "user_commands": {},
+    "agent_errors": {
+      "npcArchitect": {
+        "common_errors": ["Duplicate identifier", "Property does not exist", "Cannot find name"],
+        "last_500_errors": []
+      },
+      "codeBuilder": {
+        "common_errors": ["Type not assignable", "Module not found"],
+        "last_500_errors": []
+      },
+      "economyDesigner": {
+        "common_errors": ["Type not assignable"],
+        "last_500_errors": []
+      }
+    },
+    "model_performance": {
+      "anthropic": { "success_rate": 0.85, "avg_time_ms": 15000 },
+      "openai": { "success_rate": 0.90, "avg_time_ms": 8000 },
+      "ollama": { "success_rate": 0.70, "avg_time_ms": 3000 },
+      "nvidia": { "success_rate": 0.75, "avg_time_ms": 5000 }
+    }
   },
   "shortTerm": [],
   "longTerm": []

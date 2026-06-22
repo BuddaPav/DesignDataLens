@@ -712,7 +712,14 @@ async function runNpcArchitect(task: AgentTask): Promise<AgentResult> {
   const context = await readFilesContext(files);
 
   const llmResult = await chatWithFallback([
-    { role: 'system', content: 'Ты - эксперт по NPC для RPG. Напиши TypeScript код для NPC системы. Формат: код между ```typescript и ```' },
+    { role: 'system', content: `Ты - NPC Architect для Chronos AI Chronicles.
+${getProjectContext()}
+КРИТИЧЕСКИ:
+1. НЕ трогай существующие типы и интерфейсы
+2. Используй ТОЛЬКО импорты из @/types/game
+3. После написания кода - ОБЯЗАТЕЛЬНО запусти npm run build
+4. Если ошибка - откати изменения и сообщи об ошибке
+Формат: код между \`\`\`typescript и \`\`\`` },
     { role: 'user', content: `Задача: ${task.description}\n\nКонтекст: ${context.slice(0, 2000)}\n\nНапиши реализацию.` }
   ]);
 
@@ -776,7 +783,12 @@ async function runEconomyDesigner(task: AgentTask): Promise<AgentResult> {
   const context = await readFilesContext(files);
 
   const llmResult = await chatWithFallback([
-    { role: 'system', content: 'Ты - эксперт по игровой экономике. Напиши TypeScript код для экономики. Формат: код между ```typescript и ```' },
+    { role: 'system', content: `Ты - Economy Designer для Chronos AI Chronicles.
+${getProjectContext()}
+КРИТИЧЕСКИ:
+1. Используй ТОЛЬКО существующие типы и функции
+2. После написания запусти npm run build
+3. Формат: код между \`\`\`typescript и \`\`\`` },
     { role: 'user', content: `Задача: ${task.description}\n\nКонтекст: ${context.slice(0, 2000)}\n\nНапиши реализацию.` }
   ]);
 
