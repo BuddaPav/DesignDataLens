@@ -14,7 +14,7 @@ class SkillsRegistry {
   constructor() { this.registerAll() }
 
   private registerAll() {
-    const core = ['code-scaffold','type-generator','hook-creator','test-generator','mock-fabricator','refactor-assistant','lint-fix','dependency-analyzer','api-contract','schema-validator']
+    const core = ['code-scaffold','type-generator','hook-creator','test-generator','mock-fabricator','refactor-assistant','lint-fix','dependency-analyzer','api-contract','schema-validator','code-validator','duplicate-fixer','import-normalizer']
     core.forEach(id => this.register({ id, name: id.replace(/-/g,' '), category: 'core', description: id }))
     const s3d = ['model-importer','texture-packer','material-creator','lighting-setup','animation-rigger','particle-system','postprocess-setup','level-optimizer','asset-bundler','gpu-profiler']
     s3d.forEach(id => this.register({ id, name: id.replace(/-/g,' '), category: '3d', description: id }))
