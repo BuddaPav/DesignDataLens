@@ -144,6 +144,7 @@ const PROJECT_ROOT = 'c:/Users/Den/Downloads/AFK Game';
 const APP_DIR = `${PROJECT_ROOT}/app`;
 const DOCS_DIR = `${PROJECT_ROOT}/docs`;
 const BUILD_LOG = `${PROJECT_ROOT}/ai_support/secondbrain/build_log.txt`;
+const AI_SUPPORT_DIR = `${PROJECT_ROOT}/ai_support/secondbrain`;
 
 export interface AgentTask {
   id: string;
