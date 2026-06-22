@@ -1,8 +1,9 @@
-﻿// Second Brain Main Entry Point
+// Second Brain Main Entry Point
 // Exports all systems for external use
 
 export * from './orchestrator';
 export * from './autonomous';
+export * from './gameFactory';
 
 import { init as initOrchestrator } from './orchestrator';
 import { init as initAutonomous } from './autonomous';
@@ -15,7 +16,7 @@ export async function initSecondBrain(mode: 'full' | 'memory' | 'autonomous' = '
   }
   
   if (mode === 'full' || mode === 'autonomous') {
-    await initOrchestrator();
+    await initAutonomous();
   }
   
   console.log('[secondbrain] Ready');

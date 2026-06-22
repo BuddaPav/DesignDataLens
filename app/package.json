@@ -65,6 +65,7 @@
                     "obsidian:daemon":  "node scripts/obsidian-auto-sync.cjs",
                     "secondbrain:init":  "node ../ai_support/secondbrain/index.ts",
                     "secondbrain:cli":  "node ../ai_support/secondbrain/cli.ts",
+                    "secondbrain:game":  "node ../ai_support/secondbrain/gameFactory.ts",
                     "secondbrain:autonomous":  "node ../ai_support/secondbrain/autonomous.ts",
                     "secondbrain:snapshot":  "node ../ai_support/secondbrain/communication/snapshot.ts",
                     "secondbrain:security":  "node ../ai_support/secondbrain/security/scanner.ts"

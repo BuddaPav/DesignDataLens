@@ -1,7 +1,8 @@
-﻿// Second Brain CLI - Command interface
+// Second Brain CLI - Command interface
 // Usage: ts-node cli.ts <command> [args]
 
 import * as secondBrain from './orchestrator';
+import { generateGameBlueprint } from './gameFactory';
 
 const commands: Record<string, Function> = {
   // Cognitive commands
@@ -116,6 +117,22 @@ const commands: Record<string, Function> = {
       console.log('No snapshot found');
     }
   },
+
+  game: async (args: string[]) => {
+    const goal = args.join(' ').trim();
+    const result = await generateGameBlueprint({
+      goal: goal || undefined,
+    });
+
+    console.log('Game factory blueprint generated');
+    console.log(JSON.stringify({
+      goal: result.blueprint.goal,
+      status: result.blueprint.status,
+      provider: result.blueprint.provider,
+      firstIncrement: result.blueprint.firstIncrement,
+      tasks: result.blueprint.tasks,
+    }, null, 2));
+  },
   
   // Help
   help: () => {
@@ -132,6 +149,7 @@ const commands: Record<string, Function> = {
     console.log('  latency          - Show validation latency');
     console.log('  flag <name>     - Set feature flag');
     console.log('  snapshot         - Show latest snapshot');
+    console.log('  game [goal]      - Generate game factory blueprint');
   }
 };
 
@@ -142,7 +160,7 @@ async function main() {
   const args = process.argv.slice(3);
   
   if (commands[cmd]) {
-    commands[cmd](args);
+    await commands[cmd](args);
   } else if (cmd) {
     console.log('Unknown command:', cmd);
     console.log('Run "help" for commands');
