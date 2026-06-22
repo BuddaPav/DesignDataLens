@@ -6,6 +6,7 @@ import path from 'path';
 import { execSync } from 'child_process';
 import { createRequire } from 'module';
 import { FileValidator } from '../secondbrain/FileValidator';
+import { getSkillsForAgent } from '../../.cursor/agents/core/skills-registry';
 
 const require = createRequire(import.meta.url);
 
@@ -918,6 +919,10 @@ async function runWorldBuilder(task: AgentTask): Promise<AgentResult> {
 // economyDesigner - РЕАЛЬНО пишет в economy файлы
 async function runEconomyDesigner(task: AgentTask): Promise<AgentResult> {
   log(`[economyDesigner] REAL WORK: ${task.description}`);
+
+  // === Skill binding ===
+  const boundSkills = getSkillsForAgent('economyDesigner');
+  log(`[economyDesigner] Skills: ${boundSkills.join(', ')}`);
 
   const files = ['src/domain/economy/shopPurchase.ts', 'src/domain/economy/prices.ts'];
   const context = await readFilesContext(files);
