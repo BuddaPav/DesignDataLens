@@ -118,6 +118,7 @@ ai_support CLI — мультиагентная система для AFK Game
   }
 
   if (cmd === 'commit') {
+    const { runBuildCheck, tryGitCommit } = await import('./agents/autonomousOrchestrator.ts');
     const message = args.slice(1).join(' ');
     if (!message) { console.log('Usage: commit <message>'); return; }
     console.log('Building before commit...');
@@ -133,6 +134,7 @@ ai_support CLI — мультиагентная система для AFK Game
   }
 
   if (cmd === 'orchestrator') {
+    const { runOrchestrator } = await import('./agents/autonomousOrchestrator.ts');
     console.log('Starting orchestrator...');
     await runOrchestrator();
     console.log('Orchestrator finished');

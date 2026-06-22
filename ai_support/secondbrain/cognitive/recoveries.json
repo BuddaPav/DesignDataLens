@@ -4,30 +4,6 @@
       "task": "Добавить тестовую локацию desert",
       "error": "safeWriteCode returned false",
       "fix": "Build/validation failed in worldBuilder",
-      "timestamp": "2026-06-22T15:52:26.739Z"
-    },
-    {
-      "task": "Добавить тестовую локацию desert",
-      "error": "Build/validation failed",
-      "fix": "Agent returned failure",
-      "timestamp": "2026-06-22T15:52:26.740Z"
-    },
-    {
-      "task": "Добавить тестовую локацию desert",
-      "error": "safeWriteCode returned false",
-      "fix": "Build/validation failed in worldBuilder",
-      "timestamp": "2026-06-22T15:53:41.440Z"
-    },
-    {
-      "task": "Добавить тестовую локацию desert",
-      "error": "Build/validation failed",
-      "fix": "Agent returned failure",
-      "timestamp": "2026-06-22T15:53:41.441Z"
-    },
-    {
-      "task": "Добавить тестовую локацию desert",
-      "error": "safeWriteCode returned false",
-      "fix": "Build/validation failed in worldBuilder",
       "timestamp": "2026-06-22T15:55:22.209Z"
     },
     {
@@ -299,7 +275,31 @@
       "error": "Build/validation failed",
       "fix": "Agent returned failure",
       "timestamp": "2026-06-22T16:29:39.403Z"
+    },
+    {
+      "task": "Добавить тестовую локацию desert",
+      "error": "safeWriteCode returned false",
+      "fix": "Build/validation failed in worldBuilder",
+      "timestamp": "2026-06-22T16:30:24.837Z"
+    },
+    {
+      "task": "Добавить тестовую локацию desert",
+      "error": "Build/validation failed",
+      "fix": "Agent returned failure",
+      "timestamp": "2026-06-22T16:30:24.845Z"
+    },
+    {
+      "task": "Добавить тестовую локацию desert",
+      "error": "safeWriteCode returned false",
+      "fix": "Build/validation failed in worldBuilder",
+      "timestamp": "2026-06-22T16:31:02.399Z"
+    },
+    {
+      "task": "Добавить тестовую локацию desert",
+      "error": "Build/validation failed",
+      "fix": "Agent returned failure",
+      "timestamp": "2026-06-22T16:31:02.406Z"
     }
   ],
-  "lastUpdated": "2026-06-22T16:29:39.403Z"
+  "lastUpdated": "2026-06-22T16:31:02.406Z"
 }
