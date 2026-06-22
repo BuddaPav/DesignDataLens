@@ -659,14 +659,17 @@ export async function runCodeBuilder(task: AgentTask): Promise<AgentResult> {
 
   const context = await readFilesContext(relevantFiles.slice(0, 3));
 
-  // Get LLM to generate actual code
+  // Get LLM to generate actual code with project context
+  const projectCtx = getProjectContext();
   const llmResult = await chatWithFallback([
-    { role: 'system', content: `Ты - эксперт по TypeScript/React для игрового проекта.
+    { role: 'system', content: `Ты - эксперт по TypeScript/React для Chronos AI Chronicles.
+${projectCtx}
 Правила:
 1. Пиши ТОЛЬКО код, без объяснений
-2. Используй существующие типы и функции из контекста
+2. Используй СУЩЕСТВУЮЩИЕ типы из @/types/game
 3. Если нужно добавить новую функцию - пиши её полностью
-4. Формат ответа: код между \`\`\`typescript и \`\`\`` },
+4. Формат ответа: код между \`\`\`typescript и \`\`\`
+КРИТИЧЕСКИ: После написания кода запусти npm run build` },
     { role: 'user', content: `Задача: ${task.description}
 
 Контекст проекта:
@@ -960,6 +963,49 @@ function isHealthy(): boolean {
   return hasDist && recentBuild;
 }
 
+// Project context for LLM agents
+function getProjectContext(): string {
+  return `
+Проект: Chronos AI Chronicles (AFK Game)
+Стек: React, Three.js (R3F), TypeScript, Node.js
+Стандарты:
+- TypeScript strict mode, без any
+- Feature flags для новых фич
+- Тесты для gameplay логики
+- Нет TODO без тикета
+
+КРИТИЧЕСКИ ВАЖНО:
+- Используй СУЩЕСТВУЮЩИЕ типы из @/types/game
+- Импортируй из существующих модулей
+- НЕ создавай новые типы без крайней необходимости
+- Проверяй tsc -b перед завершением
+
+Директории:
+- app/src/engine/ - игровой движок
+- app/src/domain/ - доменная логика
+- app/src/components/ - React компоненты
+- app/src/hooks/ - хуки
+`;
+}
+
+// Model selection based on agent type
+function selectModelForTask(agent: string): string {
+  switch (agent) {
+    case 'codeBuilder':
+      return 'openai';
+    case 'npcArchitect':
+      return 'anthropic';
+    case 'economyDesigner':
+      return 'openai';
+    case 'uiCraftsman':
+      return 'ollama';
+    case 'documentationGenerator':
+      return 'ollama';
+    default:
+      return 'nvidia';
+  }
+}
+
 // ==================== GIT + TELEGRAM (29-30) ====================
 function gitCommit(message: string): void {
   try {
@@ -968,6 +1014,33 @@ function gitCommit(message: string): void {
     log(`[git] Committed: ${message}`);
   } catch (e: any) {
     log(`[git] Commit failed: ${e.message}`);
+  }
+}
+
+// Build-gated commit - checks build before committing
+export async function tryGitCommit(message: string): Promise<boolean> {
+  log('[git] Checking build before commit...');
+  const buildResult = await runBuildCheck();
+
+  if (!buildResult.ok) {
+    log(`[git] BUILD FAILED - reverting changes: ${buildResult.output}`);
+    try {
+      execSync('git checkout -- .', { cwd: PROJECT_ROOT, stdio: 'ignore' });
+      log('[git] Changes reverted');
+    } catch (e: any) {
+      log(`[git] Revert failed: ${e.message}`);
+    }
+    return false;
+  }
+
+  try {
+    execSync('git add -A', { cwd: PROJECT_ROOT, stdio: 'ignore' });
+    execSync(`git commit -m "${message}"`, { cwd: PROJECT_ROOT, stdio: 'ignore' });
+    log(`[git] Committed (build OK): ${message}`);
+    return true;
+  } catch (e: any) {
+    log(`[git] Commit failed: ${e.message}`);
+    return false;
   }
 }
 
@@ -1272,8 +1345,8 @@ runOrchestrator()
       await notifyTelegram(`[Chronos] Orchestrator cycle ${cycleCount} complete. Tasks: ${tasksProcessedThisCycle}/${tasksCompletedThisCycle}, Build: ${buildRanThisCycle ? 'done' : 'skipped'}`);
     }
 
-    // Git commit if changes
-    gitCommit(`Orchestrator cycle ${cycleCount}: ${tasksCompletedThisCycle} tasks`);
+    // Git commit with build gate
+    await tryGitCommit(`Orchestrator cycle ${cycleCount}: ${tasksCompletedThisCycle} tasks`);
 
     log('[orchestrator] Cycle complete');
     process.exit(0);
