@@ -4,18 +4,6 @@
       "pattern": "Добавить тестовую локацию desert",
       "success": false,
       "task": "worldBuilder",
-      "timestamp": "2026-06-22T16:06:23.826Z"
-    },
-    {
-      "pattern": "Добавить тестовую локацию desert",
-      "success": false,
-      "task": "worldBuilder",
-      "timestamp": "2026-06-22T16:06:23.830Z"
-    },
-    {
-      "pattern": "Добавить тестовую локацию desert",
-      "success": false,
-      "task": "worldBuilder",
       "timestamp": "2026-06-22T16:07:33.200Z"
     },
     {
@@ -299,7 +287,19 @@
       "success": false,
       "task": "worldBuilder",
       "timestamp": "2026-06-22T16:36:22.114Z"
+    },
+    {
+      "pattern": "Добавить тестовую локацию desert",
+      "success": false,
+      "task": "worldBuilder",
+      "timestamp": "2026-06-22T16:38:54.818Z"
+    },
+    {
+      "pattern": "Добавить тестовую локацию desert",
+      "success": false,
+      "task": "worldBuilder",
+      "timestamp": "2026-06-22T16:38:54.821Z"
     }
   ],
-  "lastUpdated": "2026-06-22T16:36:22.114Z"
+  "lastUpdated": "2026-06-22T16:38:54.821Z"
 }
