@@ -753,10 +753,16 @@ function getNextTask(tasks: AgentTask[]): AgentTask | null {
     return !state || state.status !== 'done';
   });
 
+  log(`[getNextTask] After state filter: ${pending.length} tasks`);
+  if (pending.length === 0) return null;
+
   const retryTasks = pending.filter(t => shouldRetry(t));
+  log(`[getNextTask] Retry tasks: ${retryTasks.length}`);
   if (retryTasks.length > 0) return retryTasks[0];
 
-  return pending.sort((a, b) => b.priority - a.priority)[0];
+  const sorted = pending.sort((a, b) => b.priority - a.priority);
+  log(`[getNextTask] Top task: ${sorted[0]?.description?.slice(0, 30)} priority=${sorted[0]?.priority}`);
+  return sorted[0];
 }
 
 // ==================== ANALYSIS CACHE (31-33) ====================
