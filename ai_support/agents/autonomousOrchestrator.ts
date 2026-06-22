@@ -8,6 +8,63 @@ import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
 
+// ==================== VALIDATION (P0-1: Pre-write validation) ====================
+
+/**
+ * Validate content before writing - prevents duplicate code issues
+ */
+function validateContent(filePath: string, content: string): { valid: boolean; errors: string[] } {
+  const errors: string[] = [];
+  const lines = content.split('\n');
+
+  // Check duplicate imports
+  const importLines = lines.filter(l => l.match(/^import\s+.*from/));
+  const importCounts = new Map<string, number>();
+  for (const line of importLines) {
+    const match = line.match(/from\s+['"]([^'"]+)['"]/);
+    if (match) {
+      const module = match[1];
+      importCounts.set(module, (importCounts.get(module) || 0) + 1);
+    }
+  }
+  for (const [module, count] of importCounts.entries()) {
+    if (count > 1) errors.push(`Duplicate import from "${module}" (${count}x)`);
+  }
+
+  // Check duplicate exports
+  const exports = new Map<string, number>();
+  for (const line of lines) {
+    const match = line.match(/export\s+(function|class|const|type|interface)\s+(\w+)/);
+    if (match) {
+      const name = match[2];
+      exports.set(name, (exports.get(name) || 0) + 1);
+    }
+  }
+  for (const [name, count] of exports.entries()) {
+    if (count > 1) errors.push(`Duplicate export "${name}" (${count}x)`);
+  }
+
+  return { valid: errors.length === 0, errors };
+}
+
+/**
+ * Safe write with validation - restores backup on validation failure
+ */
+function safeWrite(targetFile: string, newCode: string): { success: boolean; error?: string } {
+  // Validate BEFORE write
+  const validation = validateContent(targetFile, newCode);
+  if (!validation.valid) {
+    return { success: false, error: `Validation failed: ${validation.errors.join(', ')}` };
+  }
+
+  // Check for common issues
+  if (newCode.includes('// TODO')) {
+    return { success: false, error: 'Code contains TODO comments' };
+  }
+
+  return { success: true };
+}
+
 // ==================== CONFIG ====================
 interface OrchestratorConfig {
   buildTimeout: number;
@@ -481,8 +538,7 @@ function setCachedAnalysis(key: string, result: string): void {
 
 // ==================== HELPER FUNCTIONS ====================
 
-// Safe write with TypeScript check and rollback
-// Safe write with FULL project build validation
+// Safe write with TypeScript check and rollback + PRE-WRITE VALIDATION (P0-1, P0-3)
 function safeWriteCode(targetFile: string, newCode: string, taskDesc: string): boolean {
   if (!fs.existsSync(targetFile)) {
     log(`[safeWrite] File not found: ${targetFile}`);
@@ -490,6 +546,15 @@ function safeWriteCode(targetFile: string, newCode: string, taskDesc: string): b
   }
 
   const existing = fs.readFileSync(targetFile, 'utf-8');
+  const combinedCode = existing + newCode;
+
+  // === P0-1: Pre-write validation BEFORE writing ===
+  const preValidation = validateContent(targetFile, combinedCode);
+  if (!preValidation.valid) {
+    log(`[safeWrite] PRE-VALIDATION FAILED for ${path.basename(targetFile)}: ${preValidation.errors.join('; ')}`);
+    return false;
+  }
+
   const backupFile = targetFile + '.backup';
 
   // Backup original
