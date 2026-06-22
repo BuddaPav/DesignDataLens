@@ -1,12 +1,6 @@
 {
   "learnings": [
     {
-      "pattern": "Добавить тестовую локацию desert",
-      "success": false,
-      "task": "worldBuilder",
-      "timestamp": "2026-06-22T16:43:51.035Z"
-    },
-    {
       "pattern": "# Tasks - one per line\n# Оркестратор остановлен для отладки",
       "success": false,
       "task": "codeBuilder",
@@ -299,7 +293,13 @@
       "success": true,
       "task": "economyDesigner",
       "timestamp": "2026-06-22T18:25:05.048Z"
+    },
+    {
+      "pattern": "[STAGE 016] Минимальный «контентный» проход: N сцен подряд без мягких блокеров (чеклист QA).",
+      "success": true,
+      "task": "economyDesigner",
+      "timestamp": "2026-06-22T18:26:18.309Z"
     }
   ],
-  "lastUpdated": "2026-06-22T18:25:05.048Z"
+  "lastUpdated": "2026-06-22T18:26:18.309Z"
 }

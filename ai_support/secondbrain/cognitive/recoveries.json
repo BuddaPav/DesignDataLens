@@ -1,12 +1,6 @@
 {
   "recoveries": [
     {
-      "task": "Добавить тестовую локацию desert",
-      "error": "Build/validation failed",
-      "fix": "Agent returned failure",
-      "timestamp": "2026-06-22T16:43:51.038Z"
-    },
-    {
       "task": "# Tasks - one per line\n# Оркестратор остановлен для отладки",
       "error": "Task failed with ok=false",
       "fix": "Agent returned failure",
@@ -299,7 +293,13 @@
       "error": "safeWriteCode returned false",
       "fix": "Build/validation failed in economyDesigner",
       "timestamp": "2026-06-22T18:25:05.047Z"
+    },
+    {
+      "task": "[STAGE 016] Минимальный «контентный» проход: N сцен подряд без мягких блокеров (чеклист QA).",
+      "error": "safeWriteCode returned false",
+      "fix": "Build/validation failed in economyDesigner",
+      "timestamp": "2026-06-22T18:26:18.308Z"
     }
   ],
-  "lastUpdated": "2026-06-22T18:25:05.047Z"
+  "lastUpdated": "2026-06-22T18:26:18.308Z"
 }
