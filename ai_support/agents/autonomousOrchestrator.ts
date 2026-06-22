@@ -215,6 +215,13 @@ async function chatOpenAI(messages: LLMMessage[]): Promise<string | null> {
 
 // Anthropic Provider
 async function chatAnthropic(messages: LLMMessage[]): Promise<string | null> {
+  // === P0-8: Rate limit check ===
+  if (!checkRateLimit('anthropic')) {
+    log('[chatAnthropic] Rate limited');
+    return null;
+  }
+  recordAPICall('anthropic');
+
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return null;
 
