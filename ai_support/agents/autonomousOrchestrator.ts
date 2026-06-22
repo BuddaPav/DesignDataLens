@@ -748,13 +748,24 @@ function shouldRetry(task: AgentTask): boolean {
 function getNextTask(tasks: AgentTask[]): AgentTask | null {
   // Filter out already done tasks (check both task.done and taskStates)
   const pending = tasks.filter(t => {
-    if (t.done) return false;
+    if (t.done) {
+      log(`[getNextTask] ${t.id} filtered: t.done=true`);
+      return false;
+    }
     const state = taskStates.get(t.id);
-    return !state || state.status !== 'done';
+    if (state && state.status === 'done') {
+      log(`[getNextTask] ${t.id} filtered: state.done=true`);
+      return false;
+    }
+    return true;
   });
 
   log(`[getNextTask] After state filter: ${pending.length} tasks`);
-  if (pending.length === 0) return null;
+  if (pending.length === 0) {
+    log(`[getNextTask] All task IDs: ${tasks.map(t => t.id).join(', ')}`);
+    log(`[getNextTask] All taskStates: ${[...taskStates.keys()].join(', ')}`);
+    return null;
+  }
 
   const retryTasks = pending.filter(t => shouldRetry(t));
   log(`[getNextTask] Retry tasks: ${retryTasks.length}`);
