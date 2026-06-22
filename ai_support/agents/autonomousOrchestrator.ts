@@ -419,6 +419,7 @@ function markTaskDone(task: AgentTask): void {
     lastRun: Date.now(),
     result: 'completed'
   });
+  task.done = true;
   saveTaskState();
 
   // Mark in PROJECT_MILESTONES
