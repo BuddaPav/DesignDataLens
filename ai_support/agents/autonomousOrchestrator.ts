@@ -835,8 +835,30 @@ function safeWriteCode(targetFile: string, newCode: string, taskDesc: string): b
   // Backup original
   fs.writeFileSync(backupFile, existing);
 
+  // === Pre-write check: detect duplicate exports in combined code ===
+  const combinedCode = existing + '\n' + newCode;
+  const exportMatches = combinedCode.match(/export\s+(function|const|class|type|interface)\s+(\w+)/g) || [];
+  const exportCounts = new Map<string, number>();
+  for (const exp of exportMatches) {
+    const nameMatch = exp.match(/export\s+(function|const|class|type|interface)\s+(\w+)/);
+    if (nameMatch) {
+      const name = nameMatch[2];
+      exportCounts.set(name, (exportCounts.get(name) || 0) + 1);
+    }
+  }
+  const duplicates: string[] = [];
+  for (const [name, count] of exportCounts) {
+    if (count > 1) duplicates.push(name);
+  }
+  if (duplicates.length > 0) {
+    log(`[safeWrite] DUPLICATE EXPORTS in combined code: ${duplicates.join(', ')} - restoring backup`);
+    fs.writeFileSync(targetFile, existing);
+    try { fs.unlinkSync(backupFile); } catch {}
+    return false;
+  }
+
   // Write new code
-  fs.writeFileSync(targetFile, existing + newCode);
+  fs.writeFileSync(targetFile, combinedCode);
 
   // Do FULL project build to catch cross-file dependency errors
   try {
