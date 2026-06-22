@@ -29,7 +29,10 @@
       "Bash(timeout /t 3)",
       "Bash(curl -s http://localhost:11434/api/tags)",
       "Bash(npx tsc -b --force)",
-      "Bash(node agents/autonomousOrchestrator.ts)"
+      "Bash(node agents/autonomousOrchestrator.ts)",
+      "Bash(npm list tsx)",
+      "Bash(cd c:/Users/Den/Downloads/AFK Game/ai_support)",
+      "Bash(npx tsx agents/autonomousOrchestrator.ts)"
     ]
   }
 }
