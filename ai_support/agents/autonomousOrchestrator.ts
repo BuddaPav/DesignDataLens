@@ -1067,6 +1067,38 @@ function loadTasksFromDocs(): AgentTask[] {
     }
   }
 
+  // STAGES_001-050.md
+  const stages1Path = path.join(DOCS_DIR, '../mvp/STAGES_001-050.md');
+  if (fs.existsSync(stages1Path)) {
+    const content = fs.readFileSync(stages1Path, 'utf-8');
+    for (const line of content.split('\n')) {
+      if (line.includes('- [ ]') && line.includes('**')) {
+        const match = line.match(/\*\*(\d+)\*\*\s*(.+)/);
+        if (match) {
+          const num = match[1];
+          const desc = match[2].replace(/\*+$/, '').trim();
+          addTask(`[STAGE ${num}] ${desc}`, 6);
+        }
+      }
+    }
+  }
+
+  // STAGES_051-100.md
+  const stages2Path = path.join(DOCS_DIR, '../mvp/STAGES_051-100.md');
+  if (fs.existsSync(stages2Path)) {
+    const content = fs.readFileSync(stages2Path, 'utf-8');
+    for (const line of content.split('\n')) {
+      if (line.includes('- [ ]') && line.includes('**')) {
+        const match = line.match(/\*\*(\d+)\*\*\s*(.+)/);
+        if (match) {
+          const num = match[1];
+          const desc = match[2].replace(/\*+$/, '').trim();
+          addTask(`[STAGE ${num}] ${desc}`, 6);
+        }
+      }
+    }
+  }
+
   return tasks;
 }
 
