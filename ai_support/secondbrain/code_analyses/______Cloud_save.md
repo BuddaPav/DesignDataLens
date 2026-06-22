@@ -2,23 +2,51 @@
 
 ```typescript
 ```typescript
-interface SaveData {
-  level: number;
-  score: number;
-  bestScore: number;
-}
+import { useState, useEffect } from 'react';
+import { GameData } from './types';
 
-const saveKey = "gameSave";
+const useCloudSave = (initialState: GameData): [GameData, (data: GameData) => void] => {
+  const [gameData, setGameData] = useState<GameData>(initialState);
 
-function saveGame(data: SaveData): void {
-  localStorage.setItem(saveKey, JSON.stringify(data));
-}
+  useEffect(() => {
+    // Fetch data from cloud
+    const fetchFromCloud = async () => {
+      try {
+        const response = await fetch('/api/save');
+        if (response.ok) {
+          const savedData: GameData = await response.json();
+          setGameData(savedData);
+        }
+      } catch (error) {
+        console.error('Failed to load game data from cloud:', error);
+      }
+    };
 
-function loadGame(): SaveData | null {
-  const savedData = localStorage.getItem(saveKey);
-  return savedData ? JSON.parse(savedData) : null;
-}
+    fetchFromCloud();
+  }, []);
+
+  useEffect(() => {
+    // Save data to cloud
+    const saveToCloud = async () => {
+      try {
+        await fetch('/api/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(gameData),
+        });
+      } catch (error) {
+        console.error('Failed to save game data to cloud:', error);
+      }
+    };
+
+    saveToCloud();
+  }, [gameData]);
+
+  return [gameData, setGameData];
+};
+
+export default useCloudSave;
 ```
 ```
 
-Generated: 2026-06-22T06:14:35.371Z
+Generated: 2026-06-22T08:11:10.136Z

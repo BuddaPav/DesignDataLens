@@ -2,96 +2,106 @@
 
 ```typescript
 ```typescript
-import React, { useState } from 'react';
-
-type NarrativeBranch = {
+interface NarrativeNode {
   id: string;
-  title: string;
-  content: string;
-  nextBranches: string[];
+  text: string;
+  choices: Choice[];
+}
+
+interface Choice {
+  text: string;
+  nextNodeId: string;
+}
+
+class NarrativeManager {
+  private nodes: { [id: string]: NarrativeNode } = {};
+
+  addNode(node: NarrativeNode): void {
+    this.nodes[node.id] = node;
+  }
+
+  startNarrative(startNodeId: string): void {
+    const currentNode = this.getNode(startNodeId);
+    if (!currentNode) {
+      console.error(`Node with id ${startNodeId} not found.`);
+      return;
+    }
+    this.displayNode(currentNode);
+  }
+
+  private displayNode(node: NarrativeNode): void {
+    console.log(node.text);
+    node.choices.forEach((choice, index) => {
+      console.log(`${index + 1}. ${choice.text}`);
+    });
+  }
+
+  makeChoice(choiceIndex: number): void {
+    const currentNode = this.getCurrentNode();
+    if (!currentNode) {
+      console.error("No current node available.");
+      return;
+    }
+    if (choiceIndex < 0 || choiceIndex >= currentNode.choices.length) {
+      console.error("Invalid choice index.");
+      return;
+    }
+
+    const nextNodeId = currentNode.choices[choiceIndex].nextNodeId;
+    const nextNode = this.getNode(nextNodeId);
+    if (!nextNode) {
+      console.error(`Next node with id ${nextNodeId} not found.`);
+      return;
+    }
+    this.displayNode(nextNode);
+  }
+
+  private getNode(id: string): NarrativeNode | undefined {
+    return this.nodes[id];
+  }
+
+  private getCurrentNode(): NarrativeNode | undefined {
+    // This is a simplified version. In a real game, you might need to store the current node's ID.
+    return this.nodes['currentNodeId']; // Replace 'currentNodeId' with actual logic to get current node
+  }
+}
+
+// Example usage:
+const narrativeManager = new NarrativeManager();
+
+const node1: NarrativeNode = {
+  id: "node1",
+  text: "You find yourself in a dark forest. What do you do?",
+  choices: [
+    { text: "Go left", nextNodeId: "node2" },
+    { text: "Go right", nextNodeId: "node3" }
+  ]
 };
 
-const narratives: Record<string, NarrativeBranch> = {
-  start: {
-    id: 'start',
-    title: 'The Beginning',
-    content: 'You find yourself in a dark forest. What do you do?',
-    nextBranches: ['path1', 'path2'],
-  },
-  path1: {
-    id: 'path1',
-    title: 'Path to the Castle',
-    content: 'You follow a narrow path that leads to a castle. Do you enter?',
-    nextBranches: ['castleEntrance'],
-  },
-  path2: {
-    id: 'path2',
-    title: 'Secret Cave',
-    content: 'You stumble upon a hidden cave. What do you explore?',
-    nextBranches: ['caveExploration'],
-  },
-  castleEntrance: {
-    id: 'castleEntrance',
-    title: 'Inside the Castle',
-    content: 'You enter the castle and find a treasure chest. Do you open it?',
-    nextBranches: ['treasureChest', 'leaveCastle'],
-  },
-  caveExploration: {
-    id: 'caveExploration',
-    title: 'Cave Exploration',
-    content: 'You explore the cave and discover an old book. What do you do?',
-    nextBranches: ['readBook', 'searchMore'],
-  },
-  treasureChest: {
-    id: 'treasureChest',
-    title: 'Treasure Chest',
-    content: 'You open the chest and find gold coins. You are rich!',
-    nextBranches: [],
-  },
-  leaveCastle: {
-    id: 'leaveCastle',
-    title: 'Leave Castle',
-    content: 'You decide to leave the castle and continue your journey.',
-    nextBranches: [],
-  },
-  readBook: {
-    id: 'readBook',
-    title: 'Read Book',
-    content: 'You read the book and find out a secret about the forest. You feel enlightened!',
-    nextBranches: [],
-  },
-  searchMore: {
-    id: 'searchMore',
-    title: 'Search More',
-    content: 'You search more in the cave but find nothing of interest. It was just a dead end.',
-    nextBranches: [],
-  },
+const node2: NarrativeNode = {
+  id: "node2",
+  text: "You encounter a friendly wizard. What do you say?",
+  choices: [
+    { text: "Ask for advice", nextNodeId: "node4" },
+    { text: "Try to run away", nextNodeId: "node5" }
+  ]
 };
 
-const MultiBranchNarrative: React.FC = () => {
-  const [currentBranch, setCurrentBranch] = useState('start');
-
-  const handleNextBranch = (branchId: string) => {
-    setCurrentBranch(branchId);
-  };
-
-  const currentNarrative = narratives[currentBranch];
-
-  return (
-    <div>
-      <h1>{currentNarrative.title}</h1>
-      <p>{currentNarrative.content}</p>
-      {currentNarrative.nextBranches.map((branchId) => (
-        <button key={branchId} onClick={() => handleNextBranch(branchId)}>
-          Go to {narratives[branchId].title}
-        </button>
-      ))}
-    </div>
-  );
+const node3: NarrativeNode = {
+  id: "node3",
+  text: "You stumble upon a hidden cave. What do you do?",
+  choices: [
+    { text: "Explore the cave", nextNodeId: "node6" },
+    { text: "Leave the cave", nextNodeId: "node7" }
+  ]
 };
 
-export default MultiBranchNarrative;
+narrativeManager.addNode(node1);
+narrativeManager.addNode(node2);
+narrativeManager.addNode(node3);
+
+narrativeManager.startNarrative("node1");
 ```
 ```
 
-Generated: 2026-06-22T06:11:55.228Z
+Generated: 2026-06-22T08:10:30.171Z

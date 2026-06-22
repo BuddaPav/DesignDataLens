@@ -2,33 +2,39 @@
 
 ```typescript
 ```typescript
-type Content = {
+interface PlayerContent {
   id: string;
-  title: string;
   type: 'text' | 'image' | 'video';
-  data: string; // Текст для текстового контента, URL для изображения или видео
-};
+  content: string;
+}
 
-class PlayerContentManager {
-  private contentMap: Map<string, Content> = new Map();
+class ContentManager {
+  private static instance: ContentManager | null = null;
 
-  addContent(content: Content): void {
-    this.contentMap.set(content.id, content);
+  private constructor() {}
+
+  public static getInstance(): ContentManager {
+    if (!ContentManager.instance) {
+      ContentManager.instance = new ContentManager();
+    }
+    return ContentManager.instance;
   }
 
-  getContent(id: string): Content | undefined {
-    return this.contentMap.get(id);
+  public createContent(playerId: string, type: PlayerContent['type'], content: string): PlayerContent {
+    const id = this.generateUniqueId();
+    return { id, type, content };
   }
 
-  deleteContent(id: string): void {
-    this.contentMap.delete(id);
-  }
-
-  listAllContents(): Content[] {
-    return Array.from(this.contentMap.values());
+  private generateUniqueId(): string {
+    return Math.random().toString(36).substr(2, 9);
   }
 }
+
+// Пример использования
+const contentManager = ContentManager.getInstance();
+const newContent = contentManager.createContent('player123', 'text', 'Hello, world!');
+console.log(newContent); // { id: ..., type: 'text', content: 'Hello, world!' }
 ```
 ```
 
-Generated: 2026-06-22T06:18:14.583Z
+Generated: 2026-06-22T08:12:00.463Z

@@ -2,69 +2,39 @@
 
 ```typescript
 ```typescript
-import { useState, useEffect } from 'react';
+// Пример реализации простого сервиса для налогообложения в игровом проекте с использованием TypeScript и React
 
-interface MonetizationContext {
-  isMonetized: boolean;
-  startMonetization(): void;
-  stopMonetization(): void;
+type Player = {
+  id: string;
+  name: string;
+  earnings: number;
+};
+
+const players: Player[] = [];
+
+function addEarnings(playerId: string, amount: number): void {
+  const player = players.find(p => p.id === playerId);
+  if (player) {
+    player.earnings += amount;
+    console.log(`Player ${player.name} earned ${amount}. Total earnings: ${player.earnings}`);
+  } else {
+    console.log(`Player with id ${playerId} not found`);
+  }
 }
 
-const MonetizationContext = React.createContext<MonetizationContext>({
-  isMonetized: false,
-  startMonetization: () => {},
-  stopMonetization: () => {},
-});
+function getTopEarners(limit: number = 5): Player[] {
+  return players.sort((a, b) => b.earnings - a.earnings).slice(0, limit);
+}
 
-export const useMonetization = (): MonetizationContext => {
-  return React.useContext(MonetizationContext);
-};
+// Пример использования
+addEarnings('1', 100);
+addEarnings('2', 300);
+addEarnings('1', 50);
 
-const MonetizationProvider: React.FC = ({ children }) => {
-  const [isMonetized, setIsMonetized] = useState(false);
-
-  useEffect(() => {
-    // Здесь можно добавить логику для проверки монетизации
-    // Например, вызов API для получения статуса монетизации пользователя
-
-    // Пример фейковой логики:
-    const checkMonetizationStatus = async () => {
-      try {
-        const response = await fetch('/api/monetization/check');
-        const status = await response.json();
-        setIsMonetized(status.isMonetized);
-      } catch (error) {
-        console.error('Error checking monetization status:', error);
-      }
-    };
-
-    checkMonetizationStatus();
-  }, []);
-
-  const startMonetization = () => {
-    // Здесь можно добавить логику для запуска процесса монетизации
-    // Например, открытие вебинара или переход на страницу оплаты
-
-    console.log('Starting monetization process...');
-  };
-
-  const stopMonetization = () => {
-    // Здесь можно добавить логику для остановки процесса монетизации
-    // Например, закрытие вебинара или откат изменений
-
-    setIsMonetized(false);
-    console.log('Stopping monetization process...');
-  };
-
-  return (
-    <MonetizationContext.Provider value={{ isMonetized, startMonetization, stopMonetization }}>
-      {children}
-    </MonetizationContext.Provider>
-  );
-};
-
-export default MonetizationProvider;
-```
+console.log(getTopEarners());
 ```
 
-Generated: 2026-06-22T06:12:55.590Z
+Этот код представляет собой базовую реализацию сервиса для налогообложения в игровом проекте. Он использует типы и функции из TypeScript для управления игроками и их доходами.
+```
+
+Generated: 2026-06-22T08:10:47.155Z
