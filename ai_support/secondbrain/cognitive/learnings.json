@@ -1,12 +1,6 @@
 {
   "learnings": [
     {
-      "pattern": "# Tasks - one per line\n# Оркестратор остановлен для отладки",
-      "success": false,
-      "task": "codeBuilder",
-      "timestamp": "2026-06-22T16:43:58.941Z"
-    },
-    {
       "pattern": "[STAGE 016] Минимальный «контентный» проход: N сцен подряд без мягких блокеров (чеклист QA).",
       "success": true,
       "task": "economyDesigner",
@@ -299,7 +293,13 @@
       "success": true,
       "task": "economyDesigner",
       "timestamp": "2026-06-22T18:26:18.309Z"
+    },
+    {
+      "pattern": "[STAGE 016] Минимальный «контентный» проход: N сцен подряд без мягких блокеров (чеклист QA).",
+      "success": true,
+      "task": "economyDesigner",
+      "timestamp": "2026-06-22T18:27:27.928Z"
     }
   ],
-  "lastUpdated": "2026-06-22T18:26:18.309Z"
+  "lastUpdated": "2026-06-22T18:27:27.928Z"
 }
