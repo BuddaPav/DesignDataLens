@@ -1463,8 +1463,31 @@ function loadTasksFromDocs(): AgentTask[] {
   const tasks: AgentTask[] = [];
   const idCounter = { val: 0 };
 
-  // Helper to add tasks
+  // Helper to add tasks - reads from task.txt first
   const addTask = (desc: string, priority: number) => {
+    if (desc.length > 5) {
+      tasks.push({
+        id: `task_${idCounter.val++}`,
+        description: desc,
+        priority,
+        agent: guessAgentForTask(desc),
+        done: false,
+      });
+    }
+  };
+
+  // Load priority task from task.txt
+  const taskTxtPath = path.join(AI_SUPPORT_DIR, 'task.txt');
+  if (fs.existsSync(taskTxtPath)) {
+    const taskContent = fs.readFileSync(taskTxtPath, 'utf-8').trim();
+    if (taskContent.length > 5) {
+      log(`[orchestrator] Loading from task.txt: "${taskContent}"`);
+      addTask(taskContent, 10);
+    }
+  }
+
+  // Helper to add legacy tasks from docs
+  const addLegacyTask = (desc: string, priority: number) => {
     if (desc.length > 5) {
       tasks.push({
         id: `task_${idCounter.val++}`,
@@ -1483,7 +1506,7 @@ function loadTasksFromDocs(): AgentTask[] {
     for (const line of content.split('\n')) {
       if (line.includes('- [ ]')) {
         const desc = line.replace(/^.*-\[ \]/, '').trim();
-        addTask(desc, 5);
+        addLegacyTask(desc, 5);
       }
     }
   }
@@ -1495,7 +1518,7 @@ function loadTasksFromDocs(): AgentTask[] {
     for (const line of content.split('\n')) {
       if (line.match(/^\d+\./)) {
         const desc = line.replace(/^\d+\.\s*/, '').trim();
-        addTask(desc, 3);
+        addLegacyTask(desc, 3);
       }
     }
   }
@@ -1512,7 +1535,7 @@ function loadTasksFromDocs(): AgentTask[] {
       }
       if (inList && (line.includes('- [ ]') || line.match(/^\d+\.\s+- \[ \]/))) {
         const desc = line.replace(/^.*-\[ \]/, '').trim();
-        if (desc) addTask(desc, 4);
+        if (desc) addLegacyTask(desc, 4);
       }
     }
   }
@@ -1527,7 +1550,7 @@ function loadTasksFromDocs(): AgentTask[] {
         if (match) {
           const num = match[1];
           const desc = match[2].replace(/\*+$/, '').trim();
-          addTask(`[STAGE ${num}] ${desc}`, 6);
+          addLegacyTask(`[STAGE ${num}] ${desc}`, 6);
         }
       }
     }
@@ -1543,7 +1566,7 @@ function loadTasksFromDocs(): AgentTask[] {
         if (match) {
           const num = match[1];
           const desc = match[2].replace(/\*+$/, '').trim();
-          addTask(`[STAGE ${num}] ${desc}`, 6);
+          addLegacyTask(`[STAGE ${num}] ${desc}`, 6);
         }
       }
     }
