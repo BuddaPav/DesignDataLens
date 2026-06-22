@@ -222,5 +222,12 @@
     "attempts": 2,
     "lastRun": 1782142986511,
     "result": "completed"
+  },
+  "task_983757_0": {
+    "taskId": "task_983757_0",
+    "status": "failed",
+    "attempts": 3,
+    "lastRun": 1782143989695,
+    "result": "failed"
   }
 }

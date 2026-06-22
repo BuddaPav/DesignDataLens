@@ -1048,7 +1048,6 @@ ${context.slice(0, 3000)}
     log(`[codeBuilder] Analysis save: ${e.message}`);
   }
 
-  markTaskDone(task);
   return { ok: codeWritten, output: llmResult };
 }
 
@@ -1097,7 +1096,6 @@ ${sbContext}
     }
   }
 
-  markTaskDone(task);
   return { ok: true, output: llmResult };
 }
 
@@ -1132,7 +1130,6 @@ async function runWorldBuilder(task: AgentTask): Promise<AgentResult> {
 
     if (safeWriteCode(worldFile, newCode, task.description)) {
       log(`[worldBuilder] WRITTEN to worldTiles.ts`);
-      markTaskDone(task);
       return { ok: true, output: llmResult };
     } else {
       log(`[worldBuilder] Skipped (TS error)`);
@@ -1189,7 +1186,6 @@ ${sbContext}
     }
   }
 
-  markTaskDone(task);
   return { ok: true, output: llmResult };
 }
 
@@ -1213,7 +1209,6 @@ async function runUiCraftsman(task: AgentTask): Promise<AgentResult> {
     { role: 'user', content: `Задача: ${task.description}\n\n${context.slice(0, 1000)}` }
   ]);
 
-  markTaskDone(task);
   return { ok: true, output: llmResult.slice(0, 200) };
 }
 
@@ -1226,7 +1221,6 @@ async function runDocumentationGenerator(task: AgentTask): Promise<AgentResult> 
     { role: 'user', content: `Задача: ${task.description}` }
   ]);
 
-  markTaskDone(task);
   return { ok: true, output: llmResult.slice(0, 200) };
 }
 
@@ -1250,7 +1244,6 @@ async function runSecurityAuditor(task: AgentTask): Promise<AgentResult> {
 
   const report = issues.length > 0 ? `Issues found: ${issues.join(', ')}` : 'No issues found';
 
-  markTaskDone(task);
   return { ok: issues.length === 0, output: report };
 }
 
@@ -1744,22 +1737,30 @@ async function runAgent(agent: string, task: AgentTask): Promise<AgentResult> {
   const model = selectModelForTask(agent);
   log(`[orchestrator] ${agent} using model: ${model}`);
 
-  switch (agent) {
-    case 'codeBuilder': return runCodeBuilder(task);
-    case 'npcArchitect': return runNpcArchitect(task);
-    case 'worldBuilder': return runWorldBuilder(task);
-    case 'economyDesigner': return runEconomyDesigner(task);
-    case 'uiCraftsman': return runUiCraftsman(task);
-    case 'documentationGenerator': return runDocumentationGenerator(task);
-    case 'securityAuditor': return runSecurityAuditor(task);
-    case 'testRunner':
-      const result = await runTests();
-      if (result.ok) markTaskDone(task);
-      return result;
-    default:
-      log(`[orchestrator] Unknown agent: ${agent}`);
-      return { ok: false, output: '', error: 'Unknown agent' };
+  const result = await (async () => {
+    switch (agent) {
+      case 'codeBuilder': return runCodeBuilder(task);
+      case 'npcArchitect': return runNpcArchitect(task);
+      case 'worldBuilder': return runWorldBuilder(task);
+      case 'economyDesigner': return runEconomyDesigner(task);
+      case 'uiCraftsman': return runUiCraftsman(task);
+      case 'documentationGenerator': return runDocumentationGenerator(task);
+      case 'securityAuditor': return runSecurityAuditor(task);
+      case 'testRunner': return runTests();
+      default:
+        log(`[orchestrator] Unknown agent: ${agent}`);
+        return { ok: false, output: '', error: 'Unknown agent' };
+    }
+  })();
+
+  // Record result in Second Brain
+  if (result.ok) {
+    markTaskDone(task, true);
+  } else {
+    markTaskFailed(task, result.error || 'Agent failed');
   }
+
+  return result;
 }
 
 // ==================== LOGGING ====================

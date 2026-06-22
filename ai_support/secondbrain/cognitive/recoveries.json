@@ -161,7 +161,19 @@
       "error": "Build/validation failed",
       "fix": "Agent returned failure",
       "timestamp": "2026-06-22T15:57:01.653Z"
+    },
+    {
+      "task": "Добавить тестовую локацию desert",
+      "error": "safeWriteCode returned false",
+      "fix": "Build/validation failed in worldBuilder",
+      "timestamp": "2026-06-22T15:59:49.691Z"
+    },
+    {
+      "task": "Добавить тестовую локацию desert",
+      "error": "Build/validation failed",
+      "fix": "Agent returned failure",
+      "timestamp": "2026-06-22T15:59:49.710Z"
     }
   ],
-  "lastUpdated": "2026-06-22T15:57:01.653Z"
+  "lastUpdated": "2026-06-22T15:59:49.710Z"
 }
