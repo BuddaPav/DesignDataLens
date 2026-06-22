@@ -22,18 +22,8 @@ function validateContent(filePath: string, content: string): { valid: boolean; e
   const errors: string[] = [];
   const lines = content.split('\n');
 
-  // Check duplicate imports
+  // Check duplicate imports (by full line only - same module different symbols is OK)
   const importLines = lines.filter(l => l.match(/^import\s+.*from/));
-  const importCounts = new Map<string, number>();
-  for (const line of importLines) {
-    const match = line.match(/from\s+['"]([^'"]+)['"]/);
-    if (match) {
-      const module = match[1];
-      importCounts.set(module, (importCounts.get(module) || 0) + 1);
-    }
-  }
-  // Allow multiple imports from same module (different symbols is OK)
-  // Only flag if same full line repeated (true duplicate)
   const seenImportLines = new Set<string>();
   for (const line of importLines) {
     const normalized = line.trim();

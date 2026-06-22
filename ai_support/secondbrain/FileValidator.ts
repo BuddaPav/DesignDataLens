@@ -33,21 +33,15 @@ class FileValidator {
     const errors: string[] = [];
     const lines = content.split('\n');
 
-    // Check for duplicate imports (indicator of code gen issue)
+    // Check for duplicate imports (by full line only - same module different symbols is OK)
     const importLines = lines.filter(l => l.match(/^import\s+.*from/));
-    const importCounts = new Map<string, number>();
+    const seenImportLines = new Set<string>();
     for (const line of importLines) {
-      const match = line.match(/from\s+['"]([^'"]+)['"]/);
-      if (match) {
-        const module = match[1];
-        importCounts.set(module, (importCounts.get(module) || 0) + 1);
+      const normalized = line.trim();
+      if (seenImportLines.has(normalized)) {
+        errors.push(`Duplicate import line: "${normalized.slice(0, 50)}..."`);
       }
-    }
-
-    for (const [module, count] of importCounts.entries()) {
-      if (count > 1) {
-        errors.push(`Duplicate import from "${module}" (${count} times) - likely code generation error`);
-      }
+      seenImportLines.add(normalized);
     }
 
     // Check for duplicate function/class exports

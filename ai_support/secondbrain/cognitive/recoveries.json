@@ -4,18 +4,6 @@
       "task": "[STAGE 016] Минимальный «контентный» проход: N сцен подряд без мягких блокеров (чеклист QA).",
       "error": "safeWriteCode returned false",
       "fix": "Build/validation failed in economyDesigner",
-      "timestamp": "2026-06-22T20:14:47.949Z"
-    },
-    {
-      "task": "[STAGE 016] Минимальный «контентный» проход: N сцен подряд без мягких блокеров (чеклист QA).",
-      "error": "safeWriteCode returned false",
-      "fix": "Build/validation failed in economyDesigner",
-      "timestamp": "2026-06-22T20:15:55.109Z"
-    },
-    {
-      "task": "[STAGE 016] Минимальный «контентный» проход: N сцен подряд без мягких блокеров (чеклист QA).",
-      "error": "safeWriteCode returned false",
-      "fix": "Build/validation failed in economyDesigner",
       "timestamp": "2026-06-22T20:17:01.855Z"
     },
     {
@@ -299,7 +287,19 @@
       "error": "safeWriteCode returned false",
       "fix": "Build/validation failed in economyDesigner",
       "timestamp": "2026-06-22T21:50:15.270Z"
+    },
+    {
+      "task": "[STAGE 016] Минимальный «контентный» проход: N сцен подряд без мягких блокеров (чеклист QA).",
+      "error": "safeWriteCode returned false",
+      "fix": "Build/validation failed in economyDesigner",
+      "timestamp": "2026-06-22T21:51:49.019Z"
+    },
+    {
+      "task": "[STAGE 016] Минимальный «контентный» проход: N сцен подряд без мягких блокеров (чеклист QA).",
+      "error": "safeWriteCode returned false",
+      "fix": "Build/validation failed in economyDesigner",
+      "timestamp": "2026-06-22T21:51:54.165Z"
     }
   ],
-  "lastUpdated": "2026-06-22T21:50:15.270Z"
+  "lastUpdated": "2026-06-22T21:51:54.165Z"
 }
