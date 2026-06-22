@@ -1,7 +1,7 @@
 // ai_support/agents/index.ts — Agent registry + execution.
 
-import { chat, type ChatMessage } from './llm';
-import { searchProject, addProjectChunk, queryByTag } from './storage';
+import { chat, type ChatMessage } from '../llm';
+import { searchProject, addProjectChunk, queryByTag } from '../storage';
 
 export interface AgentSkill {
   name: string;

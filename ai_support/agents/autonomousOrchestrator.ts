@@ -1749,7 +1749,7 @@ export async function runOrchestrator(): Promise<void> {
   log(`[orchestrator] Health: ${isHealthy() ? 'OK' : 'DEGRADED'}`);
 }
 
-async function runAgent(agent: string, task: AgentTask): Promise<AgentResult> {
+export async function runAgent(agent: string, task: AgentTask): Promise<AgentResult> {
   const model = selectModelForTask(agent);
   log(`[orchestrator] ${agent} using model: ${model}`);
 
