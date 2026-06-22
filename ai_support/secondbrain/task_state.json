@@ -173,5 +173,12 @@
     "attempts": 2,
     "lastRun": 1782130497636,
     "result": "completed"
+  },
+  "task_1": {
+    "taskId": "task_1",
+    "status": "done",
+    "attempts": 2,
+    "lastRun": 1782130557275,
+    "result": "completed"
   }
 }

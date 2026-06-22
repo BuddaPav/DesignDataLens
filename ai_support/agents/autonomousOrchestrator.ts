@@ -516,6 +516,46 @@ function saveTaskState(): void {
   fs.writeFileSync(STATE_FILE, JSON.stringify(obj, null, 2));
 }
 
+// Second Brain: Record learning after task completion
+function recordLearning(task: AgentTask, success: boolean): void {
+  const learningsPath = path.join(AI_SUPPORT_DIR, 'cognitive/learnings.json');
+  let learnings = { learnings: [] as { pattern: string; success: boolean; task: string; timestamp: string }[], lastUpdated: '' };
+  if (fs.existsSync(learningsPath)) {
+    try { learnings = JSON.parse(fs.readFileSync(learningsPath, 'utf-8')); } catch {}
+  }
+
+  learnings.learnings.push({
+    pattern: task.description.slice(0, 100),
+    success,
+    task: task.agent,
+    timestamp: new Date().toISOString()
+  });
+
+  // Keep only last 50 learnings
+  if (learnings.learnings.length > 50) {
+    learnings.learnings = learnings.learnings.slice(-50);
+  }
+  learnings.lastUpdated = new Date().toISOString();
+
+  fs.writeFileSync(learningsPath, JSON.stringify(learnings, null, 2));
+}
+
+// Update trust metrics
+function updateTrust(task: AgentTask, success: boolean): void {
+  const trustPath = path.join(AI_SUPPORT_DIR, 'cognitive/trust.json');
+  let trust = { hallucinations: 0, verifiedSnippets: 0, totalGenerations: 0, score: 1 };
+  if (fs.existsSync(trustPath)) {
+    try { trust = JSON.parse(fs.readFileSync(trustPath, 'utf-8')); } catch {}
+  }
+
+  trust.totalGenerations++;
+  if (!success) trust.hallucinations++;
+
+  trust.score = Math.max(0.1, 1 - (trust.hallucinations / Math.max(1, trust.totalGenerations)));
+
+  fs.writeFileSync(trustPath, JSON.stringify(trust, null, 2));
+}
+
 function markTaskDone(task: AgentTask): void {
   // Update state
   taskStates.set(task.id, {
@@ -527,6 +567,10 @@ function markTaskDone(task: AgentTask): void {
   });
   task.done = true;
   saveTaskState();
+
+  // === Second Brain: Record learning and update trust ===
+  recordLearning(task, true);
+  updateTrust(task, true);
 
   // Mark in PROJECT_MILESTONES
   const milestonesPath = path.join(PROJECT_ROOT, 'PROJECT_MILESTONES.md');
