@@ -700,21 +700,21 @@ function buildContextForAgent(task: AgentTask): string {
   return lines.join('\n');
 }
 
-function markTaskDone(task: AgentTask): void {
+function markTaskDone(task: AgentTask, success: boolean = true): void {
   // Update state
   taskStates.set(task.id, {
     taskId: task.id,
-    status: 'done',
+    status: success ? 'done' : 'failed',
     attempts: (taskStates.get(task.id)?.attempts || 0) + 1,
     lastRun: Date.now(),
-    result: 'completed'
+    result: success ? 'completed' : 'failed'
   });
-  task.done = true;
+  task.done = success;
   saveTaskState();
 
   // === Second Brain: Record learning and update trust ===
-  recordLearning(task, true);
-  updateTrust(task, true);
+  recordLearning(task, success);
+  updateTrust(task, success);
 
   // Mark in PROJECT_MILESTONES
   const milestonesPath = path.join(PROJECT_ROOT, 'PROJECT_MILESTONES.md');
@@ -738,6 +738,25 @@ function markTaskDone(task: AgentTask): void {
   }
 
   log(`[orchestrator] Marked done: ${task.description}`);
+}
+
+function markTaskFailed(task: AgentTask, errorMsg: string = 'Task failed'): void {
+  // Update state
+  taskStates.set(task.id, {
+    taskId: task.id,
+    status: 'failed',
+    attempts: (taskStates.get(task.id)?.attempts || 0) + 1,
+    lastRun: Date.now(),
+    result: 'failed'
+  });
+  task.done = false;
+  saveTaskState();
+
+  // === Second Brain: Record failure learning ===
+  recordLearning(task, false);
+  updateTrust(task, false);
+
+  log(`[orchestrator] Marked failed: ${task.description} - ${errorMsg}`);
 }
 
 function shouldRetry(task: AgentTask): boolean {
@@ -1118,10 +1137,12 @@ async function runWorldBuilder(task: AgentTask): Promise<AgentResult> {
     } else {
       log(`[worldBuilder] Skipped (TS error)`);
       recordRecovery(task, 'safeWriteCode returned false', 'Build/validation failed in worldBuilder');
+      markTaskFailed(task, 'Build/validation failed');
       return { ok: false, output: llmResult, error: 'Build/validation failed' };
     }
   }
 
+  markTaskFailed(task, 'No code generated');
   return { ok: false, output: llmResult, error: 'No code generated' };
 }
 
@@ -1244,18 +1265,25 @@ function globSync(pattern: string, dir: string): string[] {
 }
 
 // ==================== BUILD (18-22) ====================
-export async function runBuildCheck(): Promise<AgentResult> {
+export async function runBuildCheck(force: boolean = false): Promise<AgentResult> {
   log('[build] Starting npm run build...');
 
+  // Force rebuild if requested or if no dist exists
   const distPath = path.join(APP_DIR, 'dist', 'index.html');
-  try {
-    const stat = fs.statSync(distPath);
-    const ageMs = Date.now() - stat.mtimeMs;
-    if (ageMs < 300000) {
-      log(`[build] Using existing dist (age: ${Math.round(ageMs/1000)}s)`);
-      return { ok: true, output: `Using existing dist built ${Math.round(ageMs/1000)}s ago` };
+  let shouldRebuild = force;
+
+  if (!shouldRebuild) {
+    try {
+      const stat = fs.statSync(distPath);
+      const ageMs = Date.now() - stat.mtimeMs;
+      if (ageMs < 300000) {
+        log(`[build] Using existing dist (age: ${Math.round(ageMs/1000)}s)`);
+        return { ok: true, output: `Using existing dist built ${Math.round(ageMs/1000)}s ago` };
+      }
+    } catch {
+      shouldRebuild = true; // No dist, force rebuild
     }
-  } catch {}
+  }
 
   return new Promise((resolve) => {
     const { spawn } = require('child_process');
@@ -1400,7 +1428,7 @@ function gitCommit(message: string): void {
 // Build-gated commit - checks build before committing
 export async function tryGitCommit(message: string): Promise<boolean> {
   log('[git] Checking build before commit...');
-  const buildResult = await runBuildCheck();
+  const buildResult = await runBuildCheck(true); // Force rebuild before commit
 
   if (!buildResult.ok) {
     log(`[git] BUILD FAILED - reverting changes: ${buildResult.output}`);
