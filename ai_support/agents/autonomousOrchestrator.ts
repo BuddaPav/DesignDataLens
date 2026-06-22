@@ -544,15 +544,35 @@ function recordLearning(task: AgentTask, success: boolean): void {
 // Update trust metrics
 function updateTrust(task: AgentTask, success: boolean): void {
   const trustPath = path.join(AI_SUPPORT_DIR, 'cognitive/trust.json');
-  let trust = { hallucinations: 0, verifiedSnippets: 0, totalGenerations: 0, score: 1 };
+  // Extended trust with per-agent metrics
+  let trust: any = { hallucinations: 0, verifiedSnippets: 0, totalGenerations: 0, score: 1, agents: {}, lastUpdated: '' };
   if (fs.existsSync(trustPath)) {
     try { trust = JSON.parse(fs.readFileSync(trustPath, 'utf-8')); } catch {}
   }
 
+  // Ensure agents object exists
+  if (!trust.agents) trust.agents = {};
+  const agentName = task.agent || 'unknown';
+
   trust.totalGenerations++;
-  if (!success) trust.hallucinations++;
+  if (!success) {
+    trust.hallucinations++;
+  } else {
+    trust.verifiedSnippets++;
+  }
+
+  // Per-agent metrics
+  if (!trust.agents[agentName]) {
+    trust.agents[agentName] = { success: 0, fail: 0 };
+  }
+  if (success) {
+    trust.agents[agentName].success++;
+  } else {
+    trust.agents[agentName].fail++;
+  }
 
   trust.score = Math.max(0.1, 1 - (trust.hallucinations / Math.max(1, trust.totalGenerations)));
+  trust.lastUpdated = new Date().toISOString();
 
   fs.writeFileSync(trustPath, JSON.stringify(trust, null, 2));
 }

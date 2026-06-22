@@ -1,1 +1,13 @@
-{"hallucinations":0,"verifiedSnippets":0,"totalGenerations":0,"score":1}
+{
+  "hallucinations": 0,
+  "verifiedSnippets": 0,
+  "totalGenerations": 0,
+  "score": 1,
+  "agents": {
+    "economyDesigner": { "success": 0, "fail": 0 },
+    "npc-architect": { "success": 0, "fail": 0 },
+    "world-builder": { "success": 0, "fail": 0 },
+    "ui-craftsman": { "success": 0, "fail": 0 }
+  },
+  "lastUpdated": ""
+}
