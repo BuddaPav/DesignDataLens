@@ -19,7 +19,7 @@ jobs:
           cache: 'npm'
 
       - name: Install deps
-        run: npm ci
+        run: npm ci --prefer-offline
         working-directory: app
 
       - name: TypeScript check
@@ -41,7 +41,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: npm ci
+      - run: npm ci --prefer-offline
         working-directory: app
       - run: npm test
         working-directory: app
@@ -52,7 +52,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-      - run: npm ci
+      - run: npm ci --prefer-offline
         working-directory: app
       - name: Check bundle size
         run: |
