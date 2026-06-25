@@ -20,7 +20,7 @@ jobs:
           cache: npm
           cache-dependency-path: app/package-lock.json
       - name: Install
-        run: npm ci
+        run: npm ci --prefer-offline
       - name: Check static asset refs
         run: npm run check:assets
       - name: Orchestrate gate
