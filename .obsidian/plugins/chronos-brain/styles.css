@@ -1,0 +1,83 @@
+/* Chronos Brain Plugin Styles */
+
+.chronos-brain-status {
+  color: var(--text-accent);
+  font-weight: bold;
+}
+
+.chronos-brain-panel {
+  padding: 20px;
+  font-family: var(--font-body);
+}
+
+.chronos-brain-panel h2 {
+  margin: 0 0 20px 0;
+  color: var(--text-accent);
+}
+
+.chronos-brain-panel .metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.chronos-brain-panel .metric {
+  padding: 10px;
+  background: var(--background-secondary);
+  border-radius: 4px;
+}
+
+.chronos-brain-panel .metric .label {
+  display: block;
+  font-size: 0.8em;
+  color: var(--text-muted);
+}
+
+.chronos-brain-panel .metric .value {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.chronos-brain-panel .controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.chronos-brain-panel .controls button {
+  padding: 10px 20px;
+  background: var(--background-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+
+.chronos-brain-panel .controls button:hover {
+  background: var(--background-modifier-hover);
+}
+
+.chronos-brain-panel .controls button:active {
+  background: var(--background-modifier-active);
+}
+
+.chronos-brain-panel .logs {
+  background: var(--background-secondary);
+  border-radius: 4px;
+  padding: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.chronos-brain-panel .logs h3 {
+  margin: 0 0 10px 0;
+  font-size: 0.9em;
+  color: var(--text-muted);
+}
+
+.chronos-brain-panel .logs #log-content {
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+  white-space: pre-wrap;
+}

@@ -1,0 +1,10 @@
+{
+  "npcArchitect": {
+    "success": 3,
+    "fail": 3
+  },
+  "dialogueMaster": {
+    "success": 1,
+    "fail": 0
+  }
+}

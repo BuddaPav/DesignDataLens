@@ -1,0 +1,41 @@
+{
+  "version": "1.0.0",
+  "name": "Chronos Brain",
+  "description": "Second Brain для создания AAA игры",
+  "settings": {
+    "cycleInterval": 30000,
+    "autoStart": false,
+    "llmProvider": "openrouter",
+    "llmModel": "meta-llama/llama-3.1-8b-instruct"
+  },
+  "goals": {
+    "current": "Создать AAA игру",
+    "phases": [
+      {
+        "phase": 1,
+        "name": "Анализ текущего кода",
+        "status": "pending"
+      },
+      {
+        "phase": 2,
+        "name": "Улучшение графики",
+        "status": "pending"
+      },
+      {
+        "phase": 3,
+        "name": "Оптимизация",
+        "status": "pending"
+      },
+      {
+        "phase": 4,
+        "name": "Тесты",
+        "status": "pending"
+      }
+    ]
+  },
+  "metrics": {
+    "trustScore": 1.0,
+    "totalCycles": 0,
+    "lastRun": 0
+  }
+}

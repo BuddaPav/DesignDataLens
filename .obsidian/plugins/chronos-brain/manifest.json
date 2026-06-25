@@ -1,0 +1,11 @@
+{
+  "id": "chronos-brain",
+  "name": "Chronos Brain",
+  "version": "1.0.0",
+  "description": "Second Brain для автономного создания AAA игры",
+  "author": "Chronos AI",
+  "isTheme": false,
+  "minAppVersion": "0.15.0",
+  "js": "main.js",
+  "css": "styles.css"
+}

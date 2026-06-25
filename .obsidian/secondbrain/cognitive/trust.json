@@ -1,0 +1,33 @@
+{
+  "hallucinations": 69,
+  "verifiedSnippets": 191,
+  "totalGenerations": 260,
+  "score": 0.7346153846153847,
+  "agents": {
+    "economyDesigner": {
+      "success": 188,
+      "fail": 0
+    },
+    "npc-architect": {
+      "success": 0,
+      "fail": 0
+    },
+    "world-builder": {
+      "success": 0,
+      "fail": 0
+    },
+    "ui-craftsman": {
+      "success": 0,
+      "fail": 0
+    },
+    "worldBuilder": {
+      "success": 3,
+      "fail": 68
+    },
+    "codeBuilder": {
+      "success": 0,
+      "fail": 1
+    }
+  },
+  "lastUpdated": "2026-06-22T22:01:10.174Z"
+}
