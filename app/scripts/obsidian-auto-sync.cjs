@@ -97,5 +97,5 @@ switch (command) {
         break;
     default:
         console.log('Usage: node obsidian-auto-sync.cjs <start|stop>');
-        console.log('  start — Запустить демон синхронизации');
-        console.log('  stop  — Остановить демон');
+        console.log('  start - Start sync daemon');
+        console.log('  stop  - Stop sync daemon');
